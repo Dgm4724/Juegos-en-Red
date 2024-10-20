@@ -7,105 +7,84 @@ Diego Gómez Martín
 
 
 Introducción
-
-Nombre del equipo de desarrollo: Fokin Games (por ejemplo)
-Logo de equipo:
-Miembros del equipo, correo institucional y cuenta de GitHub:
--  Tarso da Costa da Silva: t.dad.2022@alumnos.urjc.es // tarsotarso
-- Juan Carlos Mauricio Orejón: jc.mauricio.2022@alumnos.urjc.es // JuanCarlosMauricio
-- Álvaro Codorníu Alonso: a.codorniu@alumnos.urjc.es // alvaroCodor
-- Diego Gómez Martín: d.gomezm.2022@alumnos.urjc.es // Dgm4724
-La elección del tipo de videojuego ha venido inicialmente dada por la decisión de hacer un juego cooperativo. Creemos que da opciones más interesantes y un estilo de juego más relajado y ameno, además de ahorrarnos la calibración del componente competitivo. Posteriormente, un compañero aportó la idea de un juego tipo 
+La elección del tipo de videojuego ha venido inicialmente dada por la decisión de hacer un juego multijugador cooperativo. Creemos que da opciones interesantes y un estilo de juego relajado y ameno, además de ahorrarnos la calibración del componente competitivo. Posteriormente, la idea del juego evolucionó hasta una especie de pong, tomando como referencia el juego Lethal League, que ha sido nuestra principal inspiración. Por último, se decidió caracterizar a los jugadores como focas que juegan a la pelota y hacerlo en un tono gracioso.
 
 
-
-**Concepto** 
-
+Concepto 
 Juego cooperativo de dos jugadores cuyo objetivo será mantener una pelota en el aire golpeándola una vez cada uno, acumulando puntuación hasta que la pelota toque el suelo. El juego será dinámico y fluido, con unas reglas y una curva de aprendizaje sencillas y recompensará la coordinación entre los dos jugadores, quienes deberán hacer uso de sus reflejos y mover correctamente a su personaje para evitar que la pelota toque el suelo durante el mayor tiempo posible. Todo ello se desarrolla en un contexto amigable y en tono divertido, con una estética colorida y animaciones llamativas que enfatizan el carácter casual del juego. El juego será tipo arcade, lo que quiere decir que se desarrollará por partidas sueltas en las que se guardará la puntuación de los dos jugadores que han participado.
 
 
-**Género**
+Género
+Juego con mecánicas similares a los videojuegos arcade. Es de estilo cooperativo, con partidas dinámicas y de duración indefinida, donde se trata de conseguir una puntuación alta y batir el récord. Conceptualmente, mezcla elementos de juegos arcade, plataformas 2D y de deportes.
 
-Juego arcade de deportes cooperativo.
 
-
-**Plataformas**
-
+Plataformas
 El juego se desarrollará para PC, para redes locales y mediante un servidor web que utilizará, por tanto, HTML y JavaScript. En el propio juego se dará la opción de jugar en un mismo dispositivo o en varios dispositivos conectados a una misma subred.
 
 
-**Jugabilidad** 
+Jugabilidad
 
 Espacio
-Las partidas se desarrollarán en un escenario 2d ligeramente más grande que  la pantalla de juego, por lo que los dos jugadores siempre se ven en pantalla.
+Las partidas se desarrollarán en un escenario 2d ligeramente más grande que  la pantalla de juego, por lo que los dos jugadores siempre se ven en pantalla. La cámara se mantiene estática independientemente del movimiento de los jugadores. La pelota podrá rebotar en los laterales de la pantalla si esta está cerrada en ese nivel, así como en el techo o en otros elementos de la escena. La única condición para perder es que la pelota toque el suelo. A veces, otras condiciones llevan igualmente a la derrota por extensión, como por ejemplo el caso en que el jugador se caiga en uno de los agujeros del segundo nivel (glaciar), en cuyo caso no podrá ir a dar a la pelota y por tanto tocará el suelo. También en los casos en que la pelota salga demasiado de pantalla (cuando el mapa esté abierto), lo más probable es que el jugador no pueda darle y acabe perdiendo la partida.
 Controles
 Se utilizará el ratón para navegar por los diferentes menús e interactuar con los botones y elementos del juego; no obstante, durante la partida será necesario únicamente el uso del teclado para jugar. Se utilizarán las flechas o las teclas WASD para el movimiento vertical y horizontal, mientras que para los golpes se usarán los números. En el caso de que 2 jugadores estén jugando en un mismo dispositivo, uno de ellos se moverá con flechas y el otro con las teclas WASD. Los golpes se corresponderán con las teclas 1, 2 y 3 para el jugador de la derecha y 7, 8 y 9 para el jugador de la izquierda. También habrá opciones de personalización de controles para adaptarse al teclado de cada ordenador y a las necesidades o preferencias específicas de cada jugador.
+
 Mecánicas
 - Desplazamiento lateral: el movimiento es uno de los elementos básicos que sienta las bases del resto del juego. El jugador deberá tener un movimiento preciso y unos reflejos rápidos para no caer en los obstáculos del terreno, así como para anticiparse a la trayectoria de la pelota y poder darle antes de que alcance el suelo. No existen colisiones entre jugadores, por lo que podrán moverse libremente por el escenario sin limitaciones. Así, algunas veces será necesario esquivar obstáculos, golpear la pelota en el aire, golpear la pelota en una dirección determinada o con cierta intensidad…
 - Salto (desplazamiento vertical): El salto complementa al desplazamiento lateral, dotando al jugador de la movilidad completa necesaria para esquivar obstáculos del terreno o enemigos y para poder golpear la pelota en más situaciones.
-- Golpes: Hay tres tipos de golpes diferentes: golpe normal, golpe fuerte y globo. La complicación de esta mecánica consiste en saber qué tipo de golpe usar en cada momento para optimizar la puntuación conseguida, teniendo en cuenta que . La idea principal consiste en  golpear la pelota en el momento justo de la colisión entre esta y el jugador, si el jugador presiona el botón de golpe demasiado pronto o demasiado tarde, la pelota pasará de largo. Además, el impacto dirigirá la pelota hacia el sentido al que apunta el jugador, combinando así esta mecánica con la del movimiento.
+- Golpes: Hay tres tipos de golpes diferentes: golpe normal, golpe fuerte y globo. Los golpes normales van en línea recta en la dirección en la que mire el personaje, mientras que los golpes fuertes van ligeramente inclinados hacia abajo y a más velocidad. Por otra parte, el globo lanza la pelota hacia arriba y con una velocidad reducida, así que es una manera de ponerle fácil al compañero el siguiente toque. La complicación de esta mecánica consiste en saber qué tipo de golpe usar en cada momento para optimizar la puntuación conseguida, teniendo en cuenta que . La idea principal consiste en  golpear la pelota en el momento justo de la colisión entre esta y el jugador, si el jugador presiona el botón de golpe demasiado pronto o demasiado tarde, la pelota pasará de largo. Además, el impacto dirigirá la pelota hacia el sentido al que apunta el jugador, combinando así esta mecánica con la del movimiento.
 Dinámicas, progresión y flujo de juego
 Las partidas son de duración indefinida con aumento progresivo de la dificultad y diferentes niveles lineales, por lo que comparte bastantes características con el estilo y el flujo de juego de los videojuegos arcade.
-Los golpes aumentan la puntuación según el tipo de golpe y la velocidad de la pelota, cuanto más arriesgado sea el golpe más puntuación obtendrán los jugadores.
+El principal objetivo es conseguir la máxima puntuación posible y batir el récord. Para ello, cada toque aportará puntuación a los jugadores de la siguiente manera:
+Los golpes normales contarán como 1 punto.
+Los golpes fuertes cuentan como 2 puntos.
+Los globos no aportan puntuación.
+Los golpes en el aire aportan +1 puntos (además del tipo de golpe).
+Esto fomenta el estilo de juego arriesgado de los jugadores, para que eviten quedarse lo más quietos posibles golpeando la pelota con globos. También se incluirán obstáculos y eventos de nivel para evitar dicho comportamiento pasivo del jugador. La pelota irá aumentando su velocidad conforme vaya avanzando la partida, de forma discreta y ofreciendo feedback de ello al jugador. Es decir, cada 60 segundos, la velocidad aumentará ligeramente y se le informará a los jugadores mediante una animación y un efecto de sonido que le alerten.
 La pelota rebotará en las paredes y techo del nivel en cuestión, así como con los posibles obstáculos que pueda haber. Si entra en contacto con el suelo, los jugadores perderán y acabará la partida inmediatamente.
 
 
-**Escenarios**
 
-Cada escenario tiene distintas situaciones y eventos que proporcionan variedad a la jugabilidad. De momento se han pensado en 3 escenarios correspondientes a 3 niveles diferentes, que podrán ser posteriormente ampliables. En orden ascendente de dificultad, los escenarios son los siguientes:
-1. Playa atardecer: Es un nivel relajado, con un bonito atardecer de fondo y pocos obstáculos, para jugadores que prefieran una partida más casual. Es un nivel que sirve prácticamente de tutorial. La pelota rebota en los laterales y no en el techo, por lo que la única forma de perder es si toca el suelo.
-Obstáculos: en este nivel no habrá obstáculos ya que lo que se pretende es que el jugador se familiarice con el juego y las mecánicas. Como mucho habrá algún que otro obstáculo pequeño en los laterales como rocas o palmeras.
-Eventos: cada 40 segundos, la marea sube y deja en el suelo charcos de barro, que ralentizan al jugador que pasa por encima. Los charcos desaparecen a los 10 segundos.
-2. Glaciar: Nivel de dificultad intermedia, con algunos elementos que ponen a prueba las habilidades del jugador sin llegar a ser demasiado estresante. La pelota no rebota en los laterales ni en el techo, por lo que si se sale demasiado por dichos límites los jugadores habrán perdido.
-Obstáculos: en este nivel el principal impedimento para el movimiento es el suelo, que tendrá agujeros que dan al agua y por los que el jugador se podrá caer, lo que le hará terminar la partida. Además, habrá zonas en las que el suelo escurra y haga más inestable el movimiento del jugador.
-Eventos: cada 30 segundos, caen carámbanos de hielo que provocan colisiones tanto con los jugadores como con la pelota, durante 10 segundos.
-3. Barco de crucero: Nivel de dificultad más alto, pero también el desafío más atractivo para el jugador. Contiene muchos elementos frenéticos y estimulantes que ponen a prueba los nervios y los reflejos del jugador. La pelota rebota con múltiples estructuras del escenario, pero no por los laterales ni por arriba, por lo que si se sale los jugadores perderán.
-Obstáculos: el barco contiene varios niveles, por lo que la pelota rebotará en diferentes estructuras que están a diferentes alturas. El jugador también tendrá que sortear dichos obstáculos, así como a los pasajeros del crucero, con los cuales colisiona, y que cuando te acercas se escandalizan y corren de un lado al otro molestando. 
-Evento: Cada 20 segundos hay turbulencias, y el barco se inclina lentamente primero hacia un lado y luego hacia el otro. Tras 5 segundos en cada dirección, se vuelve a poner horizontal.
-
-
-**Personajes**
-
-Los personajes jugables son dos focas amigas a las que les gusta jugar con la pelota. A nivel jugable las focas son iguales. Con la puntuación que el jugador consiga en las partidas va a poder desbloquear pequeñas mejoras, las cuales puede seleccionar antes de empezar cada partida.
+Escenarios
+Cada escenario tiene distintas situaciones y eventos que proporcionan variedad a la jugabilidad. Habrá 3 escenarios iniciales: nivel fácil, medio y difícil. En orden ascendente de dificultad, los escenarios son los siguientes:
+1. Playa al atardecer: Nivel de poca dificultad y ambiente relajado, con un bonito atardecer de fondo y sin obstáculos, para jugadores que prefieran una partida más casual. Sirve prácticamente de tutorial del juego. La pelota rebotará en los laterales pero no habrá techo, por lo que la única forma de perder es si toca el suelo.
+Obstáculos: ninguno, ya que lo que se pretende es que el jugador se familiarice con el juego y las mecánicas.
+2. Glaciar: Nivel de dificultad intermedia, con algunos elementos que ponen a prueba las habilidades del jugador sin llegar a ser un reto. La pelota no rebota en los laterales ni en el techo, por lo que si rebasa esos límites los jugadores habrán perdido.
+Obstáculos: el principal impedimento de este nivel de cara al movimiento de los jugadores es el suelo, que tendrá agujeros por los que estos se podrán caer, terminando así la partida. Además, el suelo será resbaladizo y, por tanto, hará más inestable el movimiento del jugador.
+Eventos: cada 30 segundos, caerán carámbanos de hielo que provocarán colisiones tanto con los jugadores como con la pelota durante 10 segundos.
+3. Barco de crucero: Nivel de alta dificultad, pero también el desafío más atractivo para el jugador. Contiene muchos elementos frenéticos y estimulantes que ponen a prueba los nervios y los reflejos del jugador. La pelota rebota con múltiples estructuras del escenario, pero no por los laterales ni por arriba, por lo que si se sale los jugadores perderán.
+Obstáculos: el barco contiene varios niveles, por lo que la pelota podrá rebotar en diferentes estructuras a diferentes alturas. El jugador también tendrá que sortear dichos obstáculos, así como a los pasajeros del crucero quienes corren de un lado a otro y con los cuales colisiona.
+Evento: Cada 20 segundos hay turbulencias, y el barco se inclina lentamente primero hacia un lado y luego hacia el otro. Tras 5 segundos en cada dirección, vuelve a su posición inicial.
 
 
-**Interfaces** 
 
-Aún no hay prototipos de las interfaces pero ya hemos planteado las que necesitamos y cómo va a ser la navegación entre ellas.
+Personajes
+Los personajes jugables son dos focas que utilizarán su cola a modo de raqueta para pegarle a la pelota. A nivel jugable las focas son iguales. Con la puntuación que el jugador consiga en las partidas va a poder desbloquear pequeñas mejoras, las cuales podrá seleccionar antes de empezar cada partida.
+
+
+Interfaces 
+Aún no hay prototipos de las interfaces pero ya hemos planteado las que necesitamos y cómo va a ser la navegación entre ellas, además de cómo se posicionan algunos elementos claves en pantalla.
 Interfaz de partida
--La puntuación de la partida está abajo en el medio de la pantalla, es importante que esté abajo para no obstruir la visión del escenario y el balón.
--El tiempo de partida está abajo de la puntuación
--Cuando el jugador da un toque al balón,el número del toque actual  aparece en en el fondo del escenario
+El principal objetivo de la interfaz en partida es que sea simple e intuitiva. El juego está diseñado para ser frenético, por lo que una interfaz con muchos elementos en pantalla sería perjudicial para la experiencia que queremos conseguir.
+La puntuación de la partida está abajo en el medio de la pantalla, es importante que esté abajo ya que la mayoría del tiempo el balón está por encima de los jugadores y poner los elementos en la parte superior disminuye la visión del escenario y del propio balón. El tiempo de partida está abajo de la puntuación.
+Cuando el jugador da un toque al balón,el número del toque actual  aparece en en el fondo del escenario, hemos tomado esta decisión porque el número de toques es un elemento importante del juego pero no es imprescindible por lo que tener todo el tiempo en pantalla solo generaría más ruido visual, así los jugadores pueden mantener la cuenta de los toques que llevan sin que les moleste.
 Menú inicial
-
-
-**Menú de opciones**
-
-Según avance el desarrollo en el menú de opciones se va a definir más según las necesidades del proyecto pero ahora mismo podemos definir esta pantalla como un menú con tres botones que representan Jugabilidad, Sonido y Gráficos
-
-
-**Marcadores**
-
+El menú inicial cuenta con 4 botones; Juego local, juego online, opciones, salir del juego. Los botones están posicionados en mitad de la pantalla asemejándose  a juegos arcade clásicos.
+Menú de opciones
+Según avance el desarrollo en el menú de opciones se va a definir más según las necesidades del proyecto, pero ahora mismo podemos definir esta pantalla como un menú con tres botones que representan Jugabilidad, Sonido y Gráficos. Cada uno abriría un pequeño menú con distintas opciones para personalizar el juego según quiera el usuario.
+Marcadores
 En esta interfaz se muestra una tabla con las puntuaciones de los demás jugadores, hay una sección dentro de los marcadores por cada escenario.
-Selección personaje
-Pantalla en la que el jugador tiene que elegir personaje antes de empezar la partida
-Selección nivel
-Pantalla en la que los jugadores tienen que elegir escenario antes de empezar la partida
+Selección personaje/nivel
+Dos pantallas previas a la partida en las que los jugadores tienen que elegir el personaje y escenario de juego.
 Pantalla fin de partida (tabla ranking)
 	Pantalla tras finalizar la partida, se muestra la puntuación obtenida, la tabla de puntuación general y los botones para empezar otra partida o salir del juego.
 
 
 
-**Estilo artístico** 
-
+Estilo artístico 
 El estilo visual será en 2 dimensiones, con un tipo de  pixel art lo suficientemente sencillo para facilitar el trabajo y la creación de sprite sheets, pero con suficiente resolución como para poder ver con claridad los personajes y demás elementos. Además hemos elegido este estilo visual también por afinidad con el mismo y porque se adapta a las sensaciones que queremos que nuestro juego transmita. Tiene que ser un juego desenfadado, divertido y dinámico, por lo que los personajes tenderán a ser graciosos, las animaciones vistosas y la paleta de color con tonos vivos y enérgicos.
 
 
-**Música y sonido** 
-
-La música y efectos de sonido van a ser animadas y frenéticas para adecuarse a la temática del juego. A continuación se detalla una lista de los efectos de sonido que se necesitarán. Se numerarán a efectos prácticos. (Probablemente la lista varíe y se añadan muchos más sonidos que vayamos identificando)
-
-
-
-
+Música y sonido 
+La música y efectos de sonido van a ser animadas y frenéticas para adecuarse a la temática del juego. A continuación se detalla una lista de los efectos de sonido que se necesitarán. Se numerarán a efectos prácticos. 
 
