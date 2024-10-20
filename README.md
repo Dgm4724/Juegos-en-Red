@@ -1,16 +1,4 @@
-GDD - xxxx
-
-
-Nombres para el juegos:
-SEAL-PONG
-KENOKE
-LE FOQUE
-PHOCIPONG
-FOC IT
-Nombres para el equipo:
-The fokin team
-
-
+GDD - F.O.C.A.: Felicidad y Ocio Con Amigos
 
 Tarso da Costa da Silva
 Juan Carlos Mauricio Orejón
