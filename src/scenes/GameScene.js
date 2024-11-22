@@ -1,63 +1,35 @@
-export default class GameScene extends Phaser.Scene {
+class GameScene extends Phaser.Scene {
     constructor() {
-      super({ key: 'GameScene' });
+        super({key: "GameScene"});
     }
-
     create() {
-      const { width, height } = this.scale;
+        // Fondo
+        this.add.image(360, 240, "fondo1");
 
-      // Pelota
-      this.ball = this.physics.add.sprite(width / 2, height / 2, 'ball');
-      this.ball.setVelocity(200, 200);
-      this.ball.setBounce(1, 1);
-      this.ball.setCollideWorldBounds(true);
+        // Suelo
+        const suelo = this.add.rectangle(360, 470, 720, 10, 0x000000, 0); // Color 0x000000, con opacidad 0
+        this.physics.add.existing(suelo, true); // 'true' hace el cuerpo estático
 
-      // Palas (Focas)
-      this.paddle1 = this.physics.add.sprite(50, height / 2, 'foca');
-      this.paddle2 = this.physics.add.sprite(width - 50, height / 2, 'foca');
-      this.paddle1.setImmovable(true);
-      this.paddle2.setImmovable(true);
+        // Foca 1
+        this.foca1 = this.physics.add.image(150, 430, "foca1");
+        this.foca1.flipX = true;
+        this.foca1.setCollideWorldBounds(true);
 
-      // Controles
-      this.cursorKeys = this.input.keyboard.createCursorKeys();
-      this.wKey = this.input.keyboard.addKey('W');
-      this.sKey = this.input.keyboard.addKey('S');
+        // Foca 2
+        this. foca2 = this.physics.add.image(620, 430, "foca2");
+        this.foca2.flipX = true;
+        this.foca2.setCollideWorldBounds(true);
 
-      // Físicas
-      this.physics.add.collider(this.ball, this.paddle1, () => this.sound.play('hit'));
-      this.physics.add.collider(this.ball, this.paddle2, () => this.sound.play('hit'));
+        // Pelota
+        this.pelota = this.physics.add.image(360, 250, "pelota");
+        this.pelota.setBounce(0.75);
 
-      // Marcadores
-      this.score1 = 0;
-      this.score2 = 0;
-      this.scoreText = this.add.text(width / 2, 50, '0 - 0', {
-        font: '24px Arial',
-        color: '#ffffff',
-      }).setOrigin(0.5);
+        // Colisiones
+        this.physics.add.collider(this.foca1, suelo);
+        this.physics.add.collider(this.foca2, suelo);
+        this.physics.add.collider(this.pelota, suelo);
     }
+}
 
-    update() {
-      // Movimiento de las palas
-      if (this.wKey.isDown) this.paddle1.y -= 5;
-      if (this.sKey.isDown) this.paddle1.y += 5;
-      if (this.cursorKeys.up.isDown) this.paddle2.y -= 5;
-      if (this.cursorKeys.down.isDown) this.paddle2.y += 5;
+export default GameScene;
 
-      // Comprobar anotaciones
-      if (this.ball.x < 0) {
-        this.score2 += 1;
-        this.resetBall();
-      } else if (this.ball.x > this.scale.width) {
-        this.score1 += 1;
-        this.resetBall();
-      }
-
-      this.scoreText.setText(`${this.score1} - ${this.score2}`);
-    }
-
-    resetBall() {
-      this.ball.setPosition(this.scale.width / 2, this.scale.height / 2);
-      this.ball.setVelocity(200, 200 * (Math.random() > 0.5 ? 1 : -1));
-      this.sound.play('score');
-    }
-  }
