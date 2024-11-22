@@ -20,7 +20,7 @@ const config = {
   const game = new Phaser.Game(config);
 
   function preload() {
-    this.load.image('sky', 'https://labs.phaser.io/assets/skies/space3.png'); // Cargar fondo
+    this.load.image('sky', 'assets/images/Fondo1'); // Cargar fondo
     this.load.image('star', 'https://labs.phaser.io/assets/sprites/star.png'); // Cargar estrella
   }
 
