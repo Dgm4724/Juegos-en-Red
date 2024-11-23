@@ -43,7 +43,7 @@ class GameScene extends Phaser.Scene {
 
       // Foca 2
       this.foca2 = this.physics.add.image(570, 430, "foca2");
-      this.foca2.flipX = true;
+      this.foca2.flipX = false;
       this.foca2.setBounce(0);
       this.foca2.body.setSize(50, 40);
       this.foca2.setCollideWorldBounds(true);
@@ -159,10 +159,10 @@ class GameScene extends Phaser.Scene {
       // Movimiento de la foca 2 (usando las flechas)
       if (this.cursors.left.isDown) {
         this.foca2.setVelocityX(-speed); // Movimiento hacia la izquierda
-        this.foca2.scaleX = 1
+        this.foca2.scaleX = -1
       } else if (this.cursors.right.isDown) {
         this.foca2.setVelocityX(speed); // Movimiento hacia la derecha
-        this.foca2.scaleX = -1
+        this.foca2.scaleX = 1
       } else {
         this.foca2.setVelocityX(0); // Detenerse si no se presionan las flechas
       }
