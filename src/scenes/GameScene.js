@@ -4,11 +4,10 @@ class GameScene extends Phaser.Scene {
     this.golpeFoca1 = null;
     this.golpeFoca2 = null;
     this.puntuacion = 0;
-    this.ultimaFocaGolpeadora = null; // Almacena la última foca que golpeó la pelota
   }
 
   preload() {
-    // Aquí se cargan los recursos (si aplica)
+    // Carga los recursos necesarios
   }
 
   create() {
@@ -30,7 +29,7 @@ class GameScene extends Phaser.Scene {
     // Colisiones
     this.physics.add.collider(this.foca1, suelo);
     this.physics.add.collider(this.foca2, suelo);
-    this.physics.add.collider(this.pelota, suelo);
+    this.physics.add.collider(this.pelota, suelo, this.handlePelotaToqueSuelo, null, this);
     this.physics.add.overlap(this.foca1, this.pelota, this.handleHit, null, this);
     this.physics.add.overlap(this.foca2, this.pelota, this.handleHit, null, this);
 
@@ -75,35 +74,40 @@ class GameScene extends Phaser.Scene {
   handleHit(foca, pelota) {
     let tipoGolpe = foca === this.foca1 ? this.golpeFoca1 : this.golpeFoca2;
     if (!tipoGolpe) return;
-  
+
     // Verificar si la foca que golpeó la pelota es distinta a la anterior
     if (this.ultimaFocaGolpeadora === foca) {
       return; // Si es la misma foca que la anterior, no se suman puntos
     }
-  
+
     // Actualizar la última foca que golpeó la pelota
     this.ultimaFocaGolpeadora = foca;
-  
+
     // Determinar la dirección horizontal en función de la dirección de la foca
     const direccionX = foca.flipX ? -1 : 1;
-  
+
     // Aplicar la fuerza al golpe (por tipo)
     const fuerzaX = direccionX * (tipoGolpe === "fuerte" ? 1000 : 300); // Dependiendo de si es fuerte o normal
     const fuerzaY = tipoGolpe === "fuerte" ? -200 : -350;
-  
+
     // Establecer la velocidad de la pelota
     pelota.setVelocity(fuerzaX, fuerzaY);
-  
+
     // Actualizar puntuación
     if (tipoGolpe === "normal") {
       this.puntuacion += 1;
     } else if (tipoGolpe === "fuerte") {
       this.puntuacion += 2;
     }
-  
+
     // Actualizar el texto de puntuación en pantalla
     this.puntajeTexto.setText(`Points: ${this.puntuacion}`);
-  }  
+  }
+
+  handlePelotaToqueSuelo() {
+    // Cambiar a la escena GameOverScene y pasar la puntuación
+    this.scene.start('GameOverScene', { puntuacion: this.puntuacion });
+  }
 
   update() {
     const speed = 160;
@@ -150,3 +154,4 @@ class GameScene extends Phaser.Scene {
 }
 
 export default GameScene;
+
