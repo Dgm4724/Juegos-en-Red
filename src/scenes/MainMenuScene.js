@@ -1,6 +1,6 @@
 class MainMenu extends Phaser.Scene {
     constructor() {
-        super({ key: "MainMenu" });
+        super({ key: "MainMenuScene" });
     }
 
     preload() {
@@ -11,7 +11,7 @@ class MainMenu extends Phaser.Scene {
 
     create() {
         // Background image
-        this.add.image(360, 240, "menuBackground");
+        this.add.image(360, 240, "fondo1");
 
         // Title text
         this.add.text(360, 100, "Seal Ball Game", {
@@ -28,7 +28,7 @@ class MainMenu extends Phaser.Scene {
         });
 
         // Instruction text
-        this.add.text(360, 400, "Click the Play button to start!", {
+        this.add.text(360, 400, "Haz clic en 'Jugar' para empezar!", {
             fontSize: "20px",
             color: "#ffffff",
         }).setOrigin(0.5);
