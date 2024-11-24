@@ -11,6 +11,9 @@ class GameScene extends Phaser.Scene {
   }
 
   create() {
+    // Reiniciar puntuación a cero
+    this.puntuacion = 0;
+
     // Fondo
     this.add.image(360, 240, "fondo1");
 
@@ -19,11 +22,11 @@ class GameScene extends Phaser.Scene {
     this.physics.add.existing(suelo, true);
 
     // Crear focas
-    this.foca1 = this.createFoca(200, 400, "foca1");
+    this.foca1 = this.createFoca(250, 400, "foca1");
     this.foca1.setScale(0.75);
     this.foca1.setFlipX(false);
 
-    this.foca2 = this.createFoca(520, 400, "foca2");
+    this.foca2 = this.createFoca(470, 400, "foca2");
     this.foca2.setScale(0.75);
     this.foca2.setFlipX(true);
 
