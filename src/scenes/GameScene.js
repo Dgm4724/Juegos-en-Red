@@ -19,11 +19,16 @@ class GameScene extends Phaser.Scene {
     this.physics.add.existing(suelo, true);
 
     // Crear focas
-    this.foca1 = this.createFoca(150, 400, "foca1");
-    this.foca2 = this.createFoca(570, 400, "foca2");
+    this.foca1 = this.createFoca(200, 400, "foca1");
+    this.foca1.setScale(0.75);
+    this.foca1.setFlipX(false);
+
+    this.foca2 = this.createFoca(520, 400, "foca2");
+    this.foca2.setScale(0.75);
+    this.foca2.setFlipX(true);
 
     // Pelota
-    this.pelota = this.physics.add.image(360, 250, "pelota");
+    this.pelota = this.physics.add.image(360, 150, "pelota");
     this.pelota.setBounce(0.75).setOrigin(0.5, 0.5).setCollideWorldBounds(true);
 
     // Colisiones
@@ -47,8 +52,12 @@ class GameScene extends Phaser.Scene {
     // Palmera
     this.add.image(100, 300, "palmera");
 
+    // Cartel de puntuacion
+    const cartelPuntuacion = this.add.image(360, 60, "cartelPuntuacion");
+    cartelPuntuacion.setDisplaySize(200, 75);
+
     // Mostrar puntuación en pantalla (arriba, centrado)
-    this.puntajeTexto = this.add.text(360, 50, `Points: ${this.puntuacion}`, {
+    this.puntajeTexto = this.add.text(360, 50, `Puntos: ${this.puntuacion}`, {
       fontSize: '24px',
       color: '#ffffff',
       align: 'center'
@@ -154,4 +163,5 @@ class GameScene extends Phaser.Scene {
 }
 
 export default GameScene;
+
 
