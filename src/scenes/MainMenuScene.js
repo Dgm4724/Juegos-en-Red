@@ -1,4 +1,4 @@
-class MainMenu extends Phaser.Scene {
+class MainMenuScene extends Phaser.Scene {
     constructor() {
         super({ key: "MainMenuScene" });
     }
@@ -35,4 +35,4 @@ class MainMenu extends Phaser.Scene {
     }
 }
 
-export default MainMenu;
+export default MainMenuScene;
