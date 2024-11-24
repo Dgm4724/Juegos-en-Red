@@ -3,34 +3,27 @@ class MainMenuScene extends Phaser.Scene {
         super({ key: "MainMenuScene" });
     }
 
-    preload() {
-        // Load any assets specific to the menu if needed
-        this.load.image("menuBackground", "./assets/images/menuBackground.png");
-        this.load.image("playButton", "./assets/images/playButton.png");
-    }
-
     create() {
-        // Background image
-        this.add.image(360, 240, "fondo1");
+        // Fondo
+        this.add.image(360, 240, "fondoGenerico");
+        
+        // Interfaz titulo
+        this.interfaz = this.add.image(360, 240, "interfazMainMenu");
+        this.interfaz.setScale(1.25);
 
-        // Title text
-        this.add.text(360, 100, "Seal Ball Game", {
-            fontSize: "40px",
-            color: "#ffffff",
-        }).setOrigin(0.5);
+        // Boton Jugar
+        this.botonPlay = this.add.image(360, 300, "botonPlay").setInteractive();
+        this.botonPlay.setScale(1.75);
 
-        // Play button
-        const playButton = this.add.image(360, 300, "playButton").setInteractive();
-
-        // Start the GameScene when the button is clicked
-        playButton.on("pointerdown", () => {
+        // Funcion del boton Jugar
+        this.botonPlay.on("pointerdown", () => {
             this.scene.start("GameScene");
         });
 
-        // Instruction text
-        this.add.text(360, 400, "Haz clic en 'Jugar' para empezar!", {
+        // Texto
+        this.add.text(360, 180, "¡Haz clic en 'Jugar' para empezar!", {
             fontSize: "20px",
-            color: "#ffffff",
+            color: "#000000",
         }).setOrigin(0.5);
     }
 }
