@@ -27,7 +27,7 @@ class GameOverScene extends Phaser.Scene {
       // Botón para volver al menú principal
       const menuButton = this.add.image(360, 300, "menuButton").setInteractive();
       menuButton.on("pointerdown", () => {
-        this.scene.start("MainMenu"); // Volver al menú principal
+        this.scene.start("MainMenuScene"); // Volver al menú principal
       });
   
       // Botón para reiniciar la partida
@@ -39,3 +39,4 @@ class GameOverScene extends Phaser.Scene {
   }
   
   export default GameOverScene;
+  
