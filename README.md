@@ -102,3 +102,9 @@ La pelota rebotará en las paredes y techo del nivel en cuestión, así como con
 |17|Gritos de desilusión colectivos.|NO|La pelota toca el suelo y los jugadores pierden|
 |18|Sonido tipo dibujo animado de andar o moverse.|SI|Movimiento de los jugadores|
 |19|Música de fondo para la pantalla de ranking.|SI|Pantalla de tabla de puntuaciones|
+
+## Bibliografía
+ Serie de vídeotutoriales de Phaser: https://www.youtube.com/watch?list=PLL_H5w4KA8dP9pPayzYxHCD4IQ80nkfY9&v=4RaN4g9KzDo
+ Juego básico con Phaser gamedevacademy: https://gamedevacademy.org/phaser-3-tutorial/
+ Guía de ininiación de la página de Phaser: https://phaser.io/tutorials/getting-started-phaser3
+ Guía de cómo crear un juego de la página de Phaser: https://phaser.io/tutorials/making-your-first-phaser-3-game-spanish
