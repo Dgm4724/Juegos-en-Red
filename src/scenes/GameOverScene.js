@@ -55,6 +55,7 @@ class GameOverScene extends Phaser.Scene {
         color: "black",
         align: 'center'
       }).setOrigin(0.5);
+      
       this.adjustScale();
     }
   }

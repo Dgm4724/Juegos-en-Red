@@ -8,7 +8,8 @@ class Bootstrap extends Phaser.Scene {
         })
 
         this.load.image("fondo1", "./assets/images/fondo1.png");
-        this.load.image("fondoGenerico", "./assets/images/fondoGenerico.png");
+        this.load.image("fondoGenerico", "./assets/images/fondoGenerico.png");        
+        this.load.image("fondoGenericoAzul", "./assets/images/fondoGEN_azul.png");
         this.load.image("foca1", "./assets/images/foca1.png");
         this.load.image("foca2", "./assets/images/foca2.png");
         this.load.image("pelota", "./assets/images/pelota.png");
@@ -20,6 +21,7 @@ class Bootstrap extends Phaser.Scene {
         this.load.image("gameOverBackground", "./assets/images/gameOverBackground.png");
         this.load.image("menuButton", "./assets/images/menuButton.png");
         this.load.image("restartButton", "./assets/images/restartButton.png");
+        this.load.image("backButton", "./assets/images/volver_button.png");
     }
 }
 

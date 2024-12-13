@@ -15,6 +15,10 @@ class MainMenuScene extends Phaser.Scene {
         this.botonPlay = this.add.image(360, 250, "botonPlay").setInteractive();
         this.botonPlay.setScale(1.5);
 
+        this.botonPlay.on("pointerdown", () => {
+            this.scene.start("GameScene");
+        });
+
         // Boton Ajustes
         this.botonA = this.add.image(360, 340, "boton").setInteractive();
         this.botonA.setScale(1, 0.8);
@@ -35,9 +39,8 @@ class MainMenuScene extends Phaser.Scene {
             color: "#000000",
         }).setOrigin(0.5);
 
-        // Funcion del boton Jugar
-        this.botonPlay.on("pointerdown", () => {
-            this.scene.start("GameScene");
+        this.botonC.on("pointerdown", () => {
+            this.scene.start("CreditsScene");
         });
 
         // Texto
