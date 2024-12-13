@@ -12,8 +12,28 @@ class MainMenuScene extends Phaser.Scene {
         this.interfaz.setScale(1.25);
 
         // Boton Jugar
-        this.botonPlay = this.add.image(360, 300, "botonPlay").setInteractive();
-        this.botonPlay.setScale(1.75);
+        this.botonPlay = this.add.image(360, 250, "botonPlay").setInteractive();
+        this.botonPlay.setScale(1.5);
+
+        // Boton Ajustes
+        this.botonA = this.add.image(360, 340, "boton").setInteractive();
+        this.botonA.setScale(1, 0.8);
+        this.add.text(360, 340, "Ajustes", {
+            fontFamily: "Barrio",
+            fontSize: "23px",
+            fontStyle: "Bold",
+            color: "#000000",
+        }).setOrigin(0.5);
+
+        // Boton Créditos
+        this.botonC = this.add.image(360, 390, "boton").setInteractive();
+        this.botonC.setScale(1, 0.8);
+        this.add.text(360, 390, "Créditos", {
+            fontFamily: "Barrio",
+            fontSize: "23px",
+            fontStyle: "Bold",
+            color: "#000000",
+        }).setOrigin(0.5);
 
         // Funcion del boton Jugar
         this.botonPlay.on("pointerdown", () => {
@@ -21,10 +41,13 @@ class MainMenuScene extends Phaser.Scene {
         });
 
         // Texto
-        this.add.text(360, 180, "¡Haz clic en 'Jugar' para empezar!", {
+        this.add.text(360, 170, "¡Haz clic en el botón verde para empezar a jugar!", {
+            fontFamily: "Freckle Face",
             fontSize: "20px",
             color: "#000000",
         }).setOrigin(0.5);
+        
+        this.adjustScale();
     }
 }
 

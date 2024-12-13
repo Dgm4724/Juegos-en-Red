@@ -11,15 +11,20 @@ class GameScene extends Phaser.Scene {
   }
 
   create() {
+    // factores de escala
+    this.widthRatio = this.scale.width / 720;
+    this.heightRatio = this.scale.height / 480;
+    
     // Reiniciar puntuación a cero
     this.puntuacion = 0;
-
+    
     // Fondo
     this.add.image(360, 240, "fondo1");
 
     // Suelo
-    const suelo = this.add.rectangle(360, 470, 720, 10, 0x000000, 0);
+    const suelo = this.add.rectangle(360 * this.widthRatio, 470 * this.heightRatio, 720 * this.widthRatio, 10 * this.heightRatio, 0x000000, 0);
     this.physics.add.existing(suelo, true);
+    this.suelo = suelo;
 
     // Crear focas
     this.foca1 = this.createFoca(250, 400, "foca1");
@@ -60,11 +65,22 @@ class GameScene extends Phaser.Scene {
     cartelPuntuacion.setDisplaySize(200, 75);
 
     // Mostrar puntuación en pantalla (arriba, centrado)
-    this.puntajeTexto = this.add.text(360, 50, `Puntos: ${this.puntuacion}`, {
-      fontSize: '24px',
-      color: '#ffffff',
+    this.puntajeTexto = this.add.text(365, 30, `Puntuación: \n${this.puntuacion}`, {
+      fontSize: '25px',
+      fontFamily: "Freckle Face",
+      color: 'black',
       align: 'center'
     }).setOrigin(0.5, 0);  // Centrado horizontalmente
+
+    this.adjustScale();
+
+    // escalar las físicas
+    this.scalePhysics();
+  }
+
+  scalePhysics() {
+    // Ajustar gravedad
+    this.physics.world.gravity.y *= this.heightRatio;
   }
 
   createFoca(x, y, spriteKey) {
@@ -98,9 +114,9 @@ class GameScene extends Phaser.Scene {
     // Determinar la dirección horizontal en función de la dirección de la foca
     const direccionX = foca.flipX ? -1 : 1;
 
-    // Aplicar la fuerza al golpe (por tipo)
-    const fuerzaX = direccionX * (tipoGolpe === "fuerte" ? 1000 : 300); // Dependiendo de si es fuerte o normal
-    const fuerzaY = tipoGolpe === "fuerte" ? -200 : -350;
+    // Aplicar la fuerza al golpe (por tipo) (ESCALADO SEGÚN ASPECT RATIO)
+    const fuerzaX = direccionX * (tipoGolpe === "fuerte" ? 1000 : 300) * this.widthRatio;// Dependiendo de si es fuerte o normal
+    const fuerzaY = (tipoGolpe === "fuerte" ? -200 : -350) * this.heightRatio;
 
     // Establecer la velocidad de la pelota
     pelota.setVelocity(fuerzaX, fuerzaY);
@@ -113,7 +129,7 @@ class GameScene extends Phaser.Scene {
     }
 
     // Actualizar el texto de puntuación en pantalla
-    this.puntajeTexto.setText(`Points: ${this.puntuacion}`);
+    this.puntajeTexto.setText(`Puntuación: \n${this.puntuacion}`);
   }
 
   handlePelotaToqueSuelo() {
@@ -132,16 +148,18 @@ class GameScene extends Phaser.Scene {
     this.moveFoca(this.foca2, this.cursors.left, this.cursors.right, this.cursors.up, this.oKey, this.pKey, speed, jumpForce);
   }
 
-  moveFoca(foca, leftKey, rightKey, jumpKey, normalHitKey, strongHitKey, speed, jumpForce) {
-    // Movimiento horizontal
+  moveFoca(foca, leftKey, rightKey, jumpKey, normalHitKey, strongHitKey, speed, jumpForce) { // Movimiento horizontal
+    const scaledSpeed = speed * this.widthRatio; // Escalar velocidad horizontal
+    const scaledJumpForce = jumpForce * this.heightRatio; // Escalar fuerza de salto
+
     if (leftKey.isDown) {
-        foca.setVelocityX(-speed);
-        foca.setFlipX(true); // Voltea la foca a la izquierda
+      foca.setVelocityX(-scaledSpeed);
+      foca.setFlipX(true); // Voltea la foca a la izquierda
     } else if (rightKey.isDown) {
-        foca.setVelocityX(speed);
-        foca.setFlipX(false); // Voltea la foca a la derecha
+      foca.setVelocityX(scaledSpeed);
+      foca.setFlipX(false); // Voltea la foca a la derecha
     } else {
-        foca.setVelocityX(0); // Detenerse
+      foca.setVelocityX(0); // Detenerse
     }
 
     // Centrar el collider siempre
@@ -153,14 +171,14 @@ class GameScene extends Phaser.Scene {
 
     // Salto
     if (Phaser.Input.Keyboard.JustDown(jumpKey) && foca.body.touching.down) {
-        foca.setVelocityY(-jumpForce);
+      foca.setVelocityY(-scaledJumpForce);
     }
 
     // Golpes
     if (normalHitKey.isDown) {
-        this.setGolpeFoca(foca, "normal");
+      this.setGolpeFoca(foca, "normal");
     } else if (strongHitKey.isDown) {
-        this.setGolpeFoca(foca, "fuerte");
+      this.setGolpeFoca(foca, "fuerte");
     }
   }
 }

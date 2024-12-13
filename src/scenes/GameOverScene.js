@@ -15,13 +15,15 @@ class GameOverScene extends Phaser.Scene {
       // Texto Game Over
       this.add.text(360, 120, "¡Fin del Juego!", {
         fontSize: "50px",
-        color: "#ffffff",
+        fontFamily: "Freckle Face",
+        color: "#fad461",
       }).setOrigin(0.5);
   
       // Puntuacion
       this.add.text(360, 200, `Puntuación final: ${this.puntuacion}`, {
         fontSize: "30px",
-        color: "#ffffff",
+        fontFamily: "Freckle Face",
+        color: "#dba43d",
       }).setOrigin(0.5);
   
       // Botón para volver al menu principal
@@ -31,9 +33,11 @@ class GameOverScene extends Phaser.Scene {
       });
       botonMenu.setDisplaySize(250, botonMenu.height);
 
-      this.add.text(360, 300, "Volver al\nMenú Principal", {
+      this.add.text(360, 300, "Menú Principal", {
         fontSize: "24px",
-        color: "#ffffff",
+        fontFamily: "Barrio",
+        fontStyle: "Bold",
+        color: "black",
         align: 'center'
       }).setOrigin(0.5);
   
@@ -46,9 +50,12 @@ class GameOverScene extends Phaser.Scene {
 
       this.add.text(360, 380, "Reiniciar", {
         fontSize: "24px",
-        color: "#ffffff",
+        fontFamily: "Barrio",
+        fontStyle: "Bold",
+        color: "black",
         align: 'center'
       }).setOrigin(0.5);
+      this.adjustScale();
     }
   }
   
