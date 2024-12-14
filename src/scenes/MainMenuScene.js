@@ -4,6 +4,10 @@ class MainMenuScene extends Phaser.Scene {
     }
 
     create() {
+        // factores de escala
+        this.widthRatio = this.scale.width / 720;
+        this.heightRatio = this.scale.height / 480;
+
         // Fondo
         this.add.image(360, 240, "fondoGenerico");
         
@@ -16,7 +20,9 @@ class MainMenuScene extends Phaser.Scene {
         this.botonPlay.setScale(1.5);
 
         this.botonPlay.on("pointerdown", () => {
-            this.scene.start("GameScene");
+            this.fadeToBlack(() => {
+                this.scene.start("GameScene");
+            });
         });
 
         // Boton Ajustes
@@ -40,7 +46,9 @@ class MainMenuScene extends Phaser.Scene {
         }).setOrigin(0.5);
 
         this.botonC.on("pointerdown", () => {
-            this.scene.start("CreditsScene");
+            this.fadeToBlack(() => {
+                this.scene.start("CreditsScene");
+            });
         });
 
         // Texto
@@ -51,6 +59,31 @@ class MainMenuScene extends Phaser.Scene {
         }).setOrigin(0.5);
         
         this.adjustScale();
+
+        // RECTÁNGULO NEGRO PARA LOS FUNDIDOS
+        this.fundido = this.add.rectangle(720 * this.widthRatio/2, 480 * this.heightRatio/2, 720 * this.widthRatio, 480 * this.heightRatio, 'black', 1);
+        this.fadeFromBlack();
+    }
+
+    // Fundido a negro
+    fadeToBlack(callback) {
+    this.tweens.add({
+        targets: this.fundido,
+        alpha: 1, // Opaco
+        duration: 200,
+        ease: 'Cubic.easeInOut',
+        onComplete: callback // Ejecutar callback al terminar
+    });
+    }
+    // Desvanecimiento desde negro
+    fadeFromBlack() {
+        this.fundido.setAlpha(1);
+        this.tweens.add({
+            targets: this.fundido,
+            alpha: 0, // Transparente
+            duration: 200,
+            ease: 'Cubic.easeInOut'
+        });
     }
 }
 

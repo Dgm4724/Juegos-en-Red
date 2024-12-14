@@ -72,10 +72,36 @@ class GameScene extends Phaser.Scene {
       align: 'center'
     }).setOrigin(0.5, 0);  // Centrado horizontalmente
 
-    this.adjustScale();
+    // RECTÁNGULO NEGRO PARA LOS FUNDIDOS
+    this.fundido = this.add.rectangle(720 * this.widthRatio/2, 480 * this.heightRatio/2, 720 * this.widthRatio, 480 * this.heightRatio, 'black', 1);
+
+    this.adjustScale(); // este método global está definido en INIT
 
     // escalar las físicas
     this.scalePhysics();
+
+    this.fadeFromBlack();
+  }
+
+  // Fundido a negro
+    fadeToBlack(callback) {
+    this.tweens.add({
+      targets: this.fundido,
+      alpha: 1, // Opaco
+      duration: 200,
+      ease: 'Cubic.easeInOut',
+      onComplete: callback // Ejecutar callback al terminar
+    });
+  }
+  // Desvanecimiento desde negro
+  fadeFromBlack() {
+    this.fundido.setAlpha(1);
+    this.tweens.add({
+      targets: this.fundido,
+      alpha: 0, // Transparente
+      duration: 200,
+      ease: 'Cubic.easeInOut'
+    });
   }
 
   scalePhysics() {
@@ -133,8 +159,10 @@ class GameScene extends Phaser.Scene {
   }
 
   handlePelotaToqueSuelo() {
-    // Cambiar a la escena GameOverScene y pasar la puntuación
-    this.scene.start('GameOverScene', { puntuacion: this.puntuacion });
+    this.fadeToBlack(() => {
+      // Cambiar a la escena GameOverScene y pasar la puntuación
+      this.scene.start('GameOverScene', { puntuacion: this.puntuacion });
+    });
   }
 
   update() {
