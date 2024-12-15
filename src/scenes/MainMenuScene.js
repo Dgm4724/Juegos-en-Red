@@ -82,12 +82,12 @@ class MainMenuScene extends Phaser.Scene {
 
         // Texto animado
         this.jugarTexto = this.add.text(360, 170, "¡Haz clic en el botón verde para empezar a jugar!", {
-            fontFamily: "Barrio",
+            fontFamily: "Freckle Face",
             fontSize: "20px",
             color: "#000000",
         }).setOrigin(0.5);
 
-        // Comienza la animación de rotación y escalado en secuencia
+        // Comienza la animación de escalado en secuencia
         this.startTextAnimation();
 
         // RECTÁNGULO NEGRO PARA LOS FUNDIDOS
@@ -103,7 +103,8 @@ class MainMenuScene extends Phaser.Scene {
         // Rotación a un lado
         this.tweens.add({
             targets: this.jugarTexto,
-            scale: 0.99, // Escala sutil
+            scaleX: 0.97*this.widthRatio, // Escala sutil
+            scaleY: 0.97*this.heightRatio,
             duration: 750,
             ease: 'Sine.easeInOut',
             yoyo: true, // Regresa al tamaño original

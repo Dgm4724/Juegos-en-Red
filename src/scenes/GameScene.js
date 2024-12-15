@@ -78,6 +78,14 @@ class GameScene extends Phaser.Scene {
       color: 'black',
       align: 'center'
     }).setOrigin(0.5, 0); // Centrado horizontalmente
+    
+    // Texto inicial para la cuenta atrás
+    this.countdownText = this.add.text(720 / 2, 480 / 2, '', {
+      fontSize: '75px',
+      fontFamily: 'Freckle Face',
+      color: '#000000', // Color negro
+      align: 'center',
+    }).setOrigin(0.5, 0.5).setScale(0); // Empieza invisible (escala 0)
 
     // Rectángulo negro para los fundidos
     this.fundido = this.add.rectangle(720 / 2, 480 / 2, 720, 480, 'black', 1);
@@ -94,59 +102,53 @@ class GameScene extends Phaser.Scene {
   }
 
   startCountdown() {
-    // Texto inicial para la cuenta atrás
-    const countdownText = this.add.text(this.scale.width / 2, this.scale.height / 2, '', {
-        fontSize: '75px',
-        fontFamily: 'Freckle Face',
-        color: '#000000', // Color negro
-        align: 'center',
-    }).setOrigin(0.5, 0.5).setScale(0); // Empieza invisible (escala 0)
-
     let countdown = 3; // Cuenta atrás desde 3
 
     const showNextNumber = () => {
-        if (countdown > 0) {
-            countdownText.setText(countdown); // Cambiar el texto al número actual
-            countdown -= 1;
+    if (countdown > 0) {
+      this.countdownText.setText(countdown); // Cambiar el texto al número actual
+      countdown -= 1;
 
-            // Animación de entrada
-            this.tweens.add({
-                targets: countdownText,
-                scale: 1, // Escalar a su tamaño normal
-                duration: 300, // Duración de la animación
-                ease: 'Back.easeOut', // Suavizado tipo salto
-                onComplete: () => {
-                    // Después de 700ms, pasar al siguiente número
-                    this.time.delayedCall(700, () => {
-                        countdownText.setScale(0); // Reducir escala a 0 antes del próximo número
-                        showNextNumber(); // Llamar recursivamente al siguiente número
-                    });
-                },
-            });
-        } else {
-            // Mostrar "Go!" cuando el countdown llega a 0
-            countdownText.setText('¡A jugar!');
-            this.tweens.add({
-                targets: countdownText,
-                scale: 1.2, // Escalar ligeramente más grande
-                duration: 300,
-                ease: 'Back.easeOut', // Suavizado tipo "salto"
-                yoyo: true, // Volver a escala normal
-                onComplete: () => {
-                    // Fundido al desaparecer
-                    this.tweens.add({
-                        targets: countdownText,
-                        alpha: 0, // Fundido a transparente
-                        duration: 500,
-                        ease: 'Cubic.easeIn',
-                        onComplete: () => {
-                            countdownText.destroy(); // Eliminar el texto
-                            this.pelota.body.setAllowGravity(true); // Activar la gravedad de la pelota
-                        },
-                    });
-                },
-            });
-        }
+      // Animación de entrada
+      this.tweens.add({
+        targets: this.countdownText,
+        scaleX: this.widthRatio, // Escalar a su tamaño normal
+        scaleY: this.heightRatio,
+        duration: 300, // Duración de la animación
+        ease: 'Back.easeOut', // Suavizado tipo salto
+        onComplete: () => {
+          // Después de 700ms, pasar al siguiente número
+          this.time.delayedCall(700, () => {
+            this.countdownText.setScale(0); // Reducir escala a 0 antes del próximo número
+            showNextNumber(); // Llamar recursivamente al siguiente número
+          });
+        },
+      });
+    } else {
+      // Mostrar "Go!" cuando el countdown llega a 0
+      this.countdownText.setText('¡A jugar!');
+      this.tweens.add({
+        targets: this.countdownText,
+        scaleX: 1.2*this.widthRatio, // Escalar ligeramente más grande
+        scaleY: 1.2*this.heightRatio,
+        duration: 300,
+        ease: 'Back.easeOut', // Suavizado tipo "salto"
+        yoyo: true, // Volver a escala normal
+        onComplete: () => {
+          // Fundido al desaparecer
+          this.tweens.add({
+            targets: this.countdownText,
+            alpha: 0, // Fundido a transparente
+            duration: 500,
+            ease: 'Cubic.easeIn',
+            onComplete: () => {
+              this.countdownText.destroy(); // Eliminar el texto
+              this.pelota.body.setAllowGravity(true); // Activar la gravedad de la pelota
+            },
+          });
+        },
+      });
+    }
     };
 
     showNextNumber(); // Iniciar la cuenta atrás
