@@ -4,15 +4,20 @@ class GameScene extends Phaser.Scene {
     this.golpeFoca1 = null;
     this.golpeFoca2 = null;
     this.puntuacion = 0;
+    this.isPaused = false;
   }
 
   preload() {
+    // Carga los recursos necesarios
   }
 
   create() {
     // factores de escala
     this.widthRatio = this.scale.width / 720;
     this.heightRatio = this.scale.height / 480;
+
+    // Asegúrate de que el juego no está pausado
+    this.isPaused = false;
 
     // Reiniciar puntuación a cero
     this.puntuacion = 0;
@@ -56,6 +61,7 @@ class GameScene extends Phaser.Scene {
     // Controles
     this.cursors = this.input.keyboard.createCursorKeys();
     this.spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+    this.escapeKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
     this.aKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
     this.dKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
     this.wKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
@@ -78,14 +84,6 @@ class GameScene extends Phaser.Scene {
       color: 'black',
       align: 'center'
     }).setOrigin(0.5, 0); // Centrado horizontalmente
-    
-    // Texto inicial para la cuenta atrás
-    this.countdownText = this.add.text(720 / 2, 480 / 2, '', {
-      fontSize: '75px',
-      fontFamily: 'Freckle Face',
-      color: '#000000', // Color negro
-      align: 'center',
-    }).setOrigin(0.5, 0.5).setScale(0); // Empieza invisible (escala 0)
 
     // Rectángulo negro para los fundidos
     this.fundido = this.add.rectangle(720 / 2, 480 / 2, 720, 480, 'black', 1);
@@ -97,58 +95,143 @@ class GameScene extends Phaser.Scene {
 
     this.fadeFromBlack();
 
+    // Crear menú de pausa (invisible por defecto)
+    this.createPauseMenu();
+
     // Iniciar cuenta atrás
     this.startCountdown();
   }
 
+  createPauseMenu() {
+    // Fondo del menú de pausa
+    this.pauseBackground = this.add.rectangle(360, 240, 720, 480, 0x000000, 0.7).setVisible(false); // Fondo oscuro
+    this.pauseBackground.setInteractive();
+
+    // Opciones del menú de pausa
+    this.resumeButton = this.add.text(360, 200, 'Reanudar', {
+      fontFamily: 'Freckle Face',
+      fontSize: '32px',
+      color: '#FFFFFF'
+    }).setOrigin(0.5).setInteractive();
+    this.resumeButton.on('pointerdown', () => {
+      this.resumeGame();
+    });
+
+    this.quitButton = this.add.text(360, 250, 'Salir', {
+      fontFamily: 'Freckle Face',
+      fontSize: '32px',
+      color: '#FFFFFF'
+    }).setOrigin(0.5).setInteractive();
+    this.quitButton.on('pointerdown', () => {
+      this.scene.start("MainMenuScene");
+    });
+
+    // Crear el botón de reiniciar en el menú de pausa
+    this.restartButton = this.add.text(360, 300, 'Reiniciar', {
+      fontFamily: 'Freckle Face',
+      fontSize: '32px',
+      color: '#FFFFFF'
+    }).setOrigin(0.5).setInteractive();
+    this.restartButton.on('pointerdown', () => {
+      this.restartGame(); // Llamar a la función de reinicio
+    });
+
+    // Asegurarse de que el menú esté oculto al principio
+    this.pauseMenuGroup = this.add.group([this.pauseBackground, this.resumeButton, this.quitButton, this.restartButton]);
+    this.pauseMenuGroup.setVisible(false);
+  }
+
+  // Función para pausar el juego
+  pauseGame() {
+    this.physics.world.pause(); // Pausa la física
+    this.time.paused = true; // Pausa el tiempo
+    this.isPaused = true; // Cambiar estado de pausa
+
+    // Mostrar el menú de pausa
+    this.pauseMenuGroup.setVisible(true);
+    this.pauseBackground.setVisible(true);
+  }
+
+  // Función para reanudar el juego
+  resumeGame() {
+    this.physics.world.resume(); // Reanudar las físicas
+    this.time.paused = false; // Reanudar el tiempo
+    this.isPaused = false; // Cambiar el estado de pausa
+  
+    // Ocultar el menú de pausa
+    this.pauseMenuGroup.setVisible(false);
+    this.pauseBackground.setVisible(false);
+  }  
+
+  // Función para reiniciar el juego
+  restartGame() {
+    // Ocultar el menú de pausa y el fondo
+    this.pauseMenuGroup.setVisible(false);
+    this.pauseBackground.setVisible(false);
+  
+    // Reiniciar la escena sin mantener nada del estado anterior
+    this.scene.restart({
+      puntuacion: 0 // Reiniciar puntuación a 0
+    });
+  
+    // Después de reiniciar, reanudar el juego
+    this.resumeGame();
+  }  
+
   startCountdown() {
+    // Texto inicial para la cuenta atrás
+    const countdownText = this.add.text(this.scale.width / 2, this.scale.height / 2, '', {
+        fontSize: '75px',
+        fontFamily: 'Freckle Face',
+        color: '#000000', // Color negro
+        align: 'center',
+    }).setOrigin(0.5, 0.5).setScale(0); // Empieza invisible (escala 0)
+
     let countdown = 3; // Cuenta atrás desde 3
 
     const showNextNumber = () => {
-    if (countdown > 0) {
-      this.countdownText.setText(countdown); // Cambiar el texto al número actual
-      countdown -= 1;
+        if (countdown > 0) {
+            countdownText.setText(countdown); // Cambiar el texto al número actual
+            countdown -= 1;
 
-      // Animación de entrada
-      this.tweens.add({
-        targets: this.countdownText,
-        scaleX: this.widthRatio, // Escalar a su tamaño normal
-        scaleY: this.heightRatio,
-        duration: 300, // Duración de la animación
-        ease: 'Back.easeOut', // Suavizado tipo salto
-        onComplete: () => {
-          // Después de 700ms, pasar al siguiente número
-          this.time.delayedCall(700, () => {
-            this.countdownText.setScale(0); // Reducir escala a 0 antes del próximo número
-            showNextNumber(); // Llamar recursivamente al siguiente número
-          });
-        },
-      });
-    } else {
-      // Mostrar "Go!" cuando el countdown llega a 0
-      this.countdownText.setText('¡A jugar!');
-      this.tweens.add({
-        targets: this.countdownText,
-        scaleX: 1.2*this.widthRatio, // Escalar ligeramente más grande
-        scaleY: 1.2*this.heightRatio,
-        duration: 300,
-        ease: 'Back.easeOut', // Suavizado tipo "salto"
-        yoyo: true, // Volver a escala normal
-        onComplete: () => {
-          // Fundido al desaparecer
-          this.tweens.add({
-            targets: this.countdownText,
-            alpha: 0, // Fundido a transparente
-            duration: 500,
-            ease: 'Cubic.easeIn',
-            onComplete: () => {
-              this.countdownText.destroy(); // Eliminar el texto
-              this.pelota.body.setAllowGravity(true); // Activar la gravedad de la pelota
-            },
-          });
-        },
-      });
-    }
+            // Animación de entrada
+            this.tweens.add({
+                targets: countdownText,
+                scale: 1, // Escalar a su tamaño normal
+                duration: 300, // Duración de la animación
+                ease: 'Back.easeOut', // Suavizado tipo salto
+                onComplete: () => {
+                    // Después de 700ms, pasar al siguiente número
+                    this.time.delayedCall(700, () => {
+                        countdownText.setScale(0); // Reducir escala a 0 antes del próximo número
+                        showNextNumber(); // Llamar recursivamente al siguiente número
+                    });
+                },
+            });
+        } else {
+            // Mostrar "Go!" cuando el countdown llega a 0
+            countdownText.setText('¡A jugar!');
+            this.tweens.add({
+                targets: countdownText,
+                scale: 1.2, // Escalar ligeramente más grande
+                duration: 300,
+                ease: 'Back.easeOut', // Suavizado tipo "salto"
+                yoyo: true, // Volver a escala normal
+                onComplete: () => {
+                    // Fundido al desaparecer
+                    this.tweens.add({
+                        targets: countdownText,
+                        alpha: 0, // Fundido a transparente
+                        duration: 500,
+                        ease: 'Cubic.easeIn',
+                        onComplete: () => {
+                            countdownText.destroy(); // Eliminar el texto
+                            this.pelota.body.setAllowGravity(true); // Activar la gravedad de la pelota
+                        },
+                    });
+                },
+            });
+        }
     };
 
     showNextNumber(); // Iniciar la cuenta atrás
@@ -236,16 +319,26 @@ class GameScene extends Phaser.Scene {
   }
 
   update() {
-    const speed = 200;
-    const jumpForce = 330;
+    // Pausar o reanudar el juego si se presiona la tecla ESC
+    if (Phaser.Input.Keyboard.JustDown(this.escapeKey)) {
+      if (this.isPaused) {
+        this.resumeGame();
+      } else {
+        this.pauseGame();
+      }
+    }
+
+    if (this.isPaused) return; // Si el juego está pausado, no procesamos más.
 
     // Movimiento y colisión foca 1
+    const speed = 200;
+    const jumpForce = 330;
     this.moveFoca(this.foca1, this.aKey, this.dKey, this.wKey, this.eKey, this.rKey, speed, jumpForce);
 
     // Movimiento y colisión foca 2
     this.moveFoca(this.foca2, this.cursors.left, this.cursors.right, this.cursors.up, this.oKey, this.pKey, speed, jumpForce);
   }
-
+  
   moveFoca(foca, leftKey, rightKey, jumpKey, normalHitKey, strongHitKey, speed, jumpForce) { // Movimiento horizontal
     const scaledSpeed = speed * this.widthRatio; // Escalar velocidad horizontal
     const scaledJumpForce = jumpForce * this.heightRatio; // Escalar fuerza de salto
@@ -282,4 +375,5 @@ class GameScene extends Phaser.Scene {
 }
 
 export default GameScene;
+
 
