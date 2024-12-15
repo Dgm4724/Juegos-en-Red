@@ -14,15 +14,22 @@ class GameScene extends Phaser.Scene {
     // factores de escala
     this.widthRatio = this.scale.width / 720;
     this.heightRatio = this.scale.height / 480;
-    
+
     // Reiniciar puntuación a cero
     this.puntuacion = 0;
-    
+
     // Fondo
     this.add.image(360, 240, "fondo1");
 
     // Suelo
-    const suelo = this.add.rectangle(360 * this.widthRatio, 470 * this.heightRatio, 720 * this.widthRatio, 10 * this.heightRatio, 0x000000, 0);
+    const suelo = this.add.rectangle(
+      360 * this.widthRatio,
+      470 * this.heightRatio,
+      720 * this.widthRatio,
+      10 * this.heightRatio,
+      0x000000,
+      0
+    );
     this.physics.add.existing(suelo, true);
     this.suelo = suelo;
 
@@ -35,9 +42,10 @@ class GameScene extends Phaser.Scene {
     this.foca2.setScale(0.75);
     this.foca2.setFlipX(true);
 
-    // Pelota
+    // Pelota (inicialmente estática)
     this.pelota = this.physics.add.image(360, 150, "pelota");
     this.pelota.setBounce(0.75).setOrigin(0.5, 0.5).setCollideWorldBounds(true);
+    this.pelota.body.setAllowGravity(false); // Desactivar gravedad inicialmente
 
     // Colisiones
     this.physics.add.collider(this.foca1, suelo);
@@ -60,7 +68,7 @@ class GameScene extends Phaser.Scene {
     // Palmera
     this.add.image(100, 300, "palmera");
 
-    // Cartel de puntuacion
+    // Cartel de puntuación
     const cartelPuntuacion = this.add.image(360, 60, "cartelPuntuacion");
     cartelPuntuacion.setDisplaySize(200, 75);
 
@@ -70,21 +78,82 @@ class GameScene extends Phaser.Scene {
       fontFamily: "Freckle Face",
       color: 'black',
       align: 'center'
-    }).setOrigin(0.5, 0);  // Centrado horizontalmente
+    }).setOrigin(0.5, 0); // Centrado horizontalmente
 
-    // RECTÁNGULO NEGRO PARA LOS FUNDIDOS
-    this.fundido = this.add.rectangle(720/2, 480/2, 720, 480, 'black', 1);
+    // Rectángulo negro para los fundidos
+    this.fundido = this.add.rectangle(720 / 2, 480 / 2, 720, 480, 'black', 1);
 
-    this.adjustScale(); // este método global está definido en INIT
+    this.adjustScale(); // Este método global está definido en INIT
 
-    // escalar las físicas
+    // Escalar las físicas
     this.scalePhysics();
 
     this.fadeFromBlack();
+
+    // Iniciar cuenta atrás
+    this.startCountdown();
   }
 
-  // Fundido a negro
-    fadeToBlack(callback) {
+  startCountdown() {
+    // Texto inicial para la cuenta atrás
+    const countdownText = this.add.text(this.scale.width / 2, this.scale.height / 2, '', {
+        fontSize: '100px',
+        fontFamily: 'Arial',
+        color: '#000000', // Color negro
+        align: 'center',
+    }).setOrigin(0.5, 0.5).setScale(0); // Empieza invisible (escala 0)
+
+    let countdown = 3; // Cuenta atrás desde 3
+
+    const showNextNumber = () => {
+        if (countdown > 0) {
+            countdownText.setText(countdown); // Cambiar el texto al número actual
+            countdown -= 1;
+
+            // Animación de entrada
+            this.tweens.add({
+                targets: countdownText,
+                scale: 1, // Escalar a su tamaño normal
+                duration: 300, // Duración de la animación
+                ease: 'Back.easeOut', // Suavizado tipo salto
+                onComplete: () => {
+                    // Después de 700ms, pasar al siguiente número
+                    this.time.delayedCall(700, () => {
+                        countdownText.setScale(0); // Reducir escala a 0 antes del próximo número
+                        showNextNumber(); // Llamar recursivamente al siguiente número
+                    });
+                },
+            });
+        } else {
+            // Mostrar "Go!" cuando el countdown llega a 0
+            countdownText.setText('¡A jugar!');
+            this.tweens.add({
+                targets: countdownText,
+                scale: 1.2, // Escalar ligeramente más grande
+                duration: 300,
+                ease: 'Back.easeOut', // Suavizado tipo "salto"
+                yoyo: true, // Volver a escala normal
+                onComplete: () => {
+                    // Fundido al desaparecer
+                    this.tweens.add({
+                        targets: countdownText,
+                        alpha: 0, // Fundido a transparente
+                        duration: 500,
+                        ease: 'Cubic.easeIn',
+                        onComplete: () => {
+                            countdownText.destroy(); // Eliminar el texto
+                            this.pelota.body.setAllowGravity(true); // Activar la gravedad de la pelota
+                        },
+                    });
+                },
+            });
+        }
+    };
+
+    showNextNumber(); // Iniciar la cuenta atrás
+  }
+
+  fadeToBlack(callback) {
     this.tweens.add({
       targets: this.fundido,
       alpha: 1, // Opaco
@@ -93,7 +162,7 @@ class GameScene extends Phaser.Scene {
       onComplete: callback // Ejecutar callback al terminar
     });
   }
-  // Desvanecimiento desde negro
+
   fadeFromBlack() {
     this.fundido.setAlpha(1);
     this.tweens.add({
@@ -141,7 +210,7 @@ class GameScene extends Phaser.Scene {
     const direccionX = foca.flipX ? -1 : 1;
 
     // Aplicar la fuerza al golpe (por tipo) (ESCALADO SEGÚN ASPECT RATIO)
-    const fuerzaX = direccionX * (tipoGolpe === "fuerte" ? 1000 : 300) * this.widthRatio;// Dependiendo de si es fuerte o normal
+    const fuerzaX = direccionX * (tipoGolpe === "fuerte" ? 1000 : 300) * this.widthRatio; // Dependiendo de si es fuerte o normal
     const fuerzaY = (tipoGolpe === "fuerte" ? -200 : -350) * this.heightRatio;
 
     // Establecer la velocidad de la pelota
