@@ -22,6 +22,9 @@ class Bootstrap extends Phaser.Scene {
         this.load.image("menuButton", "./assets/images/menuButton.png");
         this.load.image("restartButton", "./assets/images/restartButton.png");
         this.load.image("backButton", "./assets/images/volver_button.png");
+        this.load.image("miniatura1", "./assets/images/miniatura-nivel1.png");
+        this.load.image("miniatura2", "./assets/images/miniatura-nivel2.png");
+        this.load.image("miniatura3", "./assets/images/miniatura-nivel3.png");
     }
 }
 

@@ -4,6 +4,10 @@ class CreditsScene extends Phaser.Scene {
   }
 
   create() {
+    // factores de escala
+    this.widthRatio = this.scale.width / 720;
+    this.heightRatio = this.scale.height / 480;
+
     // Fondo
     const fondo = this.add.image(360, 240, "fondoGenericoAzul");
 
@@ -22,17 +26,28 @@ class CreditsScene extends Phaser.Scene {
     }).setOrigin(0.5);
 
     // Botón para volver al menu principal
-    const botonMenu = this.add.image(580, 430, "backButton").setInteractive();
-    botonMenu.on("pointerdown", () => {
+    this.botonMenu = this.add.image(580, 430, "backButton").setInteractive();
+
+    this.botonMenu.on('pointerover', () => {
+      this.botonMenu.setScale(1.09*this.widthRatio, 1.09*this.heightRatio);
+      this.botonMenu.setTint(0xd9bfff);
+    });
+    this.botonMenu.on('pointerout', () => {
+      this.botonMenu.setScale(this.widthRatio, this.heightRatio); // Restaurar el tamaño original
+      this.botonMenu.clearTint(); // Eliminar el tinte
+    });
+    this.botonMenu.on("pointerdown", () => {
       this.fadeToBlack(() => {
         this.scene.start("MainMenuScene");
       });
     });
 
     // RECTÁNGULO NEGRO PARA LOS FUNDIDOS
-    this.fundido = this.add.rectangle(720 * this.widthRatio/2, 480 * this.heightRatio/2, 720 * this.widthRatio, 480 * this.heightRatio, 'black', 1);
-    this.fadeFromBlack();
+    this.fundido = this.add.rectangle(720/2, 480/2, 720, 480, 'black', 1);
+
     this.adjustScale();
+    
+    this.fadeFromBlack();
   }
 
   // Fundido a negro

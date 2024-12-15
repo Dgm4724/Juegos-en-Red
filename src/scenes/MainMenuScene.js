@@ -19,32 +19,61 @@ class MainMenuScene extends Phaser.Scene {
         this.botonPlay = this.add.image(360, 250, "botonPlay").setInteractive();
         this.botonPlay.setScale(1.5);
 
+        this.botonPlay.on('pointerover', () => {
+            this.botonPlay.setScale(1.07*1.5*this.widthRatio, 1.07*1.5*this.heightRatio);
+            this.botonPlay.setTint(0xd0ff8d);
+        });
+        this.botonPlay.on('pointerout', () => {
+            this.botonPlay.setScale(1.5*this.widthRatio, 1.5*this.heightRatio); // Restaurar el tamaño original
+            this.botonPlay.clearTint(); // Eliminar el tinte
+        });
         this.botonPlay.on("pointerdown", () => {
             this.fadeToBlack(() => {
-                this.scene.start("GameScene");
+                this.scene.start("LevelSelectorScene");
             });
         });
 
         // Boton Ajustes
         this.botonA = this.add.image(360, 340, "boton").setInteractive();
         this.botonA.setScale(1, 0.8);
-        this.add.text(360, 340, "Ajustes", {
+        this.Atxt = this.add.text(360, 340, "Ajustes", {
             fontFamily: "Barrio",
             fontSize: "23px",
             fontStyle: "Bold",
             color: "#000000",
         }).setOrigin(0.5);
+
+        this.botonA.on('pointerover', () => {
+            this.botonA.setScale(1.05*this.widthRatio, 1.05*0.8*this.heightRatio);
+            this.botonA.setTint(0xffdca1);
+            this.Atxt.setFontSize(26);
+        });
+        this.botonA.on('pointerout', () => {
+            this.botonA.setScale(this.widthRatio, 0.8*this.heightRatio); // Restaurar el tamaño original
+            this.botonA.clearTint(); // Eliminar el tinte
+            this.Atxt.setFontSize(23);
+        });
 
         // Boton Créditos
         this.botonC = this.add.image(360, 390, "boton").setInteractive();
         this.botonC.setScale(1, 0.8);
-        this.add.text(360, 390, "Créditos", {
+        this.Ctxt = this.add.text(360, 390, "Créditos", {
             fontFamily: "Barrio",
             fontSize: "23px",
             fontStyle: "Bold",
             color: "#000000",
         }).setOrigin(0.5);
 
+        this.botonC.on('pointerover', () => {
+            this.botonC.setScale(1.05*this.widthRatio, 1.05*0.8*this.heightRatio);
+            this.botonC.setTint(0xffdca1);
+            this.Ctxt.setFontSize(26);
+        });
+        this.botonC.on('pointerout', () => {
+            this.botonC.setScale(this.widthRatio, 0.8*this.heightRatio); // Restaurar el tamaño original
+            this.botonC.clearTint(); // Eliminar el tinte
+            this.Ctxt.setFontSize(23);
+        });
         this.botonC.on("pointerdown", () => {
             this.fadeToBlack(() => {
                 this.scene.start("CreditsScene");
@@ -57,11 +86,12 @@ class MainMenuScene extends Phaser.Scene {
             fontSize: "20px",
             color: "#000000",
         }).setOrigin(0.5);
-        
-        this.adjustScale();
 
         // RECTÁNGULO NEGRO PARA LOS FUNDIDOS
-        this.fundido = this.add.rectangle(720 * this.widthRatio/2, 480 * this.heightRatio/2, 720 * this.widthRatio, 480 * this.heightRatio, 'black', 1);
+        this.fundido = this.add.rectangle(720/2, 480/2, 720, 480, 'black', 1)
+        
+        this.adjustScale();
+    
         this.fadeFromBlack();
     }
 

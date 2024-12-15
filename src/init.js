@@ -3,6 +3,7 @@ import GameScene from "./scenes/GameScene.js";
 import MainMenuScene from "./scenes/MainMenuScene.js";
 import GameOverScene from "./scenes/GameOverScene.js";
 import CreditsScene from "./scenes/CreditsScene.js";
+import LevelSelectorScene from "./scenes/LevelSelectorScene.js";
 
 const ASPECT_RATIO = 3 / 2; // Proporción aspect ratio de imagen original: 720x480 px
 
@@ -55,6 +56,7 @@ const config = {
     scene: [
         Bootstrap,
         MainMenuScene,
+        LevelSelectorScene,
         CreditsScene,
         GameOverScene,
         GameScene

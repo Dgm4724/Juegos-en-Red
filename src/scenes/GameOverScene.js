@@ -9,6 +9,10 @@ class GameOverScene extends Phaser.Scene {
     }
   
     create() {
+      // factores de escala
+      this.widthRatio = this.scale.width / 720;
+      this.heightRatio = this.scale.height / 480;
+      
       // Fondo
       this.add.image(360, 240, "fondoGenerico");
   
@@ -27,34 +31,56 @@ class GameOverScene extends Phaser.Scene {
       }).setOrigin(0.5);
   
       // Botón para volver al menu principal
-      const botonMenu = this.add.image(360, 300, "boton").setInteractive();
-      botonMenu.on("pointerdown", () => {
+      this.botonMenu = this.add.image(360, 300, "boton").setInteractive();
+      this.botonMenu.setDisplaySize(250, 58);
+
+      this.BMtxt = this.add.text(360, 300, "Menú Principal", {
+        fontSize: "24px",
+        fontFamily: "Barrio",
+        fontStyle: "Bold",
+        color: "black",
+        align: 'center'
+      }).setOrigin(0.5);
+
+      this.botonMenu.on('pointerover', () => {
+        this.botonMenu.setDisplaySize(260*this.widthRatio, 68*this.heightRatio);
+        this.botonMenu.setTint(0xfff5a1);
+        this.BMtxt.setFontSize(27);
+      });
+      this.botonMenu.on('pointerout', () => {
+        this.botonMenu.setDisplaySize(250*this.widthRatio, 58*this.heightRatio); // Restaurar el tamaño original
+        this.botonMenu.clearTint(); // Eliminar el tinte
+        this.BMtxt.setFontSize(24);
+      });
+      this.botonMenu.on("pointerdown", () => {
         this.scene.start("MainMenuScene");
       });
-      botonMenu.setDisplaySize(250, botonMenu.height);
-
-      this.add.text(360, 300, "Menú Principal", {
-        fontSize: "24px",
-        fontFamily: "Barrio",
-        fontStyle: "Bold",
-        color: "black",
-        align: 'center'
-      }).setOrigin(0.5);
   
       // Botón para reiniciar la partida
-      const botonReinicio = this.add.image(360, 380, "boton").setInteractive();
-      botonReinicio.on("pointerdown", () => {
-        this.scene.start("GameScene");
-      });
-      botonReinicio.setDisplaySize(250, botonReinicio.height);
+      this.botonReinicio = this.add.image(360, 380, "boton").setInteractive();
+      this.botonReinicio.setDisplaySize(250, 58);
 
-      this.add.text(360, 380, "Reiniciar", {
+      this.BRtxt = this.add.text(360, 380, "Reiniciar", {
         fontSize: "24px",
         fontFamily: "Barrio",
         fontStyle: "Bold",
         color: "black",
         align: 'center'
       }).setOrigin(0.5);
+
+      this.botonReinicio.on('pointerover', () => {
+        this.botonReinicio.setDisplaySize(260*this.widthRatio, 68*this.heightRatio);
+        this.botonReinicio.setTint(0xfff5a1);
+        this.BRtxt.setFontSize(27);
+      });
+      this.botonReinicio.on('pointerout', () => {
+        this.botonReinicio.setDisplaySize(250*this.widthRatio, 58*this.heightRatio); // Restaurar el tamaño original
+        this.botonReinicio.clearTint(); // Eliminar el tinte
+        this.BRtxt.setFontSize(24);
+      });
+      this.botonReinicio.on("pointerdown", () => {
+        this.scene.start("GameScene");
+      });
       
       this.adjustScale();
     }

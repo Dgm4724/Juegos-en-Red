@@ -73,7 +73,7 @@ class GameScene extends Phaser.Scene {
     }).setOrigin(0.5, 0);  // Centrado horizontalmente
 
     // RECTÁNGULO NEGRO PARA LOS FUNDIDOS
-    this.fundido = this.add.rectangle(720 * this.widthRatio/2, 480 * this.heightRatio/2, 720 * this.widthRatio, 480 * this.heightRatio, 'black', 1);
+    this.fundido = this.add.rectangle(720/2, 480/2, 720, 480, 'black', 1);
 
     this.adjustScale(); // este método global está definido en INIT
 
