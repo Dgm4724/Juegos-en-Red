@@ -20,12 +20,75 @@ class LevelSelectorScene extends Phaser.Scene {
 
         this.MIN1 = this.add.image(720/5, 480/2.5, "miniatura1").setInteractive();
         this.MIN1.setScale(0.25);
+        this.MIN1.setTint(0x7b7b7b);
+        this.MIN1.on('pointerover', () => {
+            if(this.nextLvl != 0 || this.nextLvl == undefined){
+                this.MIN1.setScale(1.05*0.25*this.widthRatio, 1.05*0.25*this.heightRatio);
+                this.MIN1.setTint(0xa8a8a8);
+            }
+        });
+        this.MIN1.on('pointerout', () => {
+            if(this.nextLvl != 0 || this.nextLvl == undefined){
+                this.MIN1.setScale(0.25*this.widthRatio, 0.25*this.heightRatio); // Restaurar el tamaño original
+                this.MIN1.setTint(0x7b7b7b);
+            }
+        });
+        this.MIN1.on("pointerdown", () => {
+            this.MIN1.clearTint();
+            this.MIN1.setScale(1.1*0.25*this.widthRatio, 1.1*0.25*this.heightRatio);
+            this.nextLvl = 0;
+
+            this.MIN2.emit('pointerout');
+            this.MIN3.emit('pointerout');
+        });
 
         this.MIN2 = this.add.image(720/2, 480/2.5, "miniatura2").setInteractive();
         this.MIN2.setScale(0.25);
+        this.MIN2.setTint(0x7b7b7b);
+        this.MIN2.on('pointerover', () => {
+            if(this.nextLvl != 1 || this.nextLvl == undefined){
+                this.MIN2.setScale(1.05*0.25*this.widthRatio, 1.05*0.25*this.heightRatio);
+                this.MIN2.setTint(0xa8a8a8);
+            }
+        });
+        this.MIN2.on('pointerout', () => {
+            if(this.nextLvl != 1 || this.nextLvl == undefined){
+                this.MIN2.setScale(0.25*this.widthRatio, 0.25*this.heightRatio); // Restaurar el tamaño original
+                this.MIN2.setTint(0x7b7b7b);
+            }
+        });
+        this.MIN2.on("pointerdown", () => {
+            this.MIN2.clearTint();
+            this.MIN2.setScale(1.1*0.25*this.widthRatio, 1.1*0.25*this.heightRatio);
+            this.nextLvl = 1;
+
+            this.MIN1.emit('pointerout');
+            this.MIN3.emit('pointerout');
+        });
 
         this.MIN3 = this.add.image(720/5*4, 480/2.5, "miniatura3").setInteractive();
         this.MIN3.setScale(0.25);
+        this.MIN3.setTint(0x7b7b7b);
+        this.MIN3.on('pointerover', () => {
+            if(this.nextLvl != 2 || this.nextLvl == undefined){
+                this.MIN3.setScale(1.05*0.25*this.widthRatio, 1.05*0.25*this.heightRatio);
+                this.MIN3.setTint(0xa8a8a8);
+            }
+        });
+        this.MIN3.on('pointerout', () => {
+            if(this.nextLvl != 2 || this.nextLvl == undefined){
+                this.MIN3.setScale(0.25*this.widthRatio, 0.25*this.heightRatio); // Restaurar el tamaño original
+                this.MIN3.setTint(0x7b7b7b);
+            }
+        });
+        this.MIN3.on("pointerdown", () => {
+            this.MIN3.clearTint();
+            this.MIN3.setScale(1.1*0.25*this.widthRatio, 1.1*0.25*this.heightRatio);
+            this.nextLvl = 2;
+            
+            this.MIN2.emit('pointerout');
+            this.MIN1.emit('pointerout');
+        });
 
         // SELECCIONA EL PERSONAJE
         this.add.text(180, 330, "SELECCIONA EL PERSONAJE :", {
@@ -34,7 +97,7 @@ class LevelSelectorScene extends Phaser.Scene {
             color: "#dba43d",
         }).setOrigin(0.5);
 
-        // Boton Crear partida
+        // Botón Crear partida
         this.botonCP = this.add.image(500, 390, "boton").setInteractive();
         this.botonCP.setScale(1, 0.8);
         this.CPtxt = this.add.text(500, 390, "Crear partida", {
@@ -71,6 +134,7 @@ class LevelSelectorScene extends Phaser.Scene {
         this.botonMenu.setTint(0xffe47b);
         });
         this.botonMenu.on("pointerdown", () => {
+            this.nextLvl = undefined;
             this.scene.start("MainMenuScene");
         });
         
