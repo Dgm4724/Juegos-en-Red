@@ -12,6 +12,8 @@ class LevelSelectorScene extends Phaser.Scene {
         this.add.image(360, 240, "fondoGenerico");
 
         // SELECCIONA EL NIVEL
+        this.nextLvl = undefined;
+
         this.add.text(350, 60, "SELECCIONA EL NIVEL :", {
             fontSize: "50px",
             fontFamily: "Barrio",
@@ -40,6 +42,9 @@ class LevelSelectorScene extends Phaser.Scene {
 
             this.MIN2.emit('pointerout');
             this.MIN3.emit('pointerout');
+            if(this.selectedChar != undefined){
+                this.botonCP.emit('pointerout');
+            }
         });
 
         this.MIN2 = this.add.image(720/2, 480/2.5, "miniatura2").setInteractive();
@@ -64,6 +69,9 @@ class LevelSelectorScene extends Phaser.Scene {
 
             this.MIN1.emit('pointerout');
             this.MIN3.emit('pointerout');
+            if(this.selectedChar != undefined){
+                this.botonCP.emit('pointerout');
+            }
         });
 
         this.MIN3 = this.add.image(720/5*4, 480/2.5, "miniatura3").setInteractive();
@@ -88,37 +96,99 @@ class LevelSelectorScene extends Phaser.Scene {
             
             this.MIN2.emit('pointerout');
             this.MIN1.emit('pointerout');
+            if(this.selectedChar != undefined){
+                this.botonCP.emit('pointerout');
+            }
         });
 
         // SELECCIONA EL PERSONAJE
+        this.selectedChar = undefined;
+
         this.add.text(180, 330, "SELECCIONA EL PERSONAJE :", {
             fontSize: "20px",
             fontFamily: "Barrio",
             color: "#dba43d",
         }).setOrigin(0.5);
 
+        this.focaRosa = this.add.image(130, 390, "focaRosa").setInteractive();
+        this.focaRosa.setTint(0x7b7b7b);
+        this.focaRosa.on('pointerover', () => {
+            if(this.selectedChar != 0 || this.selectedChar == undefined){
+                this.focaRosa.setScale(1.05*this.widthRatio, 1.05*this.heightRatio);
+                this.focaRosa.setTint(0xa8a8a8);
+            }
+        });
+        this.focaRosa.on('pointerout', () => {
+            if(this.selectedChar != 0 || this.selectedChar == undefined){
+                this.focaRosa.setScale(this.widthRatio, this.heightRatio); // Restaurar el tamaño original
+                this.focaRosa.setTint(0x7b7b7b);
+            }
+        });
+        this.focaRosa.on("pointerdown", () => {
+            this.focaRosa.clearTint();
+            this.focaRosa.setScale(1.1*this.widthRatio, 1.1*this.heightRatio);
+            this.selectedChar = 0;
+            
+            this.focaAzul.emit('pointerout');
+            if(this.nextLvl != undefined){
+                this.botonCP.emit('pointerout');
+            }
+        });
+
+        this.focaAzul = this.add.image(230, 390, "focaAzul").setInteractive();
+        this.focaAzul.setTint(0x7b7b7b);
+        this.focaAzul.on('pointerover', () => {
+            if(this.selectedChar != 1 || this.selectedChar == undefined){
+                this.focaAzul.setScale(1.05*this.widthRatio, 1.05*this.heightRatio);
+                this.focaAzul.setTint(0xa8a8a8);
+            }
+        });
+        this.focaAzul.on('pointerout', () => {
+            if(this.selectedChar != 1 || this.selectedChar == undefined){
+                this.focaAzul.setScale(this.widthRatio, this.heightRatio); // Restaurar el tamaño original
+                this.focaAzul.setTint(0x7b7b7b);
+            }
+        });
+        this.focaAzul.on("pointerdown", () => {
+            this.focaAzul.clearTint();
+            this.focaAzul.setScale(1.1*this.widthRatio, 1.1*this.heightRatio);
+            this.selectedChar = 1;
+            
+            this.focaRosa.emit('pointerout');
+            if(this.nextLvl != undefined){
+                this.botonCP.emit('pointerout');
+            }
+        });
+
         // Botón Crear partida
         this.botonCP = this.add.image(500, 390, "boton").setInteractive();
         this.botonCP.setScale(1, 0.8);
+        this.botonCP.setTint(0x7b7b7b);
         this.CPtxt = this.add.text(500, 390, "Crear partida", {
             fontFamily: "Barrio",
             fontSize: "23px",
             fontStyle: "Bold",
             color: "#000000",
         }).setOrigin(0.5);
-
+        
         this.botonCP.on('pointerover', () => {
-            this.botonCP.setScale(1.05*this.widthRatio, 1.05*0.8*this.heightRatio);
-            this.botonCP.setTint(0xffdca1);
-            this.CPtxt.setFontSize(26);
+            if(this.nextLvl != undefined && this.selectedChar != undefined){
+                this.botonCP.setScale(1.05*this.widthRatio, 1.05*0.8*this.heightRatio);
+                this.botonCP.setTint(0xffdca1);
+                this.CPtxt.setFontSize(26);
+            }
         });
         this.botonCP.on('pointerout', () => {
-            this.botonCP.setScale(this.widthRatio, 0.8*this.heightRatio); // Restaurar el tamaño original
-            this.botonCP.clearTint(); // Eliminar el tinte
-            this.CPtxt.setFontSize(23);
+            if(this.nextLvl != undefined && this.selectedChar != undefined){
+                this.botonCP.setScale(this.widthRatio, 0.8*this.heightRatio); // Restaurar el tamaño original
+                this.botonCP.clearTint(); // Eliminar el tinte
+                this.CPtxt.setFontSize(23);
+            }
         });
         this.botonCP.on("pointerdown", () => {
-            this.scene.start("GameScene");
+            if(this.nextLvl != undefined && this.selectedChar != undefined){
+                this.scene.start("GameScene");
+            }
         });
 
         // Botón para volver al menu principal
