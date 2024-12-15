@@ -7,7 +7,6 @@ class GameScene extends Phaser.Scene {
   }
 
   preload() {
-    // Carga los recursos necesarios
   }
 
   create() {
@@ -18,7 +17,7 @@ class GameScene extends Phaser.Scene {
     // Reiniciar puntuación a cero
     this.puntuacion = 0;
 
-    // Fondo
+    // Fondo del nivel seleccionado
     this.add.image(360, 240, "fondo1");
 
     // Suelo
@@ -97,8 +96,8 @@ class GameScene extends Phaser.Scene {
   startCountdown() {
     // Texto inicial para la cuenta atrás
     const countdownText = this.add.text(this.scale.width / 2, this.scale.height / 2, '', {
-        fontSize: '100px',
-        fontFamily: 'Arial',
+        fontSize: '75px',
+        fontFamily: 'Freckle Face',
         color: '#000000', // Color negro
         align: 'center',
     }).setOrigin(0.5, 0.5).setScale(0); // Empieza invisible (escala 0)
@@ -235,7 +234,7 @@ class GameScene extends Phaser.Scene {
   }
 
   update() {
-    const speed = 160;
+    const speed = 200;
     const jumpForce = 330;
 
     // Movimiento y colisión foca 1
@@ -281,5 +280,4 @@ class GameScene extends Phaser.Scene {
 }
 
 export default GameScene;
-
 
