@@ -4,6 +4,7 @@ import MainMenuScene from "./scenes/MainMenuScene.js";
 import GameOverScene from "./scenes/GameOverScene.js";
 import CreditsScene from "./scenes/CreditsScene.js";
 import LevelSelectorScene from "./scenes/LevelSelectorScene.js";
+import GameScene2 from "./scenes/GameScene2.js";
 
 const ASPECT_RATIO = 3 / 2; // Proporción aspect ratio de imagen original: 720x480 px
 
@@ -48,6 +49,7 @@ const config = {
     physics: {
         default: "arcade",
         arcade: {
+            debug: true,
             gravity: {
                 y: 400
             }
@@ -59,7 +61,8 @@ const config = {
         LevelSelectorScene,
         CreditsScene,
         GameOverScene,
-        GameScene
+        GameScene,
+        GameScene2
     ],
 }
 

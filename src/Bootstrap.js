@@ -8,6 +8,8 @@ class Bootstrap extends Phaser.Scene {
         })
 
         this.load.image("fondo1", "./assets/images/fondo1.png");
+        this.load.image("fondoGlaciar", "./assets/images/glaciar.png");
+        this.load.image("bloqueHielo", "./assets/images/bloque-hielo.png");
         this.load.image("fondoGenerico", "./assets/images/fondoGenerico.png");        
         this.load.image("fondoGenericoAzul", "./assets/images/fondoGEN_azul.png");
         this.load.image("foca1", "./assets/images/foca1.png");

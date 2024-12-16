@@ -187,7 +187,17 @@ class LevelSelectorScene extends Phaser.Scene {
         });
         this.botonCP.on("pointerdown", () => {
             if(this.nextLvl != undefined && this.selectedChar != undefined){
-                this.scene.start("GameScene");
+                switch (this.nextLvl){
+                    case 0 :
+                        this.scene.start("GameScene");
+                        break;
+                    case 1 :
+                        this.scene.start("GameScene2");
+                        break;
+                    case 2 :
+                        break;
+
+                }
             }
         });
 

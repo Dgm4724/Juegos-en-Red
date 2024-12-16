@@ -60,7 +60,7 @@ class GameOverScene extends Phaser.Scene {
       this.botonReinicio = this.add.image(360, 380, "boton").setInteractive();
       this.botonReinicio.setDisplaySize(250, 58);
 
-      this.BRtxt = this.add.text(360, 380, "Reiniciar", {
+      this.BRtxt = this.add.text(360, 380, "Reintentar", {
         fontSize: "24px",
         fontFamily: "Barrio",
         fontStyle: "Bold",
