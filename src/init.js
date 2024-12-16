@@ -1,4 +1,4 @@
-import Bootstrap from "./bootstrap.js";
+import Bootstrap from "./Bootstrap.js";
 import GameScene from "./scenes/GameScene.js";
 import MainMenuScene from "./scenes/MainMenuScene.js";
 import GameOverScene from "./scenes/GameOverScene.js";
