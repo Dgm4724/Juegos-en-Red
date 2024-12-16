@@ -4,6 +4,7 @@ class GameScene2 extends Phaser.Scene {
     this.golpeFoca1 = null;
     this.golpeFoca2 = null;
     this.puntuacion = 0;
+    this.isPaused = false;
   }
 
   preload() {
@@ -16,6 +17,9 @@ class GameScene2 extends Phaser.Scene {
 
     // Reiniciar puntuación a cero
     this.puntuacion = 0;
+
+    // juego no pausado
+    this.isPaused = false;
 
     // Fondo del nivel seleccionado
     this.add.image(360, 240, "fondoGlaciar");
@@ -34,16 +38,7 @@ class GameScene2 extends Phaser.Scene {
     
     // bloques de hielo
     this.hielo1 = this.physics.add.staticSprite(720/4, 330, "bloqueHielo");
-    this.hielo1.body.setSize(this.hielo1.width*this.widthRatio, this.hielo1.height*this.heightRatio);
-    this.hielo1.body.setOffset((this.hielo1.width - this.hielo1.body.width) / 2, (this.hielo1.height - this.hielo1.body.height) / 2);
-    this.hielo1.body.x *= this.widthRatio;
-    this.hielo1.body.y *= this.heightRatio;
-
     this.hielo2 = this.physics.add.staticSprite(720/4*3, 330, "bloqueHielo");
-    this.hielo2.body.setSize(this.hielo2.width*this.widthRatio, this.hielo2.height*this.heightRatio);
-    this.hielo1.body.setOffset((this.hielo2.width - this.hielo2.body.width) / 2, (this.hielo2.height - this.hielo2.body.height) / 2);
-    this.hielo2.body.x *= this.widthRatio;
-    this.hielo2.body.y *= this.heightRatio;
 
     // Crear focas
     this.foca1 = this.createFoca(250, 380, "foca1");
@@ -85,6 +80,7 @@ class GameScene2 extends Phaser.Scene {
     // Controles
     this.cursors = this.input.keyboard.createCursorKeys();
     this.spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+    this.escapeKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
     this.aKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
     this.dKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
     this.wKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
@@ -116,11 +112,15 @@ class GameScene2 extends Phaser.Scene {
     // Rectángulo negro para los fundidos
     this.fundido = this.add.rectangle(720 / 2, 480 / 2, 720, 480, 'black', 1);
 
+    // Crear menú de pausa (invisible por defecto)
+    this.pauseMenu = this.createPauseMenu();
+
     this.adjustScale(); // Este método global está definido en INIT
 
     // Escalar las físicas
     this.scalePhysics();
 
+    // fundido desde negro
     this.fadeFromBlack();
 
     // Iniciar cuenta atrás
@@ -178,6 +178,80 @@ class GameScene2 extends Phaser.Scene {
     };
 
     showNextNumber(); // Iniciar la cuenta atrás
+  }
+
+  createPauseMenu() {
+    // Fondo del menú de pausa
+    this.pauseBackground = this.add.rectangle(360, 240, 720, 480, 0x000000, 0.7).setVisible(false); // Fondo oscuro
+    this.pauseBackground.setInteractive();
+
+    // Opciones del menú de pausa
+    this.resumeButton = this.add.text(360, 200, 'Reanudar', {
+      fontFamily: 'Freckle Face',
+      fontSize: '32px',
+      color: '#FFFFFF'
+    }).setOrigin(0.5).setInteractive();
+    this.resumeButton.on('pointerdown', () => {
+      this.resumeGame();
+    });
+
+    this.quitButton = this.add.text(360, 250, 'Salir', {
+      fontFamily: 'Freckle Face',
+      fontSize: '32px',
+      color: '#FFFFFF'
+    }).setOrigin(0.5).setInteractive();
+    this.quitButton.on('pointerdown', () => {
+      this.scene.start("MainMenuScene");
+    });
+
+    // Crear el botón de reiniciar en el menú de pausa
+    this.restartButton = this.add.text(360, 300, 'Reiniciar', {
+      fontFamily: 'Freckle Face',
+      fontSize: '32px',
+      color: '#FFFFFF'
+    }).setOrigin(0.5).setInteractive();
+    this.restartButton.on('pointerdown', () => {
+      this.restartGame(); // Llamar a la función de reinicio
+    });
+
+    // Asegurarse de que el menú esté oculto al principio
+    this.pauseMenuGroup = this.add.group([this.pauseBackground, this.resumeButton, this.quitButton, this.restartButton]);
+    this.pauseMenuGroup.setVisible(false);
+  }
+
+  // Función para pausar el juego
+  pauseGame() {
+    this.physics.world.pause(); // Pausa la física
+    this.time.paused = true; // Pausa el tiempo
+    this.isPaused = true; // Cambiar estado de pausa
+
+    // Mostrar el menú de pausa
+    this.pauseMenuGroup.setVisible(true);
+    this.pauseBackground.setVisible(true);
+  }
+
+  // Función para reanudar el juego
+  resumeGame() {
+    this.physics.world.resume(); // Reanudar las físicas
+    this.time.paused = false; // Reanudar el tiempo
+    this.isPaused = false; // Cambiar el estado de pausa
+  
+    // Ocultar el menú de pausa
+    this.pauseMenuGroup.setVisible(false);
+    this.pauseBackground.setVisible(false);
+  }  
+
+  // Función para reiniciar el juego
+  restartGame() {
+    // Ocultar el menú de pausa y el fondo
+    this.pauseMenuGroup.setVisible(false);
+    this.pauseBackground.setVisible(false);
+  
+    // Reiniciar la escena sin mantener nada del estado anterior
+    this.scene.restart({
+      puntuacion: 0
+    });
+    this.resumeGame();
   }
 
   fadeToBlack(callback) {
@@ -262,6 +336,17 @@ class GameScene2 extends Phaser.Scene {
   }
 
   update() {
+    // Pausar o reanudar el juego si se presiona la tecla ESC
+    if (Phaser.Input.Keyboard.JustDown(this.escapeKey)) {
+      if (this.isPaused) {
+        this.resumeGame();
+      } else {
+        this.pauseGame();
+      }
+    }
+
+    if (this.isPaused) return; // Si el juego está pausado, no procesamos más.
+
     const speed = 200;
     const jumpForce = 330;
 
