@@ -5,23 +5,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie-edge">
   <title>FOCA</title>
-  <!-- FUENTES -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barrio&family=Finger+Paint&family=Freckle+Face&family=Tiny5&display=swap" rel="stylesheet">
-
+  
   <style>
+
+    /*FUENTES*/
+    @font-face {
+      font-family: "Barrio";
+      src: url("assets/fonts/Barrio-Regular.ttf") format("truetype");
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    @font-face {
+      font-family: "Freckle Face";
+      src: url("assets/fonts/FreckleFace-Regular.ttf") format("truetype");
+      font-weight: normal;
+      font-style: normal;
+    }
+    
+    /*ESTILO*/
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: rgb(36, 36, 36);
+    }
+
     main {
       width: 100%;
-      height: 100vh;
+      height: 100%;
       display: flex;
       justify-content: center;
+      align-items: center;
+      background-color: #333;
     }
+
     #contenedor {
-      margin-top: 50px;
-    }
-    body {
-      background-color: rgb(36, 36, 36);
+      height: 95%;
+      width: 95%;
     }
   </style>
 </head>

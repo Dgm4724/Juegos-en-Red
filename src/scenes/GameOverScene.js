@@ -43,12 +43,12 @@ class GameOverScene extends Phaser.Scene {
       }).setOrigin(0.5);
 
       this.botonMenu.on('pointerover', () => {
-        this.botonMenu.setDisplaySize(260*this.widthRatio, 68*this.heightRatio);
+        this.botonMenu.setDisplaySize(260, 68);
         this.botonMenu.setTint(0xfff5a1);
         this.BMtxt.setFontSize(27);
       });
       this.botonMenu.on('pointerout', () => {
-        this.botonMenu.setDisplaySize(250*this.widthRatio, 58*this.heightRatio); // Restaurar el tamaño original
+        this.botonMenu.setDisplaySize(250, 58); // Restaurar el tamaño original
         this.botonMenu.clearTint(); // Eliminar el tinte
         this.BMtxt.setFontSize(24);
       });
@@ -69,20 +69,18 @@ class GameOverScene extends Phaser.Scene {
       }).setOrigin(0.5);
 
       this.botonReinicio.on('pointerover', () => {
-        this.botonReinicio.setDisplaySize(260*this.widthRatio, 68*this.heightRatio);
+        this.botonReinicio.setDisplaySize(260, 68);
         this.botonReinicio.setTint(0xfff5a1);
         this.BRtxt.setFontSize(27);
       });
       this.botonReinicio.on('pointerout', () => {
-        this.botonReinicio.setDisplaySize(250*this.widthRatio, 58*this.heightRatio); // Restaurar el tamaño original
+        this.botonReinicio.setDisplaySize(250, 58); // Restaurar el tamaño original
         this.botonReinicio.clearTint(); // Eliminar el tinte
         this.BRtxt.setFontSize(24);
       });
       this.botonReinicio.on("pointerdown", () => {
         this.scene.start("GameScene");
       });
-      
-      this.adjustScale();
     }
   }
   

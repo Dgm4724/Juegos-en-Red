@@ -25,19 +25,19 @@ class LevelSelectorScene extends Phaser.Scene {
         this.MIN1.setTint(0x7b7b7b);
         this.MIN1.on('pointerover', () => {
             if(this.nextLvl != 0 || this.nextLvl == undefined){
-                this.MIN1.setScale(1.05*0.25*this.widthRatio, 1.05*0.25*this.heightRatio);
+                this.MIN1.setScale(1.05*0.25);
                 this.MIN1.setTint(0xa8a8a8);
             }
         });
         this.MIN1.on('pointerout', () => {
             if(this.nextLvl != 0 || this.nextLvl == undefined){
-                this.MIN1.setScale(0.25*this.widthRatio, 0.25*this.heightRatio); // Restaurar el tamaño original
+                this.MIN1.setScale(0.25); // Restaurar el tamaño original
                 this.MIN1.setTint(0x7b7b7b);
             }
         });
         this.MIN1.on("pointerdown", () => {
             this.MIN1.clearTint();
-            this.MIN1.setScale(1.1*0.25*this.widthRatio, 1.1*0.25*this.heightRatio);
+            this.MIN1.setScale(1.1*0.25);
             this.nextLvl = 0;
 
             this.MIN2.emit('pointerout');
@@ -52,19 +52,19 @@ class LevelSelectorScene extends Phaser.Scene {
         this.MIN2.setTint(0x7b7b7b);
         this.MIN2.on('pointerover', () => {
             if(this.nextLvl != 1 || this.nextLvl == undefined){
-                this.MIN2.setScale(1.05*0.25*this.widthRatio, 1.05*0.25*this.heightRatio);
+                this.MIN2.setScale(1.05*0.25);
                 this.MIN2.setTint(0xa8a8a8);
             }
         });
         this.MIN2.on('pointerout', () => {
             if(this.nextLvl != 1 || this.nextLvl == undefined){
-                this.MIN2.setScale(0.25*this.widthRatio, 0.25*this.heightRatio); // Restaurar el tamaño original
+                this.MIN2.setScale(0.25); // Restaurar el tamaño original
                 this.MIN2.setTint(0x7b7b7b);
             }
         });
         this.MIN2.on("pointerdown", () => {
             this.MIN2.clearTint();
-            this.MIN2.setScale(1.1*0.25*this.widthRatio, 1.1*0.25*this.heightRatio);
+            this.MIN2.setScale(1.1*0.25);
             this.nextLvl = 1;
 
             this.MIN1.emit('pointerout');
@@ -79,19 +79,19 @@ class LevelSelectorScene extends Phaser.Scene {
         this.MIN3.setTint(0x7b7b7b);
         this.MIN3.on('pointerover', () => {
             if(this.nextLvl != 2 || this.nextLvl == undefined){
-                this.MIN3.setScale(1.05*0.25*this.widthRatio, 1.05*0.25*this.heightRatio);
+                this.MIN3.setScale(1.05*0.25);
                 this.MIN3.setTint(0xa8a8a8);
             }
         });
         this.MIN3.on('pointerout', () => {
             if(this.nextLvl != 2 || this.nextLvl == undefined){
-                this.MIN3.setScale(0.25*this.widthRatio, 0.25*this.heightRatio); // Restaurar el tamaño original
+                this.MIN3.setScale(0.25); // Restaurar el tamaño original
                 this.MIN3.setTint(0x7b7b7b);
             }
         });
         this.MIN3.on("pointerdown", () => {
             this.MIN3.clearTint();
-            this.MIN3.setScale(1.1*0.25*this.widthRatio, 1.1*0.25*this.heightRatio);
+            this.MIN3.setScale(1.1*0.25);
             this.nextLvl = 2;
             
             this.MIN2.emit('pointerout');
@@ -114,19 +114,19 @@ class LevelSelectorScene extends Phaser.Scene {
         this.focaRosa.setTint(0x7b7b7b);
         this.focaRosa.on('pointerover', () => {
             if(this.selectedChar != 0 || this.selectedChar == undefined){
-                this.focaRosa.setScale(1.05*this.widthRatio, 1.05*this.heightRatio);
+                this.focaRosa.setScale(1.05);
                 this.focaRosa.setTint(0xa8a8a8);
             }
         });
         this.focaRosa.on('pointerout', () => {
             if(this.selectedChar != 0 || this.selectedChar == undefined){
-                this.focaRosa.setScale(this.widthRatio, this.heightRatio); // Restaurar el tamaño original
+                this.focaRosa.setScale(1); // Restaurar el tamaño original
                 this.focaRosa.setTint(0x7b7b7b);
             }
         });
         this.focaRosa.on("pointerdown", () => {
             this.focaRosa.clearTint();
-            this.focaRosa.setScale(1.1*this.widthRatio, 1.1*this.heightRatio);
+            this.focaRosa.setScale(1.1);
             this.selectedChar = 0;
             
             this.focaAzul.emit('pointerout');
@@ -139,19 +139,19 @@ class LevelSelectorScene extends Phaser.Scene {
         this.focaAzul.setTint(0x7b7b7b);
         this.focaAzul.on('pointerover', () => {
             if(this.selectedChar != 1 || this.selectedChar == undefined){
-                this.focaAzul.setScale(1.05*this.widthRatio, 1.05*this.heightRatio);
+                this.focaAzul.setScale(1.05);
                 this.focaAzul.setTint(0xa8a8a8);
             }
         });
         this.focaAzul.on('pointerout', () => {
             if(this.selectedChar != 1 || this.selectedChar == undefined){
-                this.focaAzul.setScale(this.widthRatio, this.heightRatio); // Restaurar el tamaño original
+                this.focaAzul.setScale(1); // Restaurar el tamaño original
                 this.focaAzul.setTint(0x7b7b7b);
             }
         });
         this.focaAzul.on("pointerdown", () => {
             this.focaAzul.clearTint();
-            this.focaAzul.setScale(1.1*this.widthRatio, 1.1*this.heightRatio);
+            this.focaAzul.setScale(1.1);
             this.selectedChar = 1;
             
             this.focaRosa.emit('pointerout');
@@ -173,14 +173,14 @@ class LevelSelectorScene extends Phaser.Scene {
         
         this.botonCP.on('pointerover', () => {
             if(this.nextLvl != undefined && this.selectedChar != undefined){
-                this.botonCP.setScale(1.05*this.widthRatio, 1.05*0.8*this.heightRatio);
+                this.botonCP.setScale(1.05, 1.05*0.8);
                 this.botonCP.setTint(0xffdca1);
                 this.CPtxt.setFontSize(26);
             }
         });
         this.botonCP.on('pointerout', () => {
             if(this.nextLvl != undefined && this.selectedChar != undefined){
-                this.botonCP.setScale(this.widthRatio, 0.8*this.heightRatio); // Restaurar el tamaño original
+                this.botonCP.setScale(1, 0.8); // Restaurar el tamaño original
                 this.botonCP.clearTint(); // Eliminar el tinte
                 this.CPtxt.setFontSize(23);
             }
@@ -206,19 +206,17 @@ class LevelSelectorScene extends Phaser.Scene {
         this.botonMenu.setTint(0xffe47b);
 
         this.botonMenu.on('pointerover', () => {
-        this.botonMenu.setScale(1.09*this.widthRatio, 1.09*this.heightRatio);
+        this.botonMenu.setScale(1.09);
         this.botonMenu.setTint(0xffd42f);
         });
         this.botonMenu.on('pointerout', () => {
-        this.botonMenu.setScale(this.widthRatio, this.heightRatio); // Restaurar el tamaño original
+        this.botonMenu.setScale(1); // Restaurar el tamaño original
         this.botonMenu.setTint(0xffe47b);
         });
         this.botonMenu.on("pointerdown", () => {
             this.nextLvl = undefined;
             this.scene.start("MainMenuScene");
         });
-        
-        this.adjustScale();
     }
 }
 

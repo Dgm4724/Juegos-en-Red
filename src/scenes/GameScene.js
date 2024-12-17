@@ -11,10 +11,6 @@ class GameScene extends Phaser.Scene {
   }
 
   create() {
-    // factores de escala
-    this.widthRatio = this.scale.width / 720;
-    this.heightRatio = this.scale.height / 480;
-
     // el juego no está pausado al inicio
     this.isPaused = false;
 
@@ -25,14 +21,7 @@ class GameScene extends Phaser.Scene {
     this.add.image(360, 240, "fondo1");
 
     // Suelo
-    const suelo = this.add.rectangle(
-      360 * this.widthRatio,
-      470 * this.heightRatio,
-      720 * this.widthRatio,
-      10 * this.heightRatio,
-      0x000000,
-      0
-    );
+    const suelo = this.add.rectangle(360, 470, 720, 10, 0x000000, 0);
     this.physics.add.existing(suelo, true);
     this.suelo = suelo;
 
@@ -97,11 +86,6 @@ class GameScene extends Phaser.Scene {
 
     // Crear menú de pausa (invisible por defecto)
     this.pauseMenu = this.createPauseMenu();
-    
-    this.adjustScale(); // Este método global está definido en INIT
-
-    // Escalar las físicas
-    this.scalePhysics();
 
     this.fadeFromBlack();
 
@@ -196,8 +180,7 @@ class GameScene extends Phaser.Scene {
         // Animación de entrada
         this.tweens.add({
           targets: this.countdownText,
-          scaleX: this.widthRatio, // Escalar a su tamaño normal
-          scaleY: this.heightRatio,
+          scale: 1, // Escalar a su tamaño normal
           duration: 300,
           ease: 'Back.easeOut', // Suavizado tipo salto
           onComplete: () => {
@@ -213,8 +196,7 @@ class GameScene extends Phaser.Scene {
         this.countdownText.setText('¡A jugar!');
         this.tweens.add({
           targets: this.countdownText,
-          scaleX: 1.2*this.widthRatio, // Escalar ligeramente más grande
-          scaleY: 1.2*this.heightRatio,
+          scale: 1.2, // Escalar ligeramente más grande
           duration: 300,
           ease: 'Back.easeOut', // Suavizado tipo "salto"
           yoyo: true, // Volver a escala normal
@@ -258,11 +240,6 @@ class GameScene extends Phaser.Scene {
     });
   }
 
-  scalePhysics() {
-    // Ajustar gravedad
-    this.physics.world.gravity.y *= this.heightRatio;
-  }
-
   createFoca(x, y, spriteKey) {
     const foca = this.physics.add.image(x, y, spriteKey);
     foca.setBounce(0).setCollideWorldBounds(true);
@@ -295,8 +272,8 @@ class GameScene extends Phaser.Scene {
     const direccionX = foca.flipX ? -1 : 1;
 
     // Aplicar la fuerza al golpe (por tipo) (ESCALADO SEGÚN ASPECT RATIO)
-    const fuerzaX = direccionX * (tipoGolpe === "fuerte" ? 1000 : 300) * this.widthRatio; // Dependiendo de si es fuerte o normal
-    const fuerzaY = (tipoGolpe === "fuerte" ? -200 : -350) * this.heightRatio;
+    const fuerzaX = direccionX * (tipoGolpe === "fuerte" ? 1000 : 300); // Dependiendo de si es fuerte o normal
+    const fuerzaY = (tipoGolpe === "fuerte" ? -200 : -350);
 
     // Establecer la velocidad de la pelota
     pelota.setVelocity(fuerzaX, fuerzaY);
@@ -341,14 +318,12 @@ class GameScene extends Phaser.Scene {
   }
   
   moveFoca(foca, leftKey, rightKey, jumpKey, normalHitKey, strongHitKey, speed, jumpForce) { // Movimiento horizontal
-    const scaledSpeed = speed * this.widthRatio; // Escalar velocidad horizontal
-    const scaledJumpForce = jumpForce * this.heightRatio; // Escalar fuerza de salto
 
     if (leftKey.isDown) {
-      foca.setVelocityX(-scaledSpeed);
+      foca.setVelocityX(-speed);
       foca.setFlipX(true); // Voltea la foca a la izquierda
     } else if (rightKey.isDown) {
-      foca.setVelocityX(scaledSpeed);
+      foca.setVelocityX(speed);
       foca.setFlipX(false); // Voltea la foca a la derecha
     } else {
       foca.setVelocityX(0); // Detenerse
@@ -363,7 +338,7 @@ class GameScene extends Phaser.Scene {
 
     // Salto
     if (Phaser.Input.Keyboard.JustDown(jumpKey) && foca.body.touching.down) {
-      foca.setVelocityY(-scaledJumpForce);
+      foca.setVelocityY(-jumpForce);
     }
 
     // Golpes

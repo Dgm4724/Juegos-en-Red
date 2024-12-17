@@ -4,10 +4,6 @@ class CreditsScene extends Phaser.Scene {
   }
 
   create() {
-    // factores de escala
-    this.widthRatio = this.scale.width / 720;
-    this.heightRatio = this.scale.height / 480;
-
     // Fondo
     const fondo = this.add.image(360, 240, "fondoGenericoAzul");
 
@@ -29,11 +25,11 @@ class CreditsScene extends Phaser.Scene {
     this.botonMenu = this.add.image(580, 430, "backButton").setInteractive();
 
     this.botonMenu.on('pointerover', () => {
-      this.botonMenu.setScale(1.09*this.widthRatio, 1.09*this.heightRatio);
+      this.botonMenu.setScale(1.09);
       this.botonMenu.setTint(0xd9bfff);
     });
     this.botonMenu.on('pointerout', () => {
-      this.botonMenu.setScale(this.widthRatio, this.heightRatio); // Restaurar el tamaño original
+      this.botonMenu.setScale(1); // Restaurar el tamaño original
       this.botonMenu.clearTint(); // Eliminar el tinte
     });
     this.botonMenu.on("pointerdown", () => {
@@ -44,8 +40,6 @@ class CreditsScene extends Phaser.Scene {
 
     // RECTÁNGULO NEGRO PARA LOS FUNDIDOS
     this.fundido = this.add.rectangle(720/2, 480/2, 720, 480, 'black', 1);
-
-    this.adjustScale();
     
     this.fadeFromBlack();
   }

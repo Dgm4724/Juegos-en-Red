@@ -4,10 +4,6 @@ class MainMenuScene extends Phaser.Scene {
     }
 
     create() {
-        // Factores de escala
-        this.widthRatio = this.scale.width / 720;
-        this.heightRatio = this.scale.height / 480;
-
         // Fondo
         this.add.image(360, 240, "fondoGenerico");
 
@@ -20,11 +16,11 @@ class MainMenuScene extends Phaser.Scene {
         this.botonPlay.setScale(1.5);
 
         this.botonPlay.on('pointerover', () => {
-            this.botonPlay.setScale(1.07 * 1.5 * this.widthRatio, 1.07 * 1.5 * this.heightRatio);
+            this.botonPlay.setScale(1.07 * 1.5);
             this.botonPlay.setTint(0xd0ff8d);
         });
         this.botonPlay.on('pointerout', () => {
-            this.botonPlay.setScale(1.5 * this.widthRatio, 1.5 * this.heightRatio); // Restaurar el tamaño original
+            this.botonPlay.setScale(1.5); // Restaurar el tamaño original
             this.botonPlay.clearTint(); // Eliminar el tinte
         });
         this.botonPlay.on("pointerdown", () => {
@@ -44,12 +40,12 @@ class MainMenuScene extends Phaser.Scene {
         }).setOrigin(0.5);
 
         this.botonA.on('pointerover', () => {
-            this.botonA.setScale(1.05 * this.widthRatio, 1.05 * 0.8 * this.heightRatio);
+            this.botonA.setScale(1.05, 1.05 * 0.8);
             this.botonA.setTint(0xffdca1);
             this.Atxt.setFontSize(26);
         });
         this.botonA.on('pointerout', () => {
-            this.botonA.setScale(this.widthRatio, 0.8 * this.heightRatio); // Restaurar el tamaño original
+            this.botonA.setScale(1, 0.8); // Restaurar el tamaño original
             this.botonA.clearTint(); // Eliminar el tinte
             this.Atxt.setFontSize(23);
         });
@@ -65,12 +61,12 @@ class MainMenuScene extends Phaser.Scene {
         }).setOrigin(0.5);
 
         this.botonC.on('pointerover', () => {
-            this.botonC.setScale(1.05 * this.widthRatio, 1.05 * 0.8 * this.heightRatio);
+            this.botonC.setScale(1.05, 1.05 * 0.8);
             this.botonC.setTint(0xffdca1);
             this.Ctxt.setFontSize(26);
         });
         this.botonC.on('pointerout', () => {
-            this.botonC.setScale(this.widthRatio, 0.8 * this.heightRatio); // Restaurar el tamaño original
+            this.botonC.setScale(1, 0.8); // Restaurar el tamaño original
             this.botonC.clearTint(); // Eliminar el tinte
             this.Ctxt.setFontSize(23);
         });
@@ -93,8 +89,6 @@ class MainMenuScene extends Phaser.Scene {
         // RECTÁNGULO NEGRO PARA LOS FUNDIDOS
         this.fundido = this.add.rectangle(720 / 2, 480 / 2, 720, 480, 'black', 1);
 
-        this.adjustScale();
-
         this.fadeFromBlack();
     }
 
@@ -103,8 +97,7 @@ class MainMenuScene extends Phaser.Scene {
         // Rotación a un lado
         this.tweens.add({
             targets: this.jugarTexto,
-            scaleX: 0.97*this.widthRatio, // Escala sutil
-            scaleY: 0.97*this.heightRatio,
+            scale: 0.97, // Escala sutil
             duration: 750,
             ease: 'Sine.easeInOut',
             yoyo: true, // Regresa al tamaño original
