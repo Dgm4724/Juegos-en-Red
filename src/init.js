@@ -5,6 +5,7 @@ import GameOverScene from "./scenes/GameOverScene.js";
 import CreditsScene from "./scenes/CreditsScene.js";
 import LevelSelectorScene from "./scenes/LevelSelectorScene.js";
 import GameScene2 from "./scenes/GameScene2.js";
+import LoginScene from "./scenes/LoginScene.js";
 
 const config = {
     scale: {
@@ -19,9 +20,7 @@ const config = {
         default: "arcade",
         arcade: {
             debug: true,
-            gravity: {
-                y: 400
-            }
+            gravity: { y: 400 }
         }
     },
     scene: [
@@ -31,7 +30,8 @@ const config = {
         CreditsScene,
         GameOverScene,
         GameScene,
-        GameScene2
+        GameScene2,
+        LoginScene,
     ],
 }
 

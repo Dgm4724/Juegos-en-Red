@@ -7,6 +7,8 @@ class Bootstrap extends Phaser.Scene {
             this.scene.start("MainMenuScene");
         })
 
+        this.load.html("loginForm", "./assets/text/loginForm.html");
+
         this.load.image("fondo1", "./assets/images/fondo1.png");
         this.load.image("fondoGlaciar", "./assets/images/glaciar.png");
         this.load.image("bloqueHielo", "./assets/images/bloque-hielo.png");
