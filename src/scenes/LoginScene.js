@@ -3,8 +3,14 @@ class LoginScene extends Phaser.Scene {
         super({ key: "LoginScene" });
     }
 
+    preload() {
+        // Cargar imágenes y fuentes necesarias
+        this.load.image("fondoGenerico", "./assets/images/fondoGenerico.png");
+        this.load.font("Barrio", "./assets/fonts/Barrio-Regular.ttf");
+    }
+
     create() {
-        // Añadir fondo de la escena
+        // Fondo de la escena
         this.add.image(360, 240, "fondoGenerico");
 
         // Título de la escena
@@ -14,27 +20,58 @@ class LoginScene extends Phaser.Scene {
             color: "#ffffff",
         }).setOrigin(0.5);
 
-        // Crear el formulario desde el archivo cargado
-        this.loginForm = this.add.dom(360, 300).createFromCache("loginForm");
+        // Crear el formulario HTML de login directamente en el create()
+        const loginForm = document.createElement("div");
+        loginForm.classList.add("login-container");
 
-        // Escuchar el evento click del formulario
-        this.loginForm.addListener("click");
+        // Crear los elementos del formulario
+        const labelUsername = document.createElement("label");
+        labelUsername.setAttribute("for", "username");
+        labelUsername.textContent = "Usuario:";
+        loginForm.appendChild(labelUsername);
 
-        this.loginForm.on("click", (event) => {
-            if (event.target.name === "loginButton") {
-                const usernameInput = this.loginForm.getChildByName("username");
-                const passwordInput = this.loginForm.getChildByName("password");
+        const inputUsername = document.createElement("input");
+        inputUsername.setAttribute("type", "text");
+        inputUsername.setAttribute("id", "username");
+        inputUsername.setAttribute("name", "username");
+        inputUsername.setAttribute("placeholder", "Escribe tu usuario");
+        loginForm.appendChild(inputUsername);
 
-                if (usernameInput.value !== "" && passwordInput.value !== "") {
-                    // Llamar a la función login
-                    this.login(usernameInput.value, passwordInput.value);
-                } else {
-                    this.showError("Por favor, completa todos los campos");
-                }
+        const labelPassword = document.createElement("label");
+        labelPassword.setAttribute("for", "password");
+        labelPassword.textContent = "Contraseña:";
+        loginForm.appendChild(labelPassword);
+
+        const inputPassword = document.createElement("input");
+        inputPassword.setAttribute("type", "password");
+        inputPassword.setAttribute("id", "password");
+        inputPassword.setAttribute("name", "password");
+        inputPassword.setAttribute("placeholder", "Escribe tu contraseña");
+        loginForm.appendChild(inputPassword);
+
+        const loginButton = document.createElement("button");
+        loginButton.setAttribute("name", "loginButton");
+        loginButton.textContent = "Iniciar sesión";
+        loginForm.appendChild(loginButton);
+
+        // Añadir el formulario al DOM de Phaser
+        this.add.dom(360, 300).createFromHTML(loginForm);
+
+        // Escuchar el evento de click en el botón de login
+        loginButton.addEventListener("click", () => {
+            const usernameInput = document.getElementById("username");
+            const passwordInput = document.getElementById("password");
+
+            if (usernameInput.value !== "" && passwordInput.value !== "") {
+                // Llamar a la función de login
+                this.login(usernameInput.value, passwordInput.value);
+            } else {
+                // Mostrar mensaje de error si los campos están vacíos
+                this.showError("Por favor, completa todos los campos");
             }
         });
 
-        // Botón para volver al menu principal
+        // Botón para volver al menú principal
         this.botonMenu = this.add.image(640, 430, "backButton").setInteractive();
         this.botonMenu.setTint(0xffe47b);
 
@@ -44,16 +81,15 @@ class LoginScene extends Phaser.Scene {
         });
 
         this.botonMenu.on('pointerout', () => {
-            this.botonMenu.setScale(1); // Restaurar el tamaño original
+            this.botonMenu.setScale(1);
             this.botonMenu.setTint(0xffe47b);
         });
         
         this.botonMenu.on("pointerdown", () => {
-            this.nextLvl = undefined;
             this.scene.start("MainMenuScene");
         });
 
-        // Texto de error
+        // Texto de error para mostrar mensajes de error
         this.errorText = this.add.text(360, 400, "", {
             fontFamily: "Barrio",
             fontSize: "18px",

@@ -12,52 +12,46 @@ class MainMenuScene extends Phaser.Scene {
         this.interfaz.setScale(1.25);
 
         // Botón Jugar
-        this.botonPlay = this.add.image(360, 235, "boton").setInteractive();
-        this.botonPlay.setScale(1, 0.8);
-        this.Ptxt = this.add.text(360, 235, "Jugar en Local", {
-            fontFamily: "Barrio",
-            fontSize: "23px",
-            fontStyle: "Bold",
-            color: "#000000",
-        }).setOrigin(0.5);
+        this.botonPlay = this.add.image(360, 255, "botonPlay").setInteractive();
+        this.botonPlay.setScale(1.5);
 
         this.botonPlay.on('pointerover', () => {
-            this.botonPlay.setScale(1.05, 1.05 * 0.8);
+            this.botonPlay.setScale(1.6);
             this.botonPlay.setTint(0xffdca1);
-            this.Ptxt.setFontSize(26);
         });
+
         this.botonPlay.on('pointerout', () => {
-            this.botonPlay.setScale(1, 0.8); // Restaurar el tamaño original
+            this.botonPlay.setScale(1.5); // Restaurar el tamaño original
             this.botonPlay.clearTint(); // Eliminar el tinte
-            this.Ptxt.setFontSize(23);
         });
+
         this.botonPlay.on("pointerdown", () => {
             this.fadeToBlack(() => {
                 this.scene.start("LevelSelectorScene");
             });
         });
 
-        // Botón Jugar Online
-        this.botonOnline = this.add.image(360, 290, "boton").setInteractive();
-        this.botonOnline.setScale(1, 0.8);
-        this.Otxt = this.add.text(360, 290, "Jugar en línea", {
+        // Botón Login
+        this.botonLogin = this.add.image(625, 50, "boton").setInteractive();
+        this.botonLogin.setScale(0.8, 0.64);
+        this.Ltxt = this.add.text(625, 50, "Iniciar Sesión", {
             fontFamily: "Barrio",
-            fontSize: "23px",
+            fontSize: "19px",
             fontStyle: "Bold",
             color: "#000000",
         }).setOrigin(0.5);
 
-        this.botonOnline.on('pointerover', () => {
-            this.botonOnline.setScale(1.05, 1.05 * 0.8);
-            this.botonOnline.setTint(0xffdca1);
-            this.Otxt.setFontSize(26);
+        this.botonLogin.on('pointerover', () => {
+            this.botonLogin.setScale(0.8 * 1.05, 0.64 * 1.05);
+            this.botonLogin.setTint(0xffdca1);
+            this.Ltxt.setFontSize(20);
         });
-        this.botonOnline.on('pointerout', () => {
-            this.botonOnline.setScale(1, 0.8); // Restaurar el tamaño original
-            this.botonOnline.clearTint(); // Eliminar el tinte
-            this.Otxt.setFontSize(23);
+        this.botonLogin.on('pointerout', () => {
+            this.botonLogin.setScale(0.8, 0.64); // Restaurar el tamaño original
+            this.botonLogin.clearTint(); // Eliminar el tinte
+            this.Ltxt.setFontSize(19);
         });
-        this.botonOnline.on("pointerdown", () => {
+        this.botonLogin.on("pointerdown", () => {
             this.fadeToBlack(() => {
                 this.scene.start("LoginScene");
             });
@@ -111,7 +105,7 @@ class MainMenuScene extends Phaser.Scene {
         });
 
         // Texto animado
-        this.jugarTexto = this.add.text(360, 180, "¡Haz clic en 'Jugar' para empezar el juego!", {
+        this.jugarTexto = this.add.text(360, 175, "¡Haz clic en 'Jugar' para empezar el juego!", {
             fontFamily: "Freckle Face",
             fontSize: "20px",
             color: "#000000",
