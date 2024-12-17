@@ -1,0 +1,48 @@
+{ "frames": {
+   "Foca 2 Golpe normal Suelo 2 0.ase": {
+    "frame": { "x": 0, "y": 0, "w": 125, "h": 99 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 105, "h": 79 },
+    "sourceSize": { "w": 105, "h": 79 },
+    "duration": 100
+   },
+   "Foca 2 Golpe normal Suelo 2 1.ase": {
+    "frame": { "x": 125, "y": 0, "w": 125, "h": 99 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 105, "h": 79 },
+    "sourceSize": { "w": 105, "h": 79 },
+    "duration": 100
+   },
+   "Foca 2 Golpe normal Suelo 2 2.ase": {
+    "frame": { "x": 250, "y": 0, "w": 125, "h": 99 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 105, "h": 79 },
+    "sourceSize": { "w": 105, "h": 79 },
+    "duration": 100
+   },
+   "Foca 2 Golpe normal Suelo 2 3.ase": {
+    "frame": { "x": 375, "y": 0, "w": 125, "h": 99 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 105, "h": 79 },
+    "sourceSize": { "w": 105, "h": 79 },
+    "duration": 100
+   }
+ },
+ "meta": {
+  "app": "https://github.com/LibreSprite/LibreSprite/",
+  "version": "1.1-dev",
+  "image": "C:\\Users\\juanc\\Downloads\\Sprites\\Foca 2\\Golpe normal suelo\\Foca 2 Golpe normal Suelo 2.png",
+  "format": "RGBA8888",
+  "size": { "w": 500, "h": 99 },
+  "scale": "1",
+  "frameTags": [
+  ],
+  "layers": [
+   { "name": "Layer 1", "opacity": 255, "blendMode": "normal" }
+  ]
+ }
+}
