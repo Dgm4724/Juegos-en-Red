@@ -206,13 +206,15 @@ class LevelSelectorScene extends Phaser.Scene {
         this.botonMenu.setTint(0xffe47b);
 
         this.botonMenu.on('pointerover', () => {
-        this.botonMenu.setScale(1.09);
-        this.botonMenu.setTint(0xffd42f);
+            this.botonMenu.setScale(1.09);
+            this.botonMenu.setTint(0xffd42f);
         });
+
         this.botonMenu.on('pointerout', () => {
-        this.botonMenu.setScale(1); // Restaurar el tamaño original
-        this.botonMenu.setTint(0xffe47b);
+            this.botonMenu.setScale(1); // Restaurar el tamaño original
+            this.botonMenu.setTint(0xffe47b);
         });
+        
         this.botonMenu.on("pointerdown", () => {
             this.nextLvl = undefined;
             this.scene.start("MainMenuScene");
