@@ -99,30 +99,54 @@ class GameScene extends Phaser.Scene {
     this.pauseBackground.setInteractive();
 
     // Opciones del menú de pausa
-    this.resumeButton = this.add.text(360, 200, 'Reanudar', {
+    this.resumeButton = this.add.text(360, 180, 'Reanudar', {
       fontFamily: 'Freckle Face',
-      fontSize: '32px',
+      fontSize: '33px',
       color: '#FFFFFF'
     }).setOrigin(0.5).setInteractive();
+    this.resumeButton.on('pointerover', () => {
+      this.resumeButton.setScale(1.09);
+      this.resumeButton.setTint(0xd9bfff);
+    });
+    this.resumeButton.on('pointerout', () => {
+      this.resumeButton.setScale(1); // Restaurar el tamaño original
+      this.resumeButton.clearTint(); // Eliminar el tinte
+    });
     this.resumeButton.on('pointerdown', () => {
       this.resumeGame();
     });
 
     this.quitButton = this.add.text(360, 250, 'Salir', {
       fontFamily: 'Freckle Face',
-      fontSize: '32px',
+      fontSize: '33px',
       color: '#FFFFFF'
     }).setOrigin(0.5).setInteractive();
+    this.quitButton.on('pointerover', () => {
+      this.quitButton.setScale(1.09);
+      this.quitButton.setTint(0xd9bfff);
+    });
+    this.quitButton.on('pointerout', () => {
+      this.quitButton.setScale(1); // Restaurar el tamaño original
+      this.quitButton.clearTint(); // Eliminar el tinte
+    });
     this.quitButton.on('pointerdown', () => {
       this.scene.start("MainMenuScene");
     });
 
     // Crear el botón de reiniciar en el menú de pausa
-    this.restartButton = this.add.text(360, 300, 'Reiniciar', {
+    this.restartButton = this.add.text(360, 320, 'Reiniciar', {
       fontFamily: 'Freckle Face',
-      fontSize: '32px',
+      fontSize: '33px',
       color: '#FFFFFF'
     }).setOrigin(0.5).setInteractive();
+    this.restartButton.on('pointerover', () => {
+      this.restartButton.setScale(1.09);
+      this.restartButton.setTint(0xd9bfff);
+    });
+    this.restartButton.on('pointerout', () => {
+      this.restartButton.setScale(1); // Restaurar el tamaño original
+      this.restartButton.clearTint(); // Eliminar el tinte
+    });
     this.restartButton.on('pointerdown', () => {
       this.restartGame(); // Llamar a la función de reinicio
     });
@@ -292,7 +316,7 @@ class GameScene extends Phaser.Scene {
   handlePelotaToqueSuelo() {
     this.fadeToBlack(() => {
       // Cambiar a la escena GameOverScene y pasar la puntuación
-      this.scene.start('GameOverScene', { puntuacion: this.puntuacion });
+      this.scene.start('GameOverScene', { puntuacion: this.puntuacion, previousScene:0 });
     });
   }
 

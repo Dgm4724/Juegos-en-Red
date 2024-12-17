@@ -7,6 +7,7 @@ class Bootstrap extends Phaser.Scene {
             this.scene.start("MainMenuScene");
         })
 
+        // IMÁGENES
         this.load.image("fondo1", "./assets/images/fondo1.png");
         this.load.image("fondoGlaciar", "./assets/images/glaciar.png");
         this.load.image("bloqueHielo", "./assets/images/bloque-hielo.png");
@@ -29,7 +30,14 @@ class Bootstrap extends Phaser.Scene {
         this.load.image("miniatura3", "./assets/images/miniatura-nivel3.png");
         this.load.image("focaRosa", "./assets/images/seal1.png");
         this.load.image("focaAzul", "./assets/images/seal2.png");
-        
+
+        //AUDIO
+        this.load.audio("buttonOver", "./assets/sounds/buttonOver.mp3");
+        this.load.audio("buttonOn", "./assets/sounds/buttonOn.mp3");
+        this.load.audio("bgMenuMusic", "./assets/sounds/Slime Time.mp3");
+        this.load.audio("bgLevel1", "./assets/sounds/To Binge (Instrumental).mp3");
+
+        // FUENTES
         this.load.font("Barrio", "./assets/fonts/Barrio-Regular.ttf");
         this.load.font("Freckle Face", "./assets/fonts/FreckleFace-Regular.ttf");
     }

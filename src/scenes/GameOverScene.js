@@ -6,13 +6,10 @@ class GameOverScene extends Phaser.Scene {
     init(data) {
       // Puntuacion recibida desde GameScene
       this.puntuacion = data.puntuacion || 0;  // Si no se pasa puntuación, asigna 0
+      this.previousScene = data.previousScene || 0;
     }
   
     create() {
-      // factores de escala
-      this.widthRatio = this.scale.width / 720;
-      this.heightRatio = this.scale.height / 480;
-      
       // Fondo
       this.add.image(360, 240, "fondoGenerico");
   
@@ -79,7 +76,17 @@ class GameOverScene extends Phaser.Scene {
         this.BRtxt.setFontSize(24);
       });
       this.botonReinicio.on("pointerdown", () => {
-        this.scene.start("GameScene");
+        switch (this.previousScene){
+        case 0 :
+          this.scene.start("GameScene");
+          break;
+        case 1 :
+          this.scene.start("GameScene2");
+          break;
+        case 2 :
+          break;
+
+      }
       });
     }
   }
