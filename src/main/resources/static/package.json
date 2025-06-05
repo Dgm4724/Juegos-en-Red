@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "foca": "file:",
     "phaser": "^3.87.0"
   }
 }
