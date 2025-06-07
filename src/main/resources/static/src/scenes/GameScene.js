@@ -7,14 +7,7 @@ class GameScene extends Phaser.Scene {
     this.isPaused = false;
   }
 
-  preload() {
-  }
-
   create() {
-    // factores de escala
-    this.widthRatio = this.scale.width / 720;
-    this.heightRatio = this.scale.height / 480;
-
     // el juego no está pausado al inicio
     this.isPaused = false;
 
@@ -25,14 +18,7 @@ class GameScene extends Phaser.Scene {
     this.add.image(360, 240, "fondo1");
 
     // Suelo
-    const suelo = this.add.rectangle(
-      360 * this.widthRatio,
-      470 * this.heightRatio,
-      720 * this.widthRatio,
-      10 * this.heightRatio,
-      0x000000,
-      0
-    );
+    const suelo = this.add.rectangle(360, 470, 720, 10, 0x000000, 0);
     this.physics.add.existing(suelo, true);
     this.suelo = suelo;
 
@@ -47,6 +33,7 @@ class GameScene extends Phaser.Scene {
 
     // Pelota (inicialmente estática)
     this.pelota = this.physics.add.image(360, 150, "pelota");
+    this.pelota.setSize(1.5);
     this.pelota.setBounce(0.75).setOrigin(0.5, 0.5).setCollideWorldBounds(true);
     this.pelota.body.setAllowGravity(false); // Desactivar gravedad inicialmente
 
@@ -97,11 +84,6 @@ class GameScene extends Phaser.Scene {
 
     // Crear menú de pausa (invisible por defecto)
     this.pauseMenu = this.createPauseMenu();
-    
-    this.adjustScale(); // Este método global está definido en INIT
-
-    // Escalar las físicas
-    this.scalePhysics();
 
     this.fadeFromBlack();
 
@@ -115,30 +97,54 @@ class GameScene extends Phaser.Scene {
     this.pauseBackground.setInteractive();
 
     // Opciones del menú de pausa
-    this.resumeButton = this.add.text(360, 200, 'Reanudar', {
+    this.resumeButton = this.add.text(360, 180, 'Reanudar', {
       fontFamily: 'Freckle Face',
-      fontSize: '32px',
+      fontSize: '33px',
       color: '#FFFFFF'
     }).setOrigin(0.5).setInteractive();
+    this.resumeButton.on('pointerover', () => {
+      this.resumeButton.setScale(1.09);
+      this.resumeButton.setTint(0xd9bfff);
+    });
+    this.resumeButton.on('pointerout', () => {
+      this.resumeButton.setScale(1); // Restaurar el tamaño original
+      this.resumeButton.clearTint(); // Eliminar el tinte
+    });
     this.resumeButton.on('pointerdown', () => {
       this.resumeGame();
     });
 
     this.quitButton = this.add.text(360, 250, 'Salir', {
       fontFamily: 'Freckle Face',
-      fontSize: '32px',
+      fontSize: '33px',
       color: '#FFFFFF'
     }).setOrigin(0.5).setInteractive();
+    this.quitButton.on('pointerover', () => {
+      this.quitButton.setScale(1.09);
+      this.quitButton.setTint(0xd9bfff);
+    });
+    this.quitButton.on('pointerout', () => {
+      this.quitButton.setScale(1); // Restaurar el tamaño original
+      this.quitButton.clearTint(); // Eliminar el tinte
+    });
     this.quitButton.on('pointerdown', () => {
       this.scene.start("MainMenuScene");
     });
 
     // Crear el botón de reiniciar en el menú de pausa
-    this.restartButton = this.add.text(360, 300, 'Reiniciar', {
+    this.restartButton = this.add.text(360, 320, 'Reiniciar', {
       fontFamily: 'Freckle Face',
-      fontSize: '32px',
+      fontSize: '33px',
       color: '#FFFFFF'
     }).setOrigin(0.5).setInteractive();
+    this.restartButton.on('pointerover', () => {
+      this.restartButton.setScale(1.09);
+      this.restartButton.setTint(0xd9bfff);
+    });
+    this.restartButton.on('pointerout', () => {
+      this.restartButton.setScale(1); // Restaurar el tamaño original
+      this.restartButton.clearTint(); // Eliminar el tinte
+    });
     this.restartButton.on('pointerdown', () => {
       this.restartGame(); // Llamar a la función de reinicio
     });
@@ -196,8 +202,7 @@ class GameScene extends Phaser.Scene {
         // Animación de entrada
         this.tweens.add({
           targets: this.countdownText,
-          scaleX: this.widthRatio, // Escalar a su tamaño normal
-          scaleY: this.heightRatio,
+          scale: 1, // Escalar a su tamaño normal
           duration: 300,
           ease: 'Back.easeOut', // Suavizado tipo salto
           onComplete: () => {
@@ -213,8 +218,7 @@ class GameScene extends Phaser.Scene {
         this.countdownText.setText('¡A jugar!');
         this.tweens.add({
           targets: this.countdownText,
-          scaleX: 1.2*this.widthRatio, // Escalar ligeramente más grande
-          scaleY: 1.2*this.heightRatio,
+          scale: 1.2, // Escalar ligeramente más grande
           duration: 300,
           ease: 'Back.easeOut', // Suavizado tipo "salto"
           yoyo: true, // Volver a escala normal
@@ -258,11 +262,6 @@ class GameScene extends Phaser.Scene {
     });
   }
 
-  scalePhysics() {
-    // Ajustar gravedad
-    this.physics.world.gravity.y *= this.heightRatio;
-  }
-
   createFoca(x, y, spriteKey) {
     const foca = this.physics.add.image(x, y, spriteKey);
     foca.setBounce(0).setCollideWorldBounds(true);
@@ -295,8 +294,8 @@ class GameScene extends Phaser.Scene {
     const direccionX = foca.flipX ? -1 : 1;
 
     // Aplicar la fuerza al golpe (por tipo) (ESCALADO SEGÚN ASPECT RATIO)
-    const fuerzaX = direccionX * (tipoGolpe === "fuerte" ? 1000 : 300) * this.widthRatio; // Dependiendo de si es fuerte o normal
-    const fuerzaY = (tipoGolpe === "fuerte" ? -200 : -350) * this.heightRatio;
+    const fuerzaX = direccionX * (tipoGolpe === "fuerte" ? 1000 : 300); // Dependiendo de si es fuerte o normal
+    const fuerzaY = (tipoGolpe === "fuerte" ? -200 : -350);
 
     // Establecer la velocidad de la pelota
     pelota.setVelocity(fuerzaX, fuerzaY);
@@ -315,7 +314,7 @@ class GameScene extends Phaser.Scene {
   handlePelotaToqueSuelo() {
     this.fadeToBlack(() => {
       // Cambiar a la escena GameOverScene y pasar la puntuación
-      this.scene.start('GameOverScene', { puntuacion: this.puntuacion });
+      this.scene.start('GameOverScene', { puntuacion: this.puntuacion, previousScene:0 });
     });
   }
 
@@ -341,14 +340,12 @@ class GameScene extends Phaser.Scene {
   }
   
   moveFoca(foca, leftKey, rightKey, jumpKey, normalHitKey, strongHitKey, speed, jumpForce) { // Movimiento horizontal
-    const scaledSpeed = speed * this.widthRatio; // Escalar velocidad horizontal
-    const scaledJumpForce = jumpForce * this.heightRatio; // Escalar fuerza de salto
 
     if (leftKey.isDown) {
-      foca.setVelocityX(-scaledSpeed);
+      foca.setVelocityX(-speed);
       foca.setFlipX(true); // Voltea la foca a la izquierda
     } else if (rightKey.isDown) {
-      foca.setVelocityX(scaledSpeed);
+      foca.setVelocityX(speed);
       foca.setFlipX(false); // Voltea la foca a la derecha
     } else {
       foca.setVelocityX(0); // Detenerse
@@ -363,7 +360,7 @@ class GameScene extends Phaser.Scene {
 
     // Salto
     if (Phaser.Input.Keyboard.JustDown(jumpKey) && foca.body.touching.down) {
-      foca.setVelocityY(-scaledJumpForce);
+      foca.setVelocityY(-jumpForce);
     }
 
     // Golpes
@@ -376,3 +373,5 @@ class GameScene extends Phaser.Scene {
 }
 
 export default GameScene;
+
+

@@ -7,9 +7,6 @@ class GameScene2 extends Phaser.Scene {
     this.isPaused = false;
   }
 
-  preload() {
-  }
-
   create() {
     // Reiniciar puntuación a cero
     this.puntuacion = 0;

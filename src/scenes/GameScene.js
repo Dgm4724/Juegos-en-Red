@@ -7,9 +7,6 @@ class GameScene extends Phaser.Scene {
     this.isPaused = false;
   }
 
-  preload() {
-  }
-
   create() {
     // el juego no está pausado al inicio
     this.isPaused = false;

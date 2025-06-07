@@ -4,10 +4,6 @@ class MainMenuScene extends Phaser.Scene {
     }
 
     create() {
-        // Factores de escala
-        this.widthRatio = this.scale.width / 720;
-        this.heightRatio = this.scale.height / 480;
-
         // Fondo
         this.add.image(360, 240, "fondoGenerico");
 
@@ -15,21 +11,56 @@ class MainMenuScene extends Phaser.Scene {
         this.interfaz = this.add.image(360, 240, "interfazMainMenu");
         this.interfaz.setScale(1.25);
 
+        // Sonido botón
+        this.buttonOverSound = this.sound.add("buttonOver");
+        this.buttonOnSound = this.sound.add("buttonOn");
+        this.bgMusic = this.sound.add("bgMenuMusic", {loop: true});
+
         // Botón Jugar
-        this.botonPlay = this.add.image(360, 245, "botonPlay").setInteractive();
+        this.botonPlay = this.add.image(360, 255, "botonPlay").setInteractive();
         this.botonPlay.setScale(1.5);
 
         this.botonPlay.on('pointerover', () => {
-            this.botonPlay.setScale(1.07 * 1.5 * this.widthRatio, 1.07 * 1.5 * this.heightRatio);
+            this.botonPlay.setScale(1.07 * 1.5);
             this.botonPlay.setTint(0xd0ff8d);
+            this.buttonOverSound.play({volume: 0.5});
         });
+
         this.botonPlay.on('pointerout', () => {
-            this.botonPlay.setScale(1.5 * this.widthRatio, 1.5 * this.heightRatio); // Restaurar el tamaño original
+            this.botonPlay.setScale(1.5); // Restaurar el tamaño original
             this.botonPlay.clearTint(); // Eliminar el tinte
         });
+
         this.botonPlay.on("pointerdown", () => {
             this.fadeToBlack(() => {
+                this.buttonOnSound.play({volume: 0.5});
                 this.scene.start("LevelSelectorScene");
+            });
+        });
+
+        // Botón Login
+        this.botonLogin = this.add.image(625, 50, "boton").setInteractive();
+        this.botonLogin.setScale(0.8, 0.64);
+        this.Ltxt = this.add.text(625, 50, "Iniciar Sesión", {
+            fontFamily: "Barrio",
+            fontSize: "19px",
+            fontStyle: "Bold",
+            color: "#000000",
+        }).setOrigin(0.5);
+
+        this.botonLogin.on('pointerover', () => {
+            this.botonLogin.setScale(0.8 * 1.05, 0.64 * 1.05);
+            this.botonLogin.setTint(0xffdca1);
+            this.Ltxt.setFontSize(20);
+        });
+        this.botonLogin.on('pointerout', () => {
+            this.botonLogin.setScale(0.8, 0.64); // Restaurar el tamaño original
+            this.botonLogin.clearTint(); // Eliminar el tinte
+            this.Ltxt.setFontSize(19);
+        });
+        this.botonLogin.on("pointerdown", () => {
+            this.fadeToBlack(() => {
+                this.scene.start("LoginScene");
             });
         });
 
@@ -44,14 +75,18 @@ class MainMenuScene extends Phaser.Scene {
         }).setOrigin(0.5);
 
         this.botonA.on('pointerover', () => {
-            this.botonA.setScale(1.05 * this.widthRatio, 1.05 * 0.8 * this.heightRatio);
+            this.buttonOverSound.play({volume: 0.5});
+            this.botonA.setScale(1.05, 1.05 * 0.8);
             this.botonA.setTint(0xffdca1);
             this.Atxt.setFontSize(26);
         });
         this.botonA.on('pointerout', () => {
-            this.botonA.setScale(this.widthRatio, 0.8 * this.heightRatio); // Restaurar el tamaño original
+            this.botonA.setScale(1, 0.8); // Restaurar el tamaño original
             this.botonA.clearTint(); // Eliminar el tinte
             this.Atxt.setFontSize(23);
+        });
+        this.botonA.on("pointerdown", () => {
+            this.buttonOnSound.play({volume: 0.5});
         });
 
         // Botón Créditos
@@ -65,23 +100,25 @@ class MainMenuScene extends Phaser.Scene {
         }).setOrigin(0.5);
 
         this.botonC.on('pointerover', () => {
-            this.botonC.setScale(1.05 * this.widthRatio, 1.05 * 0.8 * this.heightRatio);
+            this.buttonOverSound.play({volume: 0.5});
+            this.botonC.setScale(1.05, 1.05 * 0.8);
             this.botonC.setTint(0xffdca1);
             this.Ctxt.setFontSize(26);
         });
         this.botonC.on('pointerout', () => {
-            this.botonC.setScale(this.widthRatio, 0.8 * this.heightRatio); // Restaurar el tamaño original
+            this.botonC.setScale(1, 0.8); // Restaurar el tamaño original
             this.botonC.clearTint(); // Eliminar el tinte
             this.Ctxt.setFontSize(23);
         });
         this.botonC.on("pointerdown", () => {
             this.fadeToBlack(() => {
+                this.buttonOnSound.play({volume: 0.5});
                 this.scene.start("CreditsScene");
             });
         });
 
         // Texto animado
-        this.jugarTexto = this.add.text(360, 170, "¡Haz clic en el botón verde para empezar a jugar!", {
+        this.jugarTexto = this.add.text(360, 175, "¡Haz clic en 'Jugar' para empezar el juego!", {
             fontFamily: "Freckle Face",
             fontSize: "20px",
             color: "#000000",
@@ -93,9 +130,8 @@ class MainMenuScene extends Phaser.Scene {
         // RECTÁNGULO NEGRO PARA LOS FUNDIDOS
         this.fundido = this.add.rectangle(720 / 2, 480 / 2, 720, 480, 'black', 1);
 
-        this.adjustScale();
-
         this.fadeFromBlack();
+        if(!this.bgMusic.isPlaying) {this.bgMusic.play();}
     }
 
     // Animación del texto (rotación y escalado por separado)
@@ -103,8 +139,7 @@ class MainMenuScene extends Phaser.Scene {
         // Rotación a un lado
         this.tweens.add({
             targets: this.jugarTexto,
-            scaleX: 0.97*this.widthRatio, // Escala sutil
-            scaleY: 0.97*this.heightRatio,
+            scale: 0.97, // Escala sutil
             duration: 750,
             ease: 'Sine.easeInOut',
             yoyo: true, // Regresa al tamaño original
