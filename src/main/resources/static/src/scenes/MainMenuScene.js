@@ -59,6 +59,31 @@ class MainMenuScene extends Phaser.Scene {
             });
         });
 
+        // Botón Login
+        this.botonL = this.add.image(100, 500, "boton").setInteractive();
+        this.botonL.setScale(1, 0.8);
+        this.Ltxt = this.add.text(360, 345, "Iniciar Sesión", {
+            fontFamily: "Barrio",
+            fontSize: "23px",
+            fontStyle: "Bold",
+            color: "#000000",
+        }).setOrigin(0.5);
+
+        this.botonL.on('pointerover', () => {
+            this.buttonOverSound.play({volume: 0.5});
+            this.botonL.setScale(1.05, 1.05 * 0.8);
+            this.botonL.setTint(0xffdca1);
+            this.Ltxttxt.setFontSize(26);
+        });
+        this.botonL.on('pointerout', () => {
+            this.botonL.setScale(1, 0.8); // Restaurar el tamaño original
+            this.botonL.clearTint(); // Eliminar el tinte
+            this.Ltxt.setFontSize(23);
+        });
+        this.botonL.on("pointerdown", () => {
+            this.buttonOnSound.play({volume: 0.5});
+        });
+
         // Botón Ajustes
         this.botonA = this.add.image(360, 345, "boton").setInteractive();
         this.botonA.setScale(1, 0.8);
