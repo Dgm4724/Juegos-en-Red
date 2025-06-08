@@ -118,7 +118,7 @@ class MainMenuScene extends Phaser.Scene {
         });
 
         // Texto animado
-        this.jugarTexto = this.add.text(360, 175, "¡Haz clic en 'Jugar' para empezar el juego!", {
+        this.jugarTexto = this.add.text(360, 175, "¡Haz clic en el botón verde para empezar a jugar!", {
             fontFamily: "Freckle Face",
             fontSize: "20px",
             color: "#000000",

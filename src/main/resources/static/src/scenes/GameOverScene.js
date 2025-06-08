@@ -10,6 +10,9 @@ class GameOverScene extends Phaser.Scene {
     }
   
     create() {
+      // desactivar chat
+        document.getElementById("chat").style.display = "none";
+
       // Fondo
       this.add.image(360, 240, "fondoGenerico");
   

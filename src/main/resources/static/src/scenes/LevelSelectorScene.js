@@ -4,6 +4,9 @@ class LevelSelectorScene extends Phaser.Scene {
     }
 
     create() {
+        // activar chat
+        document.getElementById("chat").style.display = "block";
+        
         // factores de escala
         this.widthRatio = this.scale.width / 720;
         this.heightRatio = this.scale.height / 480;

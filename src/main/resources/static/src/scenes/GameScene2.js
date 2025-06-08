@@ -8,6 +8,9 @@ class GameScene2 extends Phaser.Scene {
   }
 
   create() {
+    // desactivar chat
+        document.getElementById("chat").style.display = "none";
+        
     // Reiniciar puntuación a cero
     this.puntuacion = 0;
 

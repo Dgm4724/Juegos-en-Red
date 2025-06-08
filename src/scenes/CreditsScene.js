@@ -4,6 +4,7 @@ class CreditsScene extends Phaser.Scene {
   }
 
   create() {
+    
     // Fondo
     const fondo = this.add.image(360, 240, "fondoGenericoAzul");
 
