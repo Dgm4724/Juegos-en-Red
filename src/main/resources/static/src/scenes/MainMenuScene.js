@@ -4,6 +4,28 @@ class MainMenuScene extends Phaser.Scene {
     }
 
     create() {
+
+        // Verifica si la música ya existe y está sonando
+        const existingMusic = this.sound.get('bgMenuMusic');
+
+        if (!existingMusic) {
+            // Si no existe, la creamos y la reproducimos
+            const bgMenuMusic = this.sound.add('bgMenuMusic', {
+            loop: true,
+            volume: 0.5
+            });
+            bgMenuMusic.play();
+
+            // Marcarla como persistente entre escenas
+            this.sys.game.bgMenuMusic = bgMenuMusic;
+        } else if (!existingMusic.isPlaying) {
+            // Si existe pero está detenida, la reproducimos
+            existingMusic.play();
+        }
+
+        // Ocultar chat
+        document.getElementById("chat").style.display = "none";
+
         // Fondo
         this.add.image(360, 240, "fondoGenerico");
 
@@ -14,7 +36,6 @@ class MainMenuScene extends Phaser.Scene {
         // Sonido botón
         this.buttonOverSound = this.sound.add("buttonOver");
         this.buttonOnSound = this.sound.add("buttonOn");
-        this.bgMusic = this.sound.add("bgMenuMusic", {loop: true});
 
         // Botón Jugar
         this.botonPlay = this.add.image(360, 255, "botonPlay").setInteractive();
@@ -105,7 +126,6 @@ class MainMenuScene extends Phaser.Scene {
         this.fundido = this.add.rectangle(720 / 2, 480 / 2, 720, 480, 'black', 1);
 
         this.fadeFromBlack();
-        if(!this.bgMusic.isPlaying) {this.bgMusic.play();}
     }
 
     // Animación del texto (rotación y escalado por separado)

@@ -4,7 +4,9 @@ class CreditsScene extends Phaser.Scene {
   }
 
   create() {
-    
+    // Ocultar chat
+    document.getElementById("chat").style.display = "none";
+
     // Fondo
     const fondo = this.add.image(360, 240, "fondoGenericoAzul");
 
