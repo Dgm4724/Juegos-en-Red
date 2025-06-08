@@ -6,8 +6,6 @@ class Bootstrap extends Phaser.Scene {
         this.load.on("complete", () => {
             this.scene.start("MainMenuScene");
         })
-
-        this.load.html("loginForm", "./assets/text/loginForm.html");
         
         // IMÁGENES
         this.load.image("fondo1", "./assets/images/fondo1.png");

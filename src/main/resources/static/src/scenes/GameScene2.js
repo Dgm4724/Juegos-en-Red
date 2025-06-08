@@ -8,9 +8,6 @@ class GameScene2 extends Phaser.Scene {
   }
 
   create() {
-    // desactivar chat
-        document.getElementById("chat").style.display = "none";
-        
     // Reiniciar puntuación a cero
     this.puntuacion = 0;
 
@@ -40,6 +37,7 @@ class GameScene2 extends Phaser.Scene {
 
     // Pelota (inicialmente estática)
     this.pelota = this.physics.add.image(360, 150, "pelota");
+    this.pelota.setSize(1.5);
     this.pelota.setBounce(0.75).setOrigin(0.5, 0.5).setCollideWorldBounds(true);
     this.pelota.body.setAllowGravity(false); // Desactivar gravedad inicialmente
 

@@ -4,8 +4,6 @@ class MainMenuScene extends Phaser.Scene {
     }
 
     create() {
-        // activar chat
-        document.getElementById("chat").style.display = "block";
         // Fondo
         this.add.image(360, 240, "fondoGenerico");
 
@@ -37,32 +35,6 @@ class MainMenuScene extends Phaser.Scene {
             this.fadeToBlack(() => {
                 this.buttonOnSound.play({volume: 0.5});
                 this.scene.start("LevelSelectorScene");
-            });
-        });
-
-        // Botón Login
-        this.botonLogin = this.add.image(625, 50, "boton").setInteractive();
-        this.botonLogin.setScale(0.8, 0.64);
-        this.Ltxt = this.add.text(625, 50, "Iniciar Sesión", {
-            fontFamily: "Barrio",
-            fontSize: "19px",
-            fontStyle: "Bold",
-            color: "#000000",
-        }).setOrigin(0.5);
-
-        this.botonLogin.on('pointerover', () => {
-            this.botonLogin.setScale(0.8 * 1.05, 0.64 * 1.05);
-            this.botonLogin.setTint(0xffdca1);
-            this.Ltxt.setFontSize(20);
-        });
-        this.botonLogin.on('pointerout', () => {
-            this.botonLogin.setScale(0.8, 0.64); // Restaurar el tamaño original
-            this.botonLogin.clearTint(); // Eliminar el tinte
-            this.Ltxt.setFontSize(19);
-        });
-        this.botonLogin.on("pointerdown", () => {
-            this.fadeToBlack(() => {
-                this.scene.start("LoginScene");
             });
         });
 

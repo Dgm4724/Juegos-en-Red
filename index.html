@@ -5,54 +5,72 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie-edge">
   <title>FOCA</title>
-  
+  <!-- FUENTES -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barrio&family=Finger+Paint&family=Freckle+Face&family=Tiny5&display=swap" rel="stylesheet">
+
   <style>
-
-    /*FUENTES*/
-    @font-face {
-      font-family: "Barrio";
-      src: url("assets/fonts/Barrio-Regular.ttf") format("truetype");
-      font-weight: normal;
-      font-style: normal;
-    }
-
-    @font-face {
-      font-family: "Freckle Face";
-      src: url("assets/fonts/FreckleFace-Regular.ttf") format("truetype");
-      font-weight: normal;
-      font-style: normal;
-    }
-    
-    /*ESTILO*/
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      background-color: rgb(36, 36, 36);
-    }
-
     main {
       width: 100%;
-      height: 100%;
+      height: 100vh;
       display: flex;
       justify-content: center;
-      align-items: center;
-      background-color: #333;
+    }
+    #contenedor {
+      margin-top: 50px;
+      width: 100%;
+      aspect-ratio: 3 / 2;
+    }
+    body {
+      background-color: rgb(36, 36, 36);
+    }
+    #chat {
+      position: absolute;
+      bottom: 25vh;
+      right: 3vw;
+      width: 25vw;
+      background: rgba(137, 79, 62, 0.759);
+      border-radius: 0.8vh;
+      border: 4px solid #3b3a3499;
+      padding: 1vh;
+      font-family: sans-serif;
+      z-index: 1000;
+      max-width: 300px;
+      min-width: 200px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     }
 
-    #contenedor {
-      height: 95%;
-      width: 95%;
+    #chat-messages {
+      height: 20vh;
+      overflow-y: auto;
+      border: 4px solid #3b3a3499;
+      padding: 1vh;
+      background: #6696c948;
+      font-size: 1.3vh;
+    }
+
+    #chat-input {
+      width: 100%;
+      border: 4px solid #6f6c5a99;
+      background: #c2a2729e;
+      box-sizing: border-box;
+      margin-top: 1vh;
+      padding: 0.8vh;
+      font-size: 1.6vh;
     }
   </style>
 </head>
 <body>
   <main>
+    <div id="chat">
+      <div id="chat-messages"></div>
+      <input type="text" id="chat-input" placeholder="Escribe tu mensaje..." />
+    </div>
     <div id="contenedor"></div>
   </main>
 
-  <script src="./node_modules/phaser/dist/phaser.js"></script>
+  <script src="./phaser.js"></script>
   <script src="./src/init.js" type="module"></script>
 
 </body>
