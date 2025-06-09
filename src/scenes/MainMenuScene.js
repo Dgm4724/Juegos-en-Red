@@ -60,9 +60,9 @@ class MainMenuScene extends Phaser.Scene {
         });
 
         // Botón Login
-        this.botonL = this.add.image(630, 30, "boton").setInteractive();
+        this.botonL = this.add.image(615, 40, "boton").setInteractive();
         this.botonL.setScale(1, 0.8);
-        this.Ltxt = this.add.text(630, 30, "Iniciar Sesión", {
+        this.Ltxt = this.add.text(615, 40, "Iniciar Sesión", {
             fontFamily: "Barrio",
             fontSize: "23px",
             fontStyle: "Bold",
@@ -73,7 +73,7 @@ class MainMenuScene extends Phaser.Scene {
             this.buttonOverSound.play({volume: 0.5});
             this.botonL.setScale(1.05, 1.05 * 0.8);
             this.botonL.setTint(0xffdca1);
-            this.Ltxttxt.setFontSize(26);
+            this.Ltxt.setFontSize(26);
         });
         this.botonL.on('pointerout', () => {
             this.botonL.setScale(1, 0.8); // Restaurar el tamaño original
@@ -82,6 +82,7 @@ class MainMenuScene extends Phaser.Scene {
         });
         this.botonL.on("pointerdown", () => {
             this.buttonOnSound.play({volume: 0.5});
+            this.scene.start("LoginScene");
         });
 
         // Botón Ajustes
