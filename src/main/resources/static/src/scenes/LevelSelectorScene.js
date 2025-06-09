@@ -4,8 +4,17 @@ class LevelSelectorScene extends Phaser.Scene {
     }
 
     create() {
+        this.chatBox = document.getElementById('chat-messages');
+        this.messageInput = document.getElementById('chat-input');
+
+        this.lastTimestamp = 0; // Track the last fetched timestamp
+
+        // Base URL dynamically derived from the current browser location
+        this.baseUrl = `${window.location.origin}/chat`;
+
         // Mostrar chat
         document.getElementById("chat").style.display = "block";
+        this.enterKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
 
         // factores de escala
         this.widthRatio = this.scale.width / 720;
@@ -222,6 +231,50 @@ class LevelSelectorScene extends Phaser.Scene {
             this.nextLvl = undefined;
             this.scene.start("MainMenuScene");
         });
+        // Fetch messages initially and poll every 2 seconds
+        this.fetchMessages();
+        setInterval(() => this.fetchMessages(), 2000);
+    }
+
+    // Fetch messages from the server
+    fetchMessages() {
+        fetch(`${this.baseUrl}?since=${this.lastTimestamp}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.messages && data.messages.length > 0) {
+                data.messages.forEach(msg => {
+                    this.chatBox.innerHTML += `<div>${msg}</div>`;
+                });
+                this.chatBox.scrollTop = this.chatBox.scrollHeight;
+                this.lastTimestamp = data.timestamp;
+            }
+        });
+
+    }
+
+    // Send a new message to the server
+    sendMessage() {
+        let m = this.messageInput.value;
+        if (!m) return;
+
+        fetch(this.baseUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams({
+        message: m.trim()
+        })
+        }).then(() => {
+            this.messageInput.value = '';
+            this.fetchMessages();
+        });
+
+    }
+    update() {
+        if (Phaser.Input.Keyboard.JustDown(this.enterKey) && this.messageInput.value !== '') {
+            this.sendMessage();
+        }
     }
 }
 

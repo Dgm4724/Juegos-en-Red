@@ -8,8 +8,8 @@ class GameScene2 extends Phaser.Scene {
   }
 
   create() {
-    // Mostrar chat
-    document.getElementById("chat").style.display = "block";
+    // Ocultar chat
+    document.getElementById("chat").style.display = "none";
 
     // Reiniciar puntuación a cero
     this.puntuacion = 0;
