@@ -18,6 +18,7 @@ class Bootstrap extends Phaser.Scene {
         this.load.image("pelota", "./assets/images/pelota.png");
         this.load.image("palmera", "./assets/images/palmera.png");
         this.load.image("cartelPuntuacion", "./assets/images/cartelPuntuacion.png");
+        this.load.image("cartelLogin", "./assets/images/Login_container.png");
         this.load.image("botonPlay", "./assets/images/botonPlay.png");
         this.load.image("boton", "./assets/images/boton.png");
         this.load.image("interfazMainMenu", "./assets/images/interfazMainMenu.png");
@@ -42,9 +43,9 @@ class Bootstrap extends Phaser.Scene {
         this.load.font("Freckle Face", "./assets/fonts/FreckleFace-Regular.ttf");
 
         // LOGIN
-        this.load.setBaseURL('https://cdn.phaserfiles.com/v385');
+        // this.load.setBaseURL('https://cdn.phaserfiles.com/v385');
         this.load.html('nameform', 'assets/text/loginform.html');
-        this.load.image('pic', 'assets/pics/turkey-1985086.jpg');
+        // this.load.image('pic', 'assets/pics/turkey-1985086.jpg');
     }
 }
 

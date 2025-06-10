@@ -2,6 +2,10 @@ class LevelSelectorScene extends Phaser.Scene {
     constructor() {
         super({ key: "LevelSelectorScene" });
     }
+    init(data = null) {
+        this.userlogText = data.userlogText;
+        console.log("Usuario logueado:", this.userlogText);
+    }
 
     create() {
         this.chatBox = document.getElementById('chat-messages');
@@ -254,8 +258,10 @@ class LevelSelectorScene extends Phaser.Scene {
 
     // Send a new message to the server
     sendMessage() {
-        let m = this.messageInput.value;
-        if (!m) return;
+        let mes = this.messageInput.value;
+        if (!mes) return;
+        if(this.userlogText == undefined && this.userlogText == null) return;
+        let m = `${this.userlogText} : ${mes}`
 
         fetch(this.baseUrl, {
         method: 'POST',

@@ -3,10 +3,19 @@ class MainMenuScene extends Phaser.Scene {
     constructor() {
         super({ key: "MainMenuScene" });
     }
+    init(data = null) {
+        this.userlogText = data.userlogText;
+        console.log("Usuario logueado:", this.userlogText);
+    }
     
     create() {
         this.chatBox = document.getElementById('chat-messages');
         this.messageInput = document.getElementById('chat-input');
+        this.userlog = document.getElementById('userlog');
+        if(this.userlogText !== undefined && this.userlogText !== null)
+        {
+            this.userlog.innerHTML = `Has iniciado sesión como ${this.userlogText}`;
+        }
 
         this.lastTimestamp = 0; // Track the last fetched timestamp
 
@@ -64,33 +73,34 @@ class MainMenuScene extends Phaser.Scene {
         this.botonPlay.on("pointerdown", () => {
             this.fadeToBlack(() => {
                 this.buttonOnSound.play({volume: 0.5});
-                this.scene.start("LevelSelectorScene");
+                this.scene.start("LevelSelectorScene", { userlogText: this.userlogText });
             });
         });
 
         // Botón Login
-        this.botonL = this.add.image(100, 500, "boton").setInteractive();
-        this.botonL.setScale(1, 0.8);
-        this.Ltxt = this.add.text(360, 345, "Iniciar Sesión", {
+        this.botonL = this.add.image(600, 40, "boton").setInteractive();
+        this.botonL.setScale(0.8, 0.7);
+        this.Ltxt = this.add.text(600, 40, "Iniciar Sesión", {
             fontFamily: "Barrio",
-            fontSize: "23px",
+            fontSize: "18px",
             fontStyle: "Bold",
             color: "#000000",
         }).setOrigin(0.5);
 
         this.botonL.on('pointerover', () => {
+            this.botonL.setScale(0.85, 0.75);
             this.buttonOverSound.play({volume: 0.5});
-            this.botonL.setScale(1.05, 1.05 * 0.8);
             this.botonL.setTint(0xffdca1);
-            this.Ltxttxt.setFontSize(26);
+            this.Ltxt.setFontSize(20);
         });
         this.botonL.on('pointerout', () => {
-            this.botonL.setScale(1, 0.8); // Restaurar el tamaño original
+            this.botonL.setScale(0.8, 0.7); // Restaurar el tamaño original
             this.botonL.clearTint(); // Eliminar el tinte
-            this.Ltxt.setFontSize(23);
+            this.Ltxt.setFontSize(18);
         });
         this.botonL.on("pointerdown", () => {
             this.buttonOnSound.play({volume: 0.5});
+            this.scene.start("LoginScene");
         });
 
         // Botón Ajustes
@@ -221,8 +231,10 @@ class MainMenuScene extends Phaser.Scene {
 
     // Send a new message to the server
     sendMessage() {
-        let m = this.messageInput.value;
-        if (!m) return;
+        let mes = this.messageInput.value;
+        if (!mes) return;
+        if(this.userlogText == undefined && this.userlogText == null) return;
+        let m = `${this.userlogText} : ${mes}`
 
         fetch(this.baseUrl, {
         method: 'POST',

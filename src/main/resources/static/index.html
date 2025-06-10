@@ -60,6 +60,16 @@
       padding: 0.8vh;
       font-size: 1.6vh;
     }
+
+    #userlog {
+      position: fixed;
+      top: 1vh;
+      left: 4vw;
+      font-size: 1.5vw;
+      color: rgb(173, 160, 141);
+      z-index: 999;
+      font-family: 'Freckle Face';
+    }
   </style>
 </head>
 <body>
@@ -69,6 +79,8 @@
       <input type="text" id="chat-input" placeholder="Escribe tu mensaje..." />
     </div>
     <div id="contenedor"></div>
+    <div id="userlog">
+    </div>
   </main>
 
   <script src="./phaser.js"></script>
