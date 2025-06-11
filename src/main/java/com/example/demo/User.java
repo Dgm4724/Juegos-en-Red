@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class User {
     private String username;
 
-    @JsonIgnore // No incluir la contraseña en las respuestas JSON
     private String password;
 
     private Integer score;

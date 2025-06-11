@@ -123,7 +123,7 @@ class LoginScene extends Phaser.Scene {
         // Crear input contraseña
         this.passwordInput = document.createElement('input');
         
-        this.passwordInput.type = 'text';
+        this.passwordInput.type = 'password';
         this.passwordInput.placeholder = 'Contraseña';
         this.passwordInput.style.position = 'absolute';
         this.passwordInput.style.top = '50%';
@@ -144,7 +144,7 @@ class LoginScene extends Phaser.Scene {
 
         this.registerButton.on('pointerdown', () => {
         const username = this.usernameInput.value.trim();
-        const password = this.usernameInput.value.trim();
+        const password = this.passwordInput.value.trim();
         if (username !== "" && password !== "") {
             this.usernameInput.value = "";
             this.passwordInput.value = "";
@@ -178,6 +178,10 @@ class LoginScene extends Phaser.Scene {
             })
             .catch(err => {
                 console.error("Error durante el registro:", err.message);
+                this.errorRegisterText = this.add.text(360, 300, `${err.message}`, {fontFamily: "Freckle Face", fontSize: "20px", fontStyle: "Bold", color: "#000000"}).setOrigin(0.5);
+                if(this.errorLoginText){
+                    this.errorLoginText.destroy();
+                }
             });
         }
         });
@@ -187,7 +191,7 @@ class LoginScene extends Phaser.Scene {
 
         this.loginButton.on('pointerdown', () => {
         const username = this.usernameInput.value.trim();
-        const password = this.usernameInput.value.trim();
+        const password = this.passwordInput.value.trim();
         if (username !== "" && password !== "") {
             this.usernameInput.value = "";
             this.passwordInput.value = "";
@@ -221,6 +225,10 @@ class LoginScene extends Phaser.Scene {
             })
             .catch(err => {
                 console.error("Error durante el inicio de sesión:", err.message);
+                this.errorLoginText = this.add.text(370, 300, `${err.message}`, {fontFamily: "Freckle Face", fontSize: "20px", fontStyle: "Bold", color: "#b0202b"}).setOrigin(0.5);
+                if(this.errorRegisterText){
+                    this.errorRegisterText.destroy();
+                }
             });
         }
         });

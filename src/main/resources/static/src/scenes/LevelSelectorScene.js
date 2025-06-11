@@ -11,14 +11,16 @@ class LevelSelectorScene extends Phaser.Scene {
         this.chatBox = document.getElementById('chat-messages');
         this.messageInput = document.getElementById('chat-input');
 
-        this.lastTimestamp = 0; // Track the last fetched timestamp
-
         // Base URL dynamically derived from the current browser location
         this.baseUrl = `${window.location.origin}/chat`;
 
         // Mostrar chat
         document.getElementById("chat").style.display = "block";
         this.enterKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
+
+        if (this.registry.get('lastTimestamp') == undefined){ // Track the last fetched timestamp
+        this.registry.set('lastTimestamp' , 0);
+        }
 
         // factores de escala
         this.widthRatio = this.scale.width / 720;
@@ -242,7 +244,7 @@ class LevelSelectorScene extends Phaser.Scene {
 
     // Fetch messages from the server
     fetchMessages() {
-        fetch(`${this.baseUrl}?since=${this.lastTimestamp}`)
+        fetch(`${this.baseUrl}?since=${this.registry.get('lastTimestamp')}`)
         .then(response => response.json())
         .then(data => {
             if (data.messages && data.messages.length > 0) {
@@ -250,7 +252,7 @@ class LevelSelectorScene extends Phaser.Scene {
                     this.chatBox.innerHTML += `<div>${msg}</div>`;
                 });
                 this.chatBox.scrollTop = this.chatBox.scrollHeight;
-                this.lastTimestamp = data.timestamp;
+                this.registry.set('lastTimestamp' , data.timestamp);
             }
         });
 
