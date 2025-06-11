@@ -1,52 +1,60 @@
 package com.example.demo;
 
 import org.springframework.stereotype.Service;
-import java.util.HashMap;
-import java.util.Map;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserService {
 
-    // Almacén en memoria (simulación de base de datos)
-    private Map<String, User> userDatabase = new HashMap<>();
+    private final File usersFile = new File("users.txt");
 
     // Registro de usuarios
     public User registerUser(User user) {
-        if (userDatabase.containsKey(user.getUsername())) {
+        if (userExists(user.getUsername())) {
             throw new RuntimeException("El usuario ya existe");
         }
-        userDatabase.put(user.getUsername(), user);
+        appendUserToFile(user);
         return user;
     }
 
     // Autenticar usuarios
     public User authenticateUser(User user) {
-        User storedUser = userDatabase.get(user.getUsername());
+        User storedUser = getUserByUsername(user.getUsername());
         if (storedUser != null && storedUser.getPassword().equals(user.getPassword())) {
-            return storedUser; // Autenticado
+            return storedUser;
         }
-        return null; // No autenticado
+        return null;
     }
 
     // Obtener puntuación de un usuario
     public Integer getUserScore(String username) {
-        User user = userDatabase.get(username);
+        User user = getUserByUsername(username);
         return user != null ? user.getScore() : null;
     }
 
     // Actualizar puntuación de un usuario
     public void updateUserScore(User user) {
-        User storedUser = userDatabase.get(user.getUsername());
-        if (storedUser != null) {
-            storedUser.setScore(user.getScore());
-        } else {
+        List<User> users = readAllUsers();
+        boolean found = false;
+        for (User u : users) {
+            if (u.getUsername().equals(user.getUsername())) {
+                u.setScore(user.getScore());
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
             throw new RuntimeException("Usuario no encontrado");
         }
+        writeAllUsers(users);
     }
 
-    // Generar un token simple (se recomienda usar JWT en un proyecto real)
+    // Generar un token simple
     public String generateToken(User user) {
-        return "token-" + user.getUsername(); // Token básico basado en el nombre de usuario
+        return "token-" + user.getUsername();
     }
 
     // Validar un token simple
@@ -54,7 +62,86 @@ public class UserService {
         if (token == null || !token.startsWith("token-")) {
             return false;
         }
-        String username = token.substring(6); // Extraer el nombre de usuario del token
-        return userDatabase.containsKey(username);
+        String username = token.substring(6);
+        return userExists(username);
+    }
+
+    // ---- Métodos auxiliares para manejar el archivo ----
+
+    private boolean userExists(String username) {
+        return getUserByUsername(username) != null;
+    }
+
+    private User getUserByUsername(String username) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(usersFile))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                User user = parseUser(line);
+                if (user != null && user.getUsername().equals(username)) {
+                    return user;
+                }
+            }
+        } catch (FileNotFoundException e) {
+            // archivo no existe aún, usuario no existe
+            return null;
+        } catch (IOException e) {
+            throw new RuntimeException("Error al leer archivo de usuarios", e);
+        }
+        return null;
+    }
+
+    private void appendUserToFile(User user) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(usersFile, true))) {
+            String line = user.getUsername() + "," + user.getPassword() + "," + user.getScore();
+            writer.write(line);
+            writer.newLine();
+        } catch (IOException e) {
+            throw new RuntimeException("Error al guardar el usuario en archivo", e);
+        }
+    }
+
+    private List<User> readAllUsers() {
+        List<User> users = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(usersFile))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                User user = parseUser(line);
+                if (user != null) {
+                    users.add(user);
+                }
+            }
+        } catch (FileNotFoundException e) {
+            // archivo no existe, lista vacía
+        } catch (IOException e) {
+            throw new RuntimeException("Error al leer archivo de usuarios", e);
+        }
+        return users;
+    }
+
+    private void writeAllUsers(List<User> users) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(usersFile, false))) {
+            for (User user : users) {
+                String line = user.getUsername() + "," + user.getPassword() + "," + user.getScore();
+                writer.write(line);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Error al escribir archivo de usuarios", e);
+        }
+    }
+
+    private User parseUser(String line) {
+        String[] parts = line.split(",");
+        if (parts.length != 3) {
+            return null;
+        }
+        try {
+            String username = parts[0];
+            String password = parts[1];
+            int score = Integer.parseInt(parts[2]);
+            return new User(username, password, score);
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 }

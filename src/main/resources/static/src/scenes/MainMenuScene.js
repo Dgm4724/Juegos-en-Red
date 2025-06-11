@@ -4,9 +4,15 @@ class MainMenuScene extends Phaser.Scene {
         super({ key: "MainMenuScene" });
     }
     init(data = null) {
-        this.userlogText = data.userlogText;
+        if(data && data.userlogText) {
+            this.userlogText = data.userlogText;
+            localStorage.setItem('userlogText', this.userlogText); // guardar sesión
+        } else {
+            this.userlogText = localStorage.getItem('userlogText');
+        }
         console.log("Usuario logueado:", this.userlogText);
     }
+
     
     create() {
         this.chatBox = document.getElementById('chat-messages');
@@ -79,15 +85,17 @@ class MainMenuScene extends Phaser.Scene {
             });
         });
 
-        // Botón Login
+        // Botón Login o Logout
         this.botonL = this.add.image(600, 40, "boton").setInteractive();
         this.botonL.setScale(0.8, 0.7);
-        this.Ltxt = this.add.text(600, 40, "Iniciar Sesión", {
+        this.Ltxt = this.add.text(600, 40, "", {
             fontFamily: "Barrio",
             fontSize: "18px",
             fontStyle: "Bold",
             color: "#000000",
         }).setOrigin(0.5);
+
+        this.Ltxt.setText(this.userlogText ? "Cerrar Sesión" : "Iniciar Sesión");
 
         this.botonL.on('pointerover', () => {
             this.botonL.setScale(0.85, 0.75);
@@ -96,13 +104,19 @@ class MainMenuScene extends Phaser.Scene {
             this.Ltxt.setFontSize(20);
         });
         this.botonL.on('pointerout', () => {
-            this.botonL.setScale(0.8, 0.7); // Restaurar el tamaño original
-            this.botonL.clearTint(); // Eliminar el tinte
+            this.botonL.setScale(0.8, 0.7);
+            this.botonL.clearTint();
             this.Ltxt.setFontSize(18);
         });
+
         this.botonL.on("pointerdown", () => {
             this.buttonOnSound.play({volume: 0.5});
-            this.scene.start("LoginScene");
+            if (this.userlogText) {
+                this.showLogoutConfirm();
+            } else {
+                // Ir a login
+                this.scene.start("LoginScene");
+            }
         });
 
         // Botón Ajustes
@@ -218,7 +232,7 @@ class MainMenuScene extends Phaser.Scene {
     // Fetch messages from the server
     fetchMessages() {
         fetch(`${this.baseUrl}?since=${this.registry.get('lastTimestamp')}`)
-        .then(response => response.ok ? response.json() : Promise.reject())
+        .then(response => response.json())
         .then(data => {
             if (data.messages && data.messages.length > 0) {
                 data.messages.forEach(msg => {
@@ -227,34 +241,10 @@ class MainMenuScene extends Phaser.Scene {
                 this.chatBox.scrollTop = this.chatBox.scrollHeight;
                 this.registry.set('lastTimestamp', data.timestamp);
             }
-            this.registry.set('connection', true);
-        })
-        .catch(() => {
-        this.registry.set('connection', false);
-        this.showConnectionError();
         });
+
     }
-    update(){
-            // Mensaje de conexión
-            if(this.registry.get('connection') == false){
-                this.showConnectionError();
-            }else{
-                if(this.connectionText !== undefined){
-                    this.connectionText.setVisible(false);
-                }
-            }
-        }
-    showConnectionError() {
-        if(this.connectionText == undefined ){
-            this.connectionText = this.add.text(360, 250, "HAS PERDIDO LA CONEXIÓN", {
-                fontFamily: "Barrio",
-                fontSize: "50px",
-                fontStyle: "Bold",
-                color: "#b0202b",
-            }).setOrigin(0.5);
-        }
-        this.connectionText.setVisible(true);
-    }
+
     // Send a new message to the server
     sendMessage() {
         let mes = this.messageInput.value;
@@ -276,10 +266,93 @@ class MainMenuScene extends Phaser.Scene {
         });
 
     }
+
     update() {
         if (Phaser.Input.Keyboard.JustDown(this.enterKey) && this.messageInput.value !== '') {
             this.sendMessage();
         }
+    }
+
+    showLogoutConfirm() {
+        // Fondo semi-transparente
+        this.popupBg = this.add.rectangle(360, 240, 720, 480, 0x000000, 0.7).setDepth(10);
+
+        // Caja del popup
+        this.popupBox = this.add.rectangle(360, 240, 300, 150, 0xffffff, 1).setDepth(11).setStrokeStyle(2, 0x000000);
+
+        // Texto de confirmación
+        this.popupText = this.add.text(360, 200, "¿Seguro que quieres cerrar sesión?", {
+            fontFamily: "Barrio",
+            fontSize: "20px",
+            color: "#000000",
+            align: "center",
+            wordWrap: { width: 280 }
+        }).setOrigin(0.5).setDepth(12);
+
+        // Botón Sí
+        this.btnYes = this.add.image(300, 270, "boton").setInteractive().setDepth(12);
+        this.btnYes.setScale(0.4, 0.7);
+        this.btnYesText = this.add.text(300, 270, "Sí", {
+            fontFamily: "Barrio",
+            fontSize: "18px",
+            fontStyle: "Bold",
+            color: "#000000",
+        }).setOrigin(0.5).setDepth(13);
+
+        // Botón No
+        this.btnNo = this.add.image(420, 270, "boton").setInteractive().setDepth(12);
+        this.btnNo.setScale(0.4, 0.7);
+        this.btnNoText = this.add.text(420, 270, "No", {
+            fontFamily: "Barrio",
+            fontSize: "18px",
+            fontStyle: "Bold",
+            color: "#000000",
+        }).setOrigin(0.5).setDepth(13);
+
+        // Acción botón Sí: cerrar sesión y remover popup
+        this.btnYes.on('pointerover', () => {
+            this.btnYes.setTint(0xffdca1);
+            this.btnYes.setScale(0.4 * 1.05, 0.7 * 1.01);
+            this.buttonOverSound.play({volume: 0.5});
+        });
+        this.btnYes.on('pointerout', () => {
+            this.btnYes.clearTint();
+            this.btnYes.setScale(0.4, 0.7);
+        });
+
+        this.btnYes.on('pointerdown', () => {
+            this.buttonOnSound.play({volume: 0.5});
+            localStorage.removeItem('userlogText'); // borrar sesión
+            this.userlogText = null;
+            this.userlog.innerHTML = '';
+            this.cleanupPopup();
+            location.reload();
+        });
+
+        // Acción botón No: sólo quitar popup y mantener sesión
+        this.btnNo.on('pointerover', () => {
+            this.btnNo.setTint(0xffdca1);
+            this.btnNo.setScale(0.4 * 1.05, 0.7 * 1.01);
+            this.buttonOverSound.play({volume: 0.5});
+        });
+        this.btnNo.on('pointerout', () => {
+            this.btnNo.clearTint();
+            this.btnNo.setScale(0.4, 0.7);
+        });
+
+        this.btnNo.on('pointerdown', () => {
+            this.buttonOnSound.play({volume: 0.5});
+            this.cleanupPopup();
+        });
+    }
+
+    // Método para limpiar el popup de la escena
+    cleanupPopup() {
+        this.popupBg.destroy();
+        this.popupBox.destroy();
+        this.popupText.destroy();
+        this.btnYes.destroy();
+        this.btnNo.destroy();
     }
 }
 
