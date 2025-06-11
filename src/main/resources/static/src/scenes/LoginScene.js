@@ -26,6 +26,12 @@ class LoginScene extends Phaser.Scene {
         // Ocultar chat
         document.getElementById("chat").style.display = "none";
 
+        // Mostrar inputs
+        this.usernameInput = document.getElementById('usernameInput');
+        this.usernameInput.style.display = "blocK";
+        this.passwordInput = document.getElementById('passwordInput');
+        this.passwordInput.style.display = "blocK";
+
         // Fondo
         this.add.image(360, 240, "fondoGenericoAzul");
 
@@ -58,7 +64,7 @@ class LoginScene extends Phaser.Scene {
         this.buttonOverSound = this.sound.add("buttonOver");
         this.buttonOnSound = this.sound.add("buttonOn");
 
-        // Crear el input HTML y los botones
+        // Crear interfaz y botones del LOGIN
         this.add.text(100, 50, 'Login', { fontSize: '32px', fill: '#fff', fontFamily: 'Barrio' });
 
         this.loginContainer = this.add.image(355, 200, "cartelLogin");
@@ -105,40 +111,6 @@ class LoginScene extends Phaser.Scene {
     }
 
     createLoginForm() {
-        // Crear input usuario
-        this.usernameInput = document.createElement('input');
-
-        this.usernameInput.type = 'text';
-        this.usernameInput.placeholder = 'Nombre de usuario';
-        this.usernameInput.style.position = 'absolute';
-        this.usernameInput.style.top = '40%';
-        this.usernameInput.style.left = '43%';
-        this.usernameInput.style.zIndex = 1000;
-        this.usernameInput.style.width = '200px';
-        this.usernameInput.style.height = '30px';
-        this.usernameInput.style.fontSize = '16px';
-        this.usernameInput.style.border = '4px solid rgba(33, 37, 49, 0.73)';
-        this.usernameInput.style.background ='rgb(161, 183, 218)';
-
-        // Crear input contraseña
-        this.passwordInput = document.createElement('input');
-        
-        this.passwordInput.type = 'password';
-        this.passwordInput.placeholder = 'Contraseña';
-        this.passwordInput.style.position = 'absolute';
-        this.passwordInput.style.top = '50%';
-        this.passwordInput.style.left = '43%';
-        this.passwordInput.style.zIndex = 1000;
-        this.passwordInput.style.width = '200px';
-        this.passwordInput.style.height = '30px';
-        this.passwordInput.style.fontSize = '16px';
-        this.passwordInput.style.border = '4px solid rgba(33, 37, 49, 0.73)';
-        this.passwordInput.style.background ='rgb(161, 183, 218)';
-
-        // Añadir al DOM
-        document.body.appendChild(this.usernameInput);
-        document.body.appendChild(this.passwordInput);
-
         // Evento de registro
         this.registerUrl = `${window.location.origin}/users/register`;
 

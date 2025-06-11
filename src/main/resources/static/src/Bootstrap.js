@@ -44,7 +44,7 @@ class Bootstrap extends Phaser.Scene {
 
         // LOGIN
         // this.load.setBaseURL('https://cdn.phaserfiles.com/v385');
-        this.load.html('nameform', 'assets/text/loginform.html');
+        this.load.html('nameform', './assets/text/loginform.html');
         // this.load.image('pic', 'assets/pics/turkey-1985086.jpg');
     }
 }

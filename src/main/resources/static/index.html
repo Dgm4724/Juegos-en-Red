@@ -68,12 +68,37 @@
       font-size: 1.5vw;
       color: rgb(173, 160, 141);
       z-index: 999;
-      font-family: 'Freckle Face';
+      font-family: 'Freckle Face';      
+    }
+
+    #usernameInput{
+      display: none;
+      position: absolute;
+      top: 40%;
+      left: 42%;
+      width: 15vw;
+      height: 2vw;
+      font-size: 2vh;
+      border: 5px solid rgba(33, 37, 49, 0.73);
+      background: rgb(161, 183, 218);
+    }
+    #passwordInput{
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 42%;
+      width: 15vw;
+      height: 2vw;
+      font-size: 2vh;
+      border: 5px solid rgba(33, 37, 49, 0.73);
+      background: rgb(161, 183, 218);
     }
   </style>
 </head>
 <body>
   <main>
+    <input type="text" id="usernameInput" name="username" placeholder="Nombre de usuario">
+    <input type="password" id="passwordInput" name="password" placeholder="Contraseña">
     <div id="chat" style="display: none;">
       <div id="chat-messages"></div>
       <input type="text" id="chat-input" placeholder="Escribe tu mensaje..." />
