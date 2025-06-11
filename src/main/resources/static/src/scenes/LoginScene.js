@@ -216,6 +216,28 @@ class LoginScene extends Phaser.Scene {
             ease: 'Cubic.easeInOut'
         });
     }  
+    
+    update(){
+        // Mensaje de conexión
+        if(this.registry.get('connection') == false){
+            this.showConnectionError();
+        }else{
+            if(this.connectionText !== undefined){
+                this.connectionText.setVisible(false);
+            }
+        }
+    }
+    showConnectionError() {
+        if(this.connectionText == undefined ){
+            this.connectionText = this.add.text(360, 450, "HAS PERDIDO LA CONEXIÓN", {
+                fontFamily: "Barrio",
+                fontSize: "50px",
+                fontStyle: "Bold",
+                color: "#b0202b",
+            }).setOrigin(0.5);
+        }
+        this.connectionText.setVisible(true);
+    }
         // this.add.image(400, 300, 'pic');
 
         // const text = this.add.text(10, 10, 'Please login to play', { color: 'white', fontFamily: 'Arial', fontSize: '32px '});

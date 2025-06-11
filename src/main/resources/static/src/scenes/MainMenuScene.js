@@ -218,7 +218,7 @@ class MainMenuScene extends Phaser.Scene {
     // Fetch messages from the server
     fetchMessages() {
         fetch(`${this.baseUrl}?since=${this.registry.get('lastTimestamp')}`)
-        .then(response => response.json())
+        .then(response => response.ok ? response.json() : Promise.reject())
         .then(data => {
             if (data.messages && data.messages.length > 0) {
                 data.messages.forEach(msg => {
@@ -227,10 +227,34 @@ class MainMenuScene extends Phaser.Scene {
                 this.chatBox.scrollTop = this.chatBox.scrollHeight;
                 this.registry.set('lastTimestamp', data.timestamp);
             }
+            this.registry.set('connection', true);
+        })
+        .catch(() => {
+        this.registry.set('connection', false);
+        this.showConnectionError();
         });
-
     }
-
+    update(){
+            // Mensaje de conexión
+            if(this.registry.get('connection') == false){
+                this.showConnectionError();
+            }else{
+                if(this.connectionText !== undefined){
+                    this.connectionText.setVisible(false);
+                }
+            }
+        }
+    showConnectionError() {
+        if(this.connectionText == undefined ){
+            this.connectionText = this.add.text(360, 250, "HAS PERDIDO LA CONEXIÓN", {
+                fontFamily: "Barrio",
+                fontSize: "50px",
+                fontStyle: "Bold",
+                color: "#b0202b",
+            }).setOrigin(0.5);
+        }
+        this.connectionText.setVisible(true);
+    }
     // Send a new message to the server
     sendMessage() {
         let mes = this.messageInput.value;
