@@ -93,11 +93,7 @@ class LoginScene extends Phaser.Scene {
     }
 
     createLoginForm() {
-<<<<<<< Updated upstream
-=======
-
         // Evento de registro
->>>>>>> Stashed changes
         this.registerUrl = `${window.location.origin}/users/register`;
 
         this.registerButton.on('pointerdown', () => {
@@ -169,68 +165,12 @@ class LoginScene extends Phaser.Scene {
             duration: 200,
             ease: 'Cubic.easeInOut'
         });
-<<<<<<< Updated upstream
-    }
-=======
     }  
     
     update(){
         // MOSTRAR ESTADO DE LA CONEXIÓN
         this.connectionText.setVisible(this.registry.get('connection') === false);
     }
-        // this.add.image(400, 300, 'pic');
-
-        // const text = this.add.text(10, 10, 'Please login to play', { color: 'white', fontFamily: 'Arial', fontSize: '32px '});
-        // const element = this.add.dom(400, 600).createFromCache('nameform');
-
-        // element.setPerspective(800);
-        // element.addListener('click');
-
-        // element.on('click', function (event)
-        // {
-
-        //     if (event.target.name === 'loginButton')
-        //     {
-        //         const inputUsername = this.getChildByName('username');
-        //         const inputPassword = this.getChildByName('password');
-
-        //         //  Have they entered anything?
-        //         if (inputUsername.value !== '' && inputPassword.value !== '')
-        //         {
-        //             //  Turn off the click events
-        //             this.removeListener('click');
-
-        //             //  Tween the login form out
-        //             this.scene.tweens.add({ targets: element.rotate3d, x: 1, w: 90, duration: 3000, ease: 'Power3' });
-
-        //             this.scene.tweens.add({
-        //                 targets: element, scaleX: 2, scaleY: 2, y: 700, duration: 3000, ease: 'Power3',
-        //                 onComplete: function ()
-        //                 {
-        //                     element.setVisible(false);
-        //                 }
-        //             });
-
-        //             //  Populate the text with whatever they typed in as the username!
-        //             text.setText(`Welcome ${inputUsername.value}`);
-        //         }
-        //         else
-        //         {
-        //             //  Flash the prompt
-        //             this.scene.tweens.add({ targets: text, alpha: 0.1, duration: 200, ease: 'Power3', yoyo: true });
-        //         }
-        //     }
-
-        // });
-
-        // this.tweens.add({
-        //     targets: element,
-        //     y: 300,
-        //     duration: 3000,
-        //     ease: 'Power3'
-        // });
-    //}
->>>>>>> Stashed changes
 }
 
 export default LoginScene;

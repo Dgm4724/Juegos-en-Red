@@ -241,7 +241,7 @@ class MainMenuScene extends Phaser.Scene {
     // Fetch messages from the server
     fetchMessages() {
         fetch(`${this.baseUrl}?since=${this.registry.get('lastTimestamp')}`)
-        .then(response => response.json())
+        .then(res => res.ok ? res.json() : Promise.reject())
         .then(data => {
             if (data.messages && data.messages.length > 0) {
                 data.messages.forEach(msg => {
@@ -250,15 +250,11 @@ class MainMenuScene extends Phaser.Scene {
                 this.chatBox.scrollTop = this.chatBox.scrollHeight;
                 this.registry.set('lastTimestamp', data.timestamp);
             }
-<<<<<<< Updated upstream
-=======
             this.registry.set('connection', true);
         })
         .catch(() => {
         this.registry.set('connection', false);
->>>>>>> Stashed changes
         });
-
     }
 
     // Send a new message to the server
