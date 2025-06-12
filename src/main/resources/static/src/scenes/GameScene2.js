@@ -224,6 +224,15 @@ class GameScene2 extends Phaser.Scene {
     // Asegurarse de que el menú esté oculto al principio
     this.pauseMenuGroup = this.add.group([this.pauseBackground, this.resumeButton, this.quitButton, this.restartButton]);
     this.pauseMenuGroup.setVisible(false);
+
+    // Texto conexión
+    this.connectionText = this.add.text(360, 450, "HAS PERDIDO LA CONEXIÓN", {
+      fontFamily: "Barrio",
+      fontSize: "50px",
+      fontStyle: "Bold",
+      color: "#b0202b",
+    }).setOrigin(0.5);
+    this.connectionText.setVisible(false);
   }
 
   // Función para pausar el juego
@@ -338,6 +347,9 @@ class GameScene2 extends Phaser.Scene {
   }
 
   update() {
+    // MOSTRAR ESTADO DE LA CONEXIÓN
+      this.connectionText.setVisible(this.registry.get('connection') === false);
+
     // Pausar o reanudar el juego si se presiona la tecla ESC
     if (Phaser.Input.Keyboard.JustDown(this.escapeKey)) {
       if (this.isPaused) {

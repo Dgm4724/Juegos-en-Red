@@ -182,6 +182,15 @@ class MainMenuScene extends Phaser.Scene {
         // Comienza la animación de escalado en secuencia
         this.startTextAnimation();
 
+        // Texto conexión
+        this.connectionText = this.add.text(360, 450, "HAS PERDIDO LA CONEXIÓN", {
+            fontFamily: "Barrio",
+            fontSize: "50px",
+            fontStyle: "Bold",
+            color: "#b0202b",
+        }).setOrigin(0.5);
+        this.connectionText.setVisible(false);
+
         // RECTÁNGULO NEGRO PARA LOS FUNDIDOS
         this.fundido = this.add.rectangle(720 / 2, 480 / 2, 720, 480, 'black', 1);
 
@@ -241,6 +250,13 @@ class MainMenuScene extends Phaser.Scene {
                 this.chatBox.scrollTop = this.chatBox.scrollHeight;
                 this.registry.set('lastTimestamp', data.timestamp);
             }
+<<<<<<< Updated upstream
+=======
+            this.registry.set('connection', true);
+        })
+        .catch(() => {
+        this.registry.set('connection', false);
+>>>>>>> Stashed changes
         });
 
     }
@@ -271,6 +287,8 @@ class MainMenuScene extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(this.enterKey) && this.messageInput.value !== '') {
             this.sendMessage();
         }
+        // MOSTRAR ESTADO DE LA CONEXIÓN
+        this.connectionText.setVisible(this.registry.get('connection') === false);
     }
 
     showLogoutConfirm() {

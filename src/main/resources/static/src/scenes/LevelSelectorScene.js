@@ -237,6 +237,16 @@ class LevelSelectorScene extends Phaser.Scene {
             this.nextLvl = undefined;
             this.scene.start("MainMenuScene");
         });
+
+        // Texto conexión
+        this.connectionText = this.add.text(360, 450, "HAS PERDIDO LA CONEXIÓN", {
+            fontFamily: "Barrio",
+            fontSize: "50px",
+            fontStyle: "Bold",
+            color: "#b0202b",
+        }).setOrigin(0.5);
+        this.connectionText.setVisible(false);
+        
         // Fetch messages initially and poll every 2 seconds
         this.fetchMessages();
         setInterval(() => this.fetchMessages(), 2000);
@@ -283,6 +293,8 @@ class LevelSelectorScene extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(this.enterKey) && this.messageInput.value !== '') {
             this.sendMessage();
         }
+        // MOSTRAR ESTADO DE LA CONEXIÓN
+        this.connectionText.setVisible(this.registry.get('connection') === false);
     }
 }
 

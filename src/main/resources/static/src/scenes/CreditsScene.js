@@ -41,6 +41,15 @@ class CreditsScene extends Phaser.Scene {
       });
     });
 
+    // Texto conexión
+    this.connectionText = this.add.text(360, 450, "HAS PERDIDO LA CONEXIÓN", {
+      fontFamily: "Barrio",
+      fontSize: "50px",
+      fontStyle: "Bold",
+      color: "#b0202b",
+    }).setOrigin(0.5);
+    this.connectionText.setVisible(false);
+
     // RECTÁNGULO NEGRO PARA LOS FUNDIDOS
     this.fundido = this.add.rectangle(720/2, 480/2, 720, 480, 'black', 1);
     
@@ -66,6 +75,11 @@ class CreditsScene extends Phaser.Scene {
       duration: 200,
       ease: 'Cubic.easeInOut'
     });
+  }
+
+  update() {
+    // MOSTRAR ESTADO DE LA CONEXIÓN
+    this.connectionText.setVisible(this.registry.get('connection') === false);
   }
 }
   
