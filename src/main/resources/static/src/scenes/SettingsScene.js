@@ -33,7 +33,7 @@ class SettingsScene extends Phaser.Scene {
         this.buttonOverSound = this.sound.add("buttonOver");
         this.buttonOnSound = this.sound.add("buttonOn");
 
-        this.add.text(360, 180, 'AJUSTES', { fontSize: '32px', fill: '#000000', fontFamily: 'Barrio' }).setOrigin(0.5);
+        this.add.text(100, 50, 'AJUSTES', { fontSize: '32px', fill: '#fff', fontFamily: 'Barrio' });
 
         // Fondo slider
         this.sliderBar = this.add.rectangle(360, 240, 200, 10, 0x888888).setOrigin(0.5);
@@ -51,7 +51,7 @@ class SettingsScene extends Phaser.Scene {
         this.volumeText = this.add.text(360, 270, `Volumen: ${(this.volume*100).toFixed(0)}%`, {
             fontFamily: "Barrio",
             fontSize: "20px",
-            color: "#000000"
+            color: "#fff"
         }).setOrigin(0.5);
 
         // Input drag para knob

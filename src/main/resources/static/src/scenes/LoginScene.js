@@ -47,7 +47,7 @@ class LoginScene extends Phaser.Scene {
         this.buttonOverSound = this.sound.add("buttonOver");
         this.buttonOnSound = this.sound.add("buttonOn");
 
-        this.add.text(100, 50, 'Login', { fontSize: '32px', fill: '#fff', fontFamily: 'Barrio' });
+        this.add.text(100, 50, 'LOGIN', { fontSize: '32px', fill: '#fff', fontFamily: 'Barrio' });
 
         this.loginContainer = this.add.image(355, 200, "cartelLogin").setScale(3);
 
@@ -75,6 +75,20 @@ class LoginScene extends Phaser.Scene {
         }).on('pointerout', () => {
             this.loginButton.setScale(0.7, 0.6).clearTint();
             this.logintxt.setFontSize(18);
+        });
+
+        this.deleteButton = this.add.image(360, 400, "boton").setInteractive().setScale(0.9, 0.6);
+        this.deleteTxt = this.add.text(360, 400, 'ELIMINAR CUENTA', {
+            fontFamily: "Barrio", fontSize: "18px", fontStyle: "Bold", color: "#000000"
+        }).setOrigin(0.5);
+
+        this.deleteButton.on('pointerover', () => {
+            this.deleteButton.setScale(1, 0.7).setTint(0xff5555);
+            this.buttonOverSound.play({ volume: 0.5 });
+            this.deleteTxt.setFontSize(20);
+        }).on('pointerout', () => {
+            this.deleteButton.setScale(0.9, 0.6).clearTint();
+            this.deleteTxt.setFontSize(18);
         });
 
         this.createLoginForm();
@@ -154,6 +168,55 @@ class LoginScene extends Phaser.Scene {
                     if (this.errorRegisterText) this.errorRegisterText.destroy();
                 });
             }
+        });
+
+        this.deleteButton.on('pointerdown', () => {
+            const username = this.usernameInput.value.trim();
+            const password = this.passwordInput.value.trim();
+
+            if (username === "" || password === "") {
+                alert("Por favor, introduce usuario y contraseña para eliminar.");
+                return;
+            }
+
+            // Intentamos login para obtener token antes de borrar
+            fetch(this.loginUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password, score: 0 })
+            })
+            .then(res => {
+                if (!res.ok) throw new Error("Credenciales incorrectas");
+                return res.text();
+            })
+            .then(token => {
+                // Confirmación antes de borrar
+                if (!confirm(`¿Seguro que quieres eliminar la cuenta "${username}"? Esta acción es irreversible.`)) {
+                    return;
+                }
+
+                // Llamada DELETE con token para borrar usuario
+                fetch(`${window.location.origin}/users/delete/${encodeURIComponent(username)}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Authorization": token
+                    }
+                })
+                .then(res => res.ok ? res.text() : res.text().then(err => { throw new Error(err); }))
+                .then(msg => {
+                    alert(msg);
+                    // Ocultar inputs y volver a menú
+                    this.usernameInput.style.display = 'none';
+                    this.passwordInput.style.display = 'none';
+                    this.scene.start("MainMenuScene");
+                })
+                .catch(err => {
+                    alert("Error al eliminar cuenta: " + err.message);
+                });
+            })
+            .catch(err => {
+                alert("Error en autenticación para eliminar: " + err.message);
+            });
         });
     }
 

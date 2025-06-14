@@ -144,4 +144,13 @@ public class UserService {
             return null;
         }
     }
+
+    public void deleteUser(String username) {
+        List<User> users = readAllUsers();
+        boolean removed = users.removeIf(u -> u.getUsername().equals(username));
+        if (!removed) {
+            throw new RuntimeException("Usuario no encontrado");
+        }
+        writeAllUsers(users);
+    }
 }
