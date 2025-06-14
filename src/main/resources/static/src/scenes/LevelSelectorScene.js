@@ -128,51 +128,51 @@ class LevelSelectorScene extends Phaser.Scene {
             color: "#dba43d",
         }).setOrigin(0.5);
 
-        this.focaRosa = this.add.image(130, 390, "focaRosa").setInteractive();
-        this.focaRosa.setTint(0x7b7b7b);
-        this.focaRosa.on('pointerover', () => {
+        this.foca2 = this.add.image(130, 390, "foca2").setInteractive();
+        this.foca2.setTint(0x7b7b7b);
+        this.foca2.on('pointerover', () => {
             if(this.selectedChar != 0 || this.selectedChar == undefined){
-                this.focaRosa.setScale(1.05);
-                this.focaRosa.setTint(0xa8a8a8);
+                this.foca2.setScale(1.05);
+                this.foca2.setTint(0xa8a8a8);
             }
         });
-        this.focaRosa.on('pointerout', () => {
+        this.foca2.on('pointerout', () => {
             if(this.selectedChar != 0 || this.selectedChar == undefined){
-                this.focaRosa.setScale(1); // Restaurar el tamaño original
-                this.focaRosa.setTint(0x7b7b7b);
+                this.foca2.setScale(1); // Restaurar el tamaño original
+                this.foca2.setTint(0x7b7b7b);
             }
         });
-        this.focaRosa.on("pointerdown", () => {
-            this.focaRosa.clearTint();
-            this.focaRosa.setScale(1.1);
+        this.foca2.on("pointerdown", () => {
+            this.foca2.clearTint();
+            this.foca2.setScale(1.1);
             this.selectedChar = 0;
             
-            this.focaAzul.emit('pointerout');
+            this.foca1.emit('pointerout');
             if(this.nextLvl != undefined){
                 this.botonCP.emit('pointerout');
             }
         });
 
-        this.focaAzul = this.add.image(230, 390, "focaAzul").setInteractive();
-        this.focaAzul.setTint(0x7b7b7b);
-        this.focaAzul.on('pointerover', () => {
+        this.foca1 = this.add.image(230, 390, "foca1").setInteractive();
+        this.foca1.setTint(0x7b7b7b);
+        this.foca1.on('pointerover', () => {
             if(this.selectedChar != 1 || this.selectedChar == undefined){
-                this.focaAzul.setScale(1.05);
-                this.focaAzul.setTint(0xa8a8a8);
+                this.foca1.setScale(1.05);
+                this.foca1.setTint(0xa8a8a8);
             }
         });
-        this.focaAzul.on('pointerout', () => {
+        this.foca1.on('pointerout', () => {
             if(this.selectedChar != 1 || this.selectedChar == undefined){
-                this.focaAzul.setScale(1); // Restaurar el tamaño original
-                this.focaAzul.setTint(0x7b7b7b);
+                this.foca1.setScale(1); // Restaurar el tamaño original
+                this.foca1.setTint(0x7b7b7b);
             }
         });
-        this.focaAzul.on("pointerdown", () => {
-            this.focaAzul.clearTint();
-            this.focaAzul.setScale(1.1);
+        this.foca1.on("pointerdown", () => {
+            this.foca1.clearTint();
+            this.foca1.setScale(1.1);
             this.selectedChar = 1;
             
-            this.focaRosa.emit('pointerout');
+            this.foca2.emit('pointerout');
             if(this.nextLvl != undefined){
                 this.botonCP.emit('pointerout');
             }
