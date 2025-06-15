@@ -8,6 +8,7 @@ class LevelSelectorScene extends Phaser.Scene {
     }
 
     create() {
+        // CHAT
         this.chatBox = document.getElementById('chat-messages');
         this.messageInput = document.getElementById('chat-input');
 
@@ -178,7 +179,7 @@ class LevelSelectorScene extends Phaser.Scene {
             }
         });
 
-        // Botón Crear partida
+        // Botón CREAR partida
         this.botonCP = this.add.image(500, 390, "boton").setInteractive();
         this.botonCP.setScale(1, 0.8);
         this.botonCP.setTint(0x7b7b7b);
@@ -207,16 +208,56 @@ class LevelSelectorScene extends Phaser.Scene {
             if(this.nextLvl != undefined && this.selectedChar != undefined){
                 switch (this.nextLvl){
                     case 0 :
-                        this.scene.start("GameScene");
+                        if(this.waitingTxt === undefined || !this.waitingTxt.visible){
+                            this.waitingTxt = this.add.text(490, 350, "Buscando contrincante...", {
+                            fontFamily: "Freckle Face",
+                            fontSize: "19px",
+                            fontStyle: "Bold",
+                            color: "#000000",
+                        }).setOrigin(0.5);
+                        }
+                        this.waitingGame("create","GameScene");
                         break;
                     case 1 :
-                        this.scene.start("GameScene2");
+                        if(this.waitingTxt === undefined || !this.waitingTxt.visible){
+                            this.waitingTxt = this.add.text(490, 350, "Buscando contrincante...", {
+                            fontFamily: "Freckle Face",
+                            fontSize: "19px",
+                            fontStyle: "Bold",
+                            color: "#000000",
+                        }).setOrigin(0.5);
+                        }
+                        this.waitingGame("create","GameScene2");
                         break;
                     case 2 :
                         break;
 
                 }
             }
+        });
+
+        // Botón UNIRSE a partida
+        this.botonUP = this.add.image(500, 440, "boton").setInteractive();
+        this.botonUP.setScale(1, 0.8);
+        this.UPtxt = this.add.text(500, 440, "Unirse a partida", {
+            fontFamily: "Barrio",
+            fontSize: "22px",
+            fontStyle: "Bold",
+            color: "#000000",
+        }).setOrigin(0.5);
+        
+        this.botonUP.on('pointerover', () => {
+            this.botonUP.setScale(1.05, 1.05*0.8);
+            this.botonUP.setTint(0xffdca1);
+            this.UPtxt.setFontSize(25);
+        });
+        this.botonUP.on('pointerout', () => {
+            this.botonUP.setScale(1, 0.8); // Restaurar el tamaño original
+            this.botonUP.clearTint(); // Eliminar el tinte
+            this.UPtxt.setFontSize(22);
+        });
+        this.botonUP.on("pointerdown", () => {
+            this.waitingGame("join", "");
         });
 
         // Botón para volver al menu principal
@@ -250,6 +291,36 @@ class LevelSelectorScene extends Phaser.Scene {
         // Fetch messages initially and poll every 2 seconds
         this.fetchMessages();
         setInterval(() => this.fetchMessages(), 2000);
+    }
+
+    waitingGame(mode, scene){ // "create" o "join"
+        // WEBSOCKETS
+        if(this.socket === undefined){
+            this.socket = new WebSocket(`ws://localhost:8080/ws?mode=${mode}`);
+            this.socket.onopen = () => {
+                console.log("Conectado al servidor");
+                if (mode === "create") {
+                // Jugador 1 envía el escenario elegido
+                socket.send("s" + scene);
+            }
+            };
+
+            this.socket.onmessage = (msg) => {
+                const type = msg.data[0];
+                const data = msg.data.substring(1);
+
+                switch (type) {
+                    case "s": // escenario
+                    this.scene.start(data);
+                    break;
+
+                    case "i": // inicio de juego
+                    const init = JSON.parse(data);
+                    this.playerId = init.id;
+                    break;
+                }
+            };
+        }
     }
 
     // Fetch messages from the server

@@ -10,68 +10,53 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.*;
 
-/**
- * WebSocket handler for a real-time multiplayer game where players compete to
- * collect squares.
- * Players are matched in pairs and compete for 60 seconds to collect randomly
- * spawning squares.
- */
 @Component
 public class GameWebSocketHandler extends TextWebSocketHandler {
     // Thread-safe collections for managing game state
     private final Map<String, Player> players = new ConcurrentHashMap<>();
+    private final Queue<WebSocketSession> creators = new ConcurrentLinkedQueue<>();
+    private final Queue<WebSocketSession> joiners = new ConcurrentLinkedQueue<>();
     private final Map<String, Game> games = new ConcurrentHashMap<>();
     private final Queue<WebSocketSession> waitingPlayers = new ConcurrentLinkedQueue<>();
     private final ObjectMapper mapper = new ObjectMapper();
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-    /**
-     * Represents a player in the game with their position, score, and WebSocket
-     * session.
-     */
     private static class Player {
         WebSocketSession session;
         double x;
         double y;
-        int score;
         int playerId;
 
         Player(WebSocketSession session) {
             this.session = session;
-            this.score = 0;
         }
     }
 
-    /**
-     * Represents an active game between two players.
-     * Includes game state like the current square, time remaining, and scheduled
-     * tasks.
-     */
     private static class Game {
+        String scene;
         Player player1;
         Player player2;
-        Square square;
-        int timeLeft = 60; // Game duration in seconds
+        Ball ball;
         ScheduledFuture<?> timerTask;
 
         Game(Player player1, Player player2) {
             this.player1 = player1;
             this.player2 = player2;
         }
+        Game(Player player1, Player player2, Ball ball) {
+            this.player1 = player1;
+            this.player2 = player2;
+            this.ball = ball;
+        }
     }
 
-    /**
-     * Represents a collectible square in the game with random coordinates.
-     * Squares spawn within the bounds: x(50-750), y(50-550)
-     */
-    private static class Square {
+    private static class Ball {
         int x;
         int y;
 
-        Square() {
-            Random rand = new Random();
-            this.x = rand.nextInt(700) + 50; // 50-750 range
-            this.y = rand.nextInt(500) + 50; // 50-550 range
+        Ball(int x, int y) {
+            this.x = x;
+            this.y = y;
         }
     }
 
@@ -80,46 +65,50 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
      * waiting queue.
      */
     @Override
-    public void afterConnectionEstablished(WebSocketSession session) {
-        // Sequential access/write for waitingPlayers
-        waitingPlayers.add(session);
-        players.put(session.getId(), new Player(session));
+        public void afterConnectionEstablished(WebSocketSession session) {
+            String uri = session.getUri().toString();
+            if (uri.contains("mode=create")) {
+                creators.add(session);
+            } else if (uri.contains("mode=join")) {
+                joiners.add(session);
+            }
 
-        synchronized (this) {
-            // Ensure that create game is thread-safe
-            checkAndCreateGame();
+            players.put(session.getId(), new Player(session));
+
+            synchronized (this) {
+                checkAndCreateGame(); // se emparejan 1 creador y 1 unido
+            }
         }
-    }
+
 
     /**
      * Attempts to create a new game if there are at least 2 players waiting.
      * Sets up initial player positions and starts the game.
      */
     private synchronized void checkAndCreateGame() {
-        if (waitingPlayers.size() >= 2) {
-            WebSocketSession session1 = waitingPlayers.poll();
-            WebSocketSession session2 = waitingPlayers.poll();
+    if (!creators.isEmpty() && !joiners.isEmpty()) {
+        WebSocketSession session1 = creators.poll(); // Jugador que crea
+        WebSocketSession session2 = joiners.poll();   // Jugador que se une
 
-            if (session1 != null && session2 != null) {
+        if (session1 != null && session2 != null) {
+            Player player1 = players.get(session1.getId());
+            Player player2 = players.get(session2.getId());
 
-                Player player1 = players.get(session1.getId());
-                Player player2 = players.get(session2.getId());
+            // IDs y posiciones
+            player1.playerId = 1;
+            player2.playerId = 2;
+            player1.x = 250; player1.y = 400;
+            player2.x = 470; player2.y = 400;
 
-                // Initialize player positions and IDs
-                player1.playerId = 1;
-                player2.playerId = 2;
-                player1.x = 100; // Left side of screen
-                player1.y = 300; // Middle height
-                player2.x = 700; // Right side of screen
-                player2.y = 300; // Middle height
+            Game game = new Game(player1, player2);
+            games.put(session1.getId(), game);
+            games.put(session2.getId(), game);
 
-                Game game = new Game(player1, player2);
-                games.put(session1.getId(), game);
-                games.put(session2.getId(), game);
-                startGame(game);
-            }
+            startGame(game);
         }
     }
+}
+
 
     /**
      * Initializes a new game by sending initial states to players and starting the
@@ -141,49 +130,20 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
         game.timerTask = scheduler.scheduleAtFixedRate(() -> {
             gameLoop(game);
         }, 0, 1, TimeUnit.SECONDS);
-
-        // Spawn first collectible square
-        spawnSquare(game);
     }
 
     /**
      * Main game loop that runs every second.
-     * Updates timer and spawns new squares every 10 seconds.
      * Message format 't': Time update
      */
     private void gameLoop(Game game) {
-        game.timeLeft--;
-
-        // Update time for both players
-        sendToPlayer(game.player1, "t", game.timeLeft);
-        sendToPlayer(game.player2, "t", game.timeLeft);
-
-        // Spawn new square every 10 seconds
-        if (game.timeLeft % 5 == 0) {
-            spawnSquare(game);
-        }
-
-        // End game when time runs out
-        if (game.timeLeft <= 0) {
-            endGame(game);
-        }
-    }
-
-    /**
-     * Creates and sends a new collectible square to both players.
-     * Message format 's': Square position [x, y]
-     */
-    private void spawnSquare(Game game) {
-        game.square = new Square();
-        sendToPlayer(game.player1, "s", Arrays.asList(game.square.x, game.square.y));
-        sendToPlayer(game.player2, "s", Arrays.asList(game.square.x, game.square.y));
+        
     }
 
     /**
      * Handles incoming WebSocket messages from players.
      * Message types:
      * 'p': Position update [x, y]
-     * 'c': Collect square attempt
      */
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) {
@@ -213,29 +173,18 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
                     sendToPlayer(otherPlayer, "p",
                             Arrays.asList(currentPlayer.playerId, currentPlayer.x, currentPlayer.y));
                     break;
-
-                case 'c': // Square collection attempt
-                    if (game.square != null) {
-                        // Check if player is within collection distance (32 units)
-                        double dx = currentPlayer.x - game.square.x;
-                        double dy = currentPlayer.y - game.square.y;
-                        double distance = Math.sqrt(dx * dx + dy * dy);
-
-                        if (distance < 32) {
-                            currentPlayer.score++;
-                            game.square = null;
-
-                            // Update scores for both players
-                            List<Integer> scoreData = Arrays.asList(
-                                    currentPlayer.playerId,
-                                    game.player1.score,
-                                    game.player2.score);
-                            sendToPlayer(game.player1, "c", scoreData);
-                            sendToPlayer(game.player2, "c", scoreData);
+                case 's': // Escenario elegido
+                    if (currentPlayer.playerId == 1) {
+                        Game g = games.get(session.getId());
+                        if (g != null) {
+                            g.scene = data;
+                            // Enviar escenario a ambos jugadores
+                            sendToPlayer(g.player1, "s", data);
+                            sendToPlayer(g.player2, "s", data);
                         }
                     }
                     break;
-            }
+                }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -246,15 +195,13 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
      * Message format 'o': Game over with final scores [player1Score, player2Score]
      */
     private void endGame(Game game) {
-        // Send final scores to both players
-        List<Integer> finalScores = Arrays.asList(game.player1.score, game.player2.score);
 
         if (this.players.containsKey(game.player1.session.getId())) {
-            sendToPlayer(game.player1, "o", finalScores);
+            sendToPlayer(game.player1, "o", 0);
         }
 
         if (this.players.containsKey(game.player2.session.getId())) {
-            sendToPlayer(game.player2, "o", finalScores);
+            sendToPlayer(game.player2, "o", 0);
         }
 
         // Cancel timer and cleanup game resources

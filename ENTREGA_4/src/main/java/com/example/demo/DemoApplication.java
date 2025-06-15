@@ -9,6 +9,7 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 
 @SpringBootApplication
 @EnableWebSocket
+
 public class DemoApplication implements WebSocketConfigurer {
 
 	private final GameWebSocketHandler gameWebSocketHandler;
@@ -24,7 +25,7 @@ public class DemoApplication implements WebSocketConfigurer {
 	@Override
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
 		registry.addHandler(gameWebSocketHandler, "/ws")
-				.setAllowedOrigins("*"); // Configure appropriate CORS in production
+		.setAllowedOrigins("http://localhost:3000", "http://localhost:8080"); // Configure appropriate CORS in production
 	}
 
 	@Bean
