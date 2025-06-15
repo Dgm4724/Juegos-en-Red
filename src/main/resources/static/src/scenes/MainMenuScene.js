@@ -142,6 +142,7 @@ class MainMenuScene extends Phaser.Scene {
         });
         this.botonA.on("pointerdown", () => {
             this.buttonOnSound.play({volume: 0.5});
+            this.scene.start("SettingsScene");
         });
 
         // Botón Créditos
@@ -198,6 +199,7 @@ class MainMenuScene extends Phaser.Scene {
         // Fetch messages initially and poll every 2 seconds
         this.fetchMessages();
         setInterval(() => this.fetchMessages(), 2000);
+
     }
 
     // Animación del texto (rotación y escalado por separado)
@@ -368,6 +370,7 @@ class MainMenuScene extends Phaser.Scene {
         this.btnYes.destroy();
         this.btnNo.destroy();
     }
+
 }
 
 export default MainMenuScene;
