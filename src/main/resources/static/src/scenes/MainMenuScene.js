@@ -173,6 +173,24 @@ class MainMenuScene extends Phaser.Scene {
             });
         });
 
+        this.maxScoreText = this.add.text(80, 40, "", {
+            fontSize: "20px",
+            fontFamily: "Barrio",
+            fontStyle: "Bold",
+            color: "black",
+            align: 'center',
+            wordWrap: { width: 150 }
+        }).setOrigin(0.5);
+
+        if(this.userlogText) {
+            // Intentamos obtener la puntuación máxima del usuario desde localStorage
+            let key = `maxScore_${this.userlogText}`;
+            let maxScore = localStorage.getItem(key) || "0";
+            this.maxScoreText.setText(`Puntuación máxima: ${maxScore}`);
+        } else {
+            this.maxScoreText.setText("Inicia sesión para conocer tu puntuación máxima");
+        }
+
         // Texto animado
         this.jugarTexto = this.add.text(360, 175, "¡Haz clic en el botón verde para empezar a jugar!", {
             fontFamily: "Freckle Face",

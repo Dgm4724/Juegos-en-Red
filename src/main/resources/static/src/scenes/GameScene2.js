@@ -33,10 +33,12 @@ class GameScene2 extends Phaser.Scene {
     this.foca1 = this.createFoca(250, 380, "foca1");
     this.foca1.setScale(0.75);
     this.foca1.setFlipX(false);
+    this.foca1.setSize(2);
 
     this.foca2 = this.createFoca(470, 380, "foca2");
     this.foca2.setScale(0.75);
     this.foca2.setFlipX(true);
+    this.foca2.setSize(2);
 
     // Pelota (inicialmente estática)
     this.pelota = this.physics.add.image(360, 150, "pelota");

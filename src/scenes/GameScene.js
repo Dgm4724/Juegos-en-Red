@@ -8,8 +8,8 @@ class GameScene extends Phaser.Scene {
   }
 
   create() {
-    // Mostrar chat
-    document.getElementById("chat").style.display = "block";
+    // Ocultar chat
+    document.getElementById("chat").style.display = "none";
 
     // el juego no está pausado al inicio
     this.isPaused = false;
@@ -92,6 +92,15 @@ class GameScene extends Phaser.Scene {
 
     // Iniciar cuenta atrás
     this.startCountdown();
+
+    // Detener cualquier música previa
+    if (this.sound.getAllPlaying().length > 0) {
+      this.sound.getAllPlaying().forEach(sound => sound.stop());
+    }
+
+    // Reproducir la música de fondo del nivel
+    this.bgMusic = this.sound.add('bgLevel1', { loop: true, volume: 0.5 });
+    this.bgMusic.play();
   }
 
   createPauseMenu() {
@@ -151,6 +160,15 @@ class GameScene extends Phaser.Scene {
     this.restartButton.on('pointerdown', () => {
       this.restartGame(); // Llamar a la función de reinicio
     });
+
+    // Texto conexión
+    this.connectionText = this.add.text(360, 450, "HAS PERDIDO LA CONEXIÓN", {
+      fontFamily: "Barrio",
+      fontSize: "50px",
+      fontStyle: "Bold",
+      color: "#b0202b",
+    }).setOrigin(0.5);
+    this.connectionText.setVisible(false);
 
     // Asegurarse de que el menú esté oculto al principio
     this.pauseMenuGroup = this.add.group([this.pauseBackground, this.resumeButton, this.quitButton, this.restartButton]);
@@ -316,6 +334,9 @@ class GameScene extends Phaser.Scene {
 
   handlePelotaToqueSuelo() {
     this.fadeToBlack(() => {
+      if (this.bgMusic && this.bgMusic.isPlaying) {
+        this.bgMusic.stop();
+      }
       // Cambiar a la escena GameOverScene y pasar la puntuación
       this.scene.start('GameOverScene', { puntuacion: this.puntuacion, previousScene:0 });
     });
@@ -376,5 +397,3 @@ class GameScene extends Phaser.Scene {
 }
 
 export default GameScene;
-
-

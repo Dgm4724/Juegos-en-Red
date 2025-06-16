@@ -45,32 +45,60 @@ public class UserController {
         return score != null ? ResponseEntity.ok(score) : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
-    // Actualizar la puntuación de un usuario
-    @PostMapping("/updateScore")
-    public ResponseEntity<String> updateUserScore(@RequestBody User user, @RequestHeader("Authorization") String token) {
+    @PutMapping("/updateScore")
+    public ResponseEntity<String> updateScore(@RequestBody User user, @RequestHeader("Authorization") String token) {
+        System.out.println("Se recibió solicitud para actualizar puntuación de: " + user.getUsername());
         if (!userService.validateToken(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token no válido");
         }
+
         try {
-            userService.updateUserScore(user);
-            return ResponseEntity.ok("Puntuación actualizada correctamente");
+            // Obtener puntuación actual
+            Integer current = userService.getUserScore(user.getUsername());
+            if (current != null && user.getScore() > current) {
+                userService.updateUserScore(user);
+                return ResponseEntity.ok("Puntuación actualizada");
+            } else {
+                return ResponseEntity.ok("No se actualizó (menor o igual)");
+            }
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
-    // Eliminar usuario
-    @DeleteMapping("/delete/{username}")
-    public ResponseEntity<String> deleteUser(@PathVariable String username, @RequestHeader("Authorization") String token) {
+    @PutMapping("/changePassword")
+    public ResponseEntity<String> changePassword(
+        @RequestBody PasswordChangeRequest changeRequest,
+        @RequestHeader("Authorization") String token) {
+        
         if (!userService.validateToken(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token no válido");
         }
+
         try {
-            userService.deleteUser(username);
-            return ResponseEntity.ok("Usuario eliminado correctamente");
+            userService.changeUserPassword(
+                changeRequest.getUsername(),
+                changeRequest.getOldPassword(),
+                changeRequest.getNewPassword()
+            );
+            return ResponseEntity.ok("Contraseña actualizada correctamente");
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
+    // Clase DTO para el cambio de contraseña
+    public static class PasswordChangeRequest {
+        private String username;
+        private String oldPassword;
+        private String newPassword;
+
+        // Getters y setters
+        public String getUsername() { return username; }
+        public void setUsername(String username) { this.username = username; }
+        public String getOldPassword() { return oldPassword; }
+        public void setOldPassword(String oldPassword) { this.oldPassword = oldPassword; }
+        public String getNewPassword() { return newPassword; }
+        public void setNewPassword(String newPassword) { this.newPassword = newPassword; }
+    }
 }

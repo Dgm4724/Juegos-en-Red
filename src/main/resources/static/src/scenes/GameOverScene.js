@@ -7,6 +7,14 @@ class GameOverScene extends Phaser.Scene {
       // Puntuacion recibida desde GameScene
       this.puntuacion = data.puntuacion || 0;  // Si no se pasa puntuación, asigna 0
       this.previousScene = data.previousScene || 0;
+
+      if(data && data.userlogText) {
+            this.userlogText = data.userlogText;
+            localStorage.setItem('userlogText', this.userlogText); // guardar sesión
+        } else {
+            this.userlogText = localStorage.getItem('userlogText');
+        }
+        console.log("Usuario logueado:", this.userlogText);
     }
   
     create() {
@@ -91,6 +99,54 @@ class GameOverScene extends Phaser.Scene {
 
       }
       });
+
+      // Actualizar la puntuación si es mayor a la registrada
+      const token = localStorage.getItem("token");
+      const username = localStorage.getItem("username");
+
+      if (token && username) {
+        fetch(`/users/score/${username}`, {
+          headers: {
+            "Authorization": token
+          }
+        })
+        .then(res => {
+          if (!res.ok) throw new Error("No se pudo obtener la puntuación");
+          return res.text(); // Cambiado de res.json() a res.text()
+        })
+        .then(textScore => {
+          const score = parseInt(textScore, 10);
+          if (isNaN(score)) throw new Error("Puntuación inválida recibida");
+
+          if (this.puntuacion > score) {
+            // actualizar puntuación
+            fetch("/users/updateScore", {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": token
+              },
+              body: JSON.stringify({
+                username: username,
+                score: this.puntuacion
+              })
+            })
+            .then(updateRes => {
+              if (!updateRes.ok) throw new Error("No se pudo actualizar la puntuación");
+              return updateRes.text();
+            })
+            .then(msg => {
+              console.log("Respuesta actualización:", msg);
+            })
+            .catch(err => {
+              console.error("Error al actualizar puntuación:", err);
+            });
+          }
+        })
+        .catch(err => {
+          console.error("Error al obtener puntuación:", err);
+        });
+      }
 
       // Texto conexión
       this.connectionText = this.add.text(360, 450, "HAS PERDIDO LA CONEXIÓN", {

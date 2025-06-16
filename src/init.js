@@ -5,6 +5,7 @@ import GameOverScene from "./scenes/GameOverScene.js";
 import CreditsScene from "./scenes/CreditsScene.js";
 import LevelSelectorScene from "./scenes/LevelSelectorScene.js";
 import GameScene2 from "./scenes/GameScene2.js";
+import SettingsScene from "./scenes/SettingsScene.js";
 
 const config = {
     scale: {
@@ -32,6 +33,7 @@ const config = {
         GameOverScene,
         GameScene,
         GameScene2,
+        SettingsScene
     ],
 }
 

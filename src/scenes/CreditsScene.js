@@ -18,7 +18,7 @@ class CreditsScene extends Phaser.Scene {
     }).setOrigin(0.5);
 
     // contenido
-    this.add.text(260, 250, `DESARROLLADORES:\n\n - Álvaro Codorníu Alonso\n - Tarso da Costa da Silva\n - Diego Gómez Martín\n - Juan Carlos Mauricio Orejón\n\nMÚSICA:\n\n     Randy Sharp - Slime Time   (menú de inicio)\n     To Binge - Gorillaz   (nivel 1)\n\nSONIDOS:\n\n Pixabay.com`,{
+    this.add.text(260, 250, `DESARROLLADORES:\n\n - Álvaro Codorníu Alonso\n - Diego Gómez Martín\n\nMÚSICA:\n\n     Randy Sharp - Slime Time   (menú de inicio)\n     To Binge - Gorillaz   (nivel 1)\n\nSONIDOS:\n\n Pixabay.com`,{
       fontSize: "19px",
       fontFamily: "Freckle Face",
       color: "#4eddc1",
