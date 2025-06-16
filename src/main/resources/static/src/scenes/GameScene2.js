@@ -113,6 +113,14 @@ class GameScene2 extends Phaser.Scene {
     // Iniciar cuenta atrás
     this.startCountdown();
 
+    if (this.sound.getAllPlaying().length > 0) {
+      this.sound.getAllPlaying().forEach(sound => sound.stop());
+    }
+
+    // Reproducir la música de fondo del nivel
+    this.bgMusic = this.sound.add('bgLevel2', { loop: true, volume: 0.5 });
+    this.bgMusic.play();
+
     // Detener cualquier música previa
     if (this.sound.getAllPlaying().length > 0) {
       this.sound.getAllPlaying().forEach(sound => sound.stop());
