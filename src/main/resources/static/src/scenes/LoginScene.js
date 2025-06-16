@@ -94,16 +94,16 @@ class LoginScene extends Phaser.Scene {
         // Botón cambiar contraseña
         this.changePwdButton = this.add.image(360, 450, "boton").setInteractive().setScale(0.8, 0.6);
         this.changePwdTxt = this.add.text(360, 450, 'CAMBIAR CONTRASEÑA', {
-            fontFamily: "Barrio", fontSize: "18px", fontStyle: "Bold", color: "#000000"
+            fontFamily: "Barrio", fontSize: "15px", fontStyle: "Bold", color: "#000000"
         }).setOrigin(0.5);
 
         this.changePwdButton.on('pointerover', () => {
             this.changePwdButton.setScale(0.9, 0.7).setTint(0xa1ffd2);
             this.buttonOverSound.play({ volume: 0.5 });
-            this.changePwdTxt.setFontSize(20);
+            this.changePwdTxt.setFontSize(17);
         }).on('pointerout', () => {
             this.changePwdButton.setScale(0.8, 0.6).clearTint();
-            this.changePwdTxt.setFontSize(18);
+            this.changePwdTxt.setFontSize(15);
         });
 
         this.changePwdButton.on('pointerdown', () => {

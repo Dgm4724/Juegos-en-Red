@@ -37,10 +37,10 @@ public class UserController {
 
     // Obtener la puntuación de un usuario
     @GetMapping("/score/{username}")
-    public ResponseEntity<Integer> getUserScore(@PathVariable String username, @RequestHeader("Authorization") String token) {
-        if (!userService.validateToken(token)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null); // Token no válido
-        }
+    public ResponseEntity<Integer> getUserScore(@PathVariable String username) {
+        // if (!userService.validateToken(token)) {
+        //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null); // Token no válido
+        // }
         Integer score = userService.getUserScore(username);
         return score != null ? ResponseEntity.ok(score) : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
@@ -86,6 +86,13 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
+    @DeleteMapping("/delete/{username}")
+    public ResponseEntity<?> deleteUser(@PathVariable String username) {
+        userService.deleteUser(username);
+        return ResponseEntity.ok().build();
+    }
+
 
     // Clase DTO para el cambio de contraseña
     public static class PasswordChangeRequest {

@@ -181,14 +181,7 @@ class MainMenuScene extends Phaser.Scene {
             wordWrap: { width: 150 }
         }).setOrigin(0.5);
 
-        if(this.userlogText) {
-            // Intentamos obtener la puntuación máxima del usuario desde localStorage
-            let key = `maxScore_${this.userlogText}`;
-            let maxScore = localStorage.getItem(key) || "0";
-            this.maxScoreText.setText(`Puntuación máxima: ${maxScore}`);
-        } else {
-            this.maxScoreText.setText("Inicia sesión para conocer tu puntuación máxima");
-        }
+        this.fetchScore();
 
         // Texto animado
         this.jugarTexto = this.add.text(360, 175, "¡Haz clic en el botón verde para empezar a jugar!", {
@@ -217,6 +210,24 @@ class MainMenuScene extends Phaser.Scene {
         this.fetchMessages();
         setInterval(() => this.fetchMessages(), 2000);
 
+    }
+
+    fetchScore(){
+        if(this.userlogText) {
+            let scoreUrl = `${window.location.origin}/users/score/${this.userlogText}`
+            // Intentamos obtener la puntuación máxima del usuario
+            fetch(scoreUrl)
+                .then(res => res.ok ? res.json() : Promise.reject())
+                .then(data => {
+                    console.log("maxScore: " + data);
+                    this.maxScoreText.setText(`Puntuación máxima: ${data}`);
+                })
+                .catch(() => {
+                this.registry.set('connection', false);
+                });
+        } else {
+            this.maxScoreText.setText("Inicia sesión para conocer tu puntuación máxima");
+        }
     }
 
     // Animación del texto (rotación y escalado por separado)
@@ -377,6 +388,8 @@ class MainMenuScene extends Phaser.Scene {
             this.buttonOnSound.play({volume: 0.5});
             this.cleanupPopup();
         });
+        this.btnNoText = undefined;
+        this.btnYesText = undefined;
     }
 
     // Método para limpiar el popup de la escena
