@@ -257,6 +257,14 @@ class LevelSelectorScene extends Phaser.Scene {
             this.UPtxt.setFontSize(22);
         });
         this.botonUP.on("pointerdown", () => {
+            if(this.waitingTxt === undefined || !this.waitingTxt.visible){
+                this.waitingTxt = this.add.text(490, 350, "Buscando contrincante...", {
+                    fontFamily: "Freckle Face",
+                    fontSize: "19px",
+                    fontStyle: "Bold",
+                    color: "#000000",
+                }).setOrigin(0.5);
+            }
             this.waitingGame("join", "");
         });
 
@@ -295,32 +303,28 @@ class LevelSelectorScene extends Phaser.Scene {
 
     waitingGame(mode, scene){ // "create" o "join"
         // WEBSOCKETS
-        if(this.socket === undefined){
-            this.socket = new WebSocket(`ws://localhost:8080/ws?mode=${mode}`);
-            this.socket.onopen = () => {
-                console.log("Conectado al servidor");
-                if (mode === "create") {
-                // Jugador 1 envía el escenario elegido
-                socket.send("s" + scene);
+        if(this.socket !== undefined) this.socket.close();
+        let URI = "ws://" + location.host + `/ws?mode=${mode}`;
+        if(mode === "create") URI += `&scene=${scene}&seal=${this.selectedChar}`;
+        this.socket = new WebSocket(URI);
+
+        this.socket.onopen = () => {
+            console.log("Conectado al servidor");
+        };
+
+        this.socket.onmessage = (msg) => {
+            const type = msg.data[0];
+            const data = msg.data.substring(1);
+            console.log(msg);
+            switch (type) {
+                case "s": // escenario
+                const sceneName = JSON.parse(data)[0];
+                const playerId = JSON.parse(data)[1];
+                const seal = JSON.parse(data)[2];
+                this.scene.start(sceneName, {socket: this.socket, playerId: playerId, seal:seal});
+                break;
             }
-            };
-
-            this.socket.onmessage = (msg) => {
-                const type = msg.data[0];
-                const data = msg.data.substring(1);
-
-                switch (type) {
-                    case "s": // escenario
-                    this.scene.start(data);
-                    break;
-
-                    case "i": // inicio de juego
-                    const init = JSON.parse(data);
-                    this.playerId = init.id;
-                    break;
-                }
-            };
-        }
+        };
     }
 
     // Fetch messages from the server

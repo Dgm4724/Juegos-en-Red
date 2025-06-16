@@ -25,7 +25,7 @@ public class DemoApplication implements WebSocketConfigurer {
 	@Override
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
 		registry.addHandler(gameWebSocketHandler, "/ws")
-		.setAllowedOrigins("http://localhost:3000", "http://localhost:8080"); // Configure appropriate CORS in production
+		.setAllowedOrigins("*"); // Configure appropriate CORS in production
 	}
 
 	@Bean

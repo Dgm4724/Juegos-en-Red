@@ -23,6 +23,7 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
 
     private static class Player {
         WebSocketSession session;
+        int seal;
         double x;
         double y;
         int playerId;
@@ -43,10 +44,10 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
             this.player1 = player1;
             this.player2 = player2;
         }
-        Game(Player player1, Player player2, Ball ball) {
+        Game(Player player1, Player player2, String scene) {
             this.player1 = player1;
             this.player2 = player2;
-            this.ball = ball;
+            this.scene = scene;
         }
     }
 
@@ -86,29 +87,53 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
      * Sets up initial player positions and starts the game.
      */
     private synchronized void checkAndCreateGame() {
-    if (!creators.isEmpty() && !joiners.isEmpty()) {
-        WebSocketSession session1 = creators.poll(); // Jugador que crea
-        WebSocketSession session2 = joiners.poll();   // Jugador que se une
+        if (!creators.isEmpty() && !joiners.isEmpty()) {
+            WebSocketSession session1 = creators.poll(); // Jugador que crea
+            WebSocketSession session2 = joiners.poll();   // Jugador que se une
 
-        if (session1 != null && session2 != null) {
-            Player player1 = players.get(session1.getId());
-            Player player2 = players.get(session2.getId());
+            if (session1 != null && session2 != null) {
+                Player player1 = players.get(session1.getId());
+                Player player2 = players.get(session2.getId());
+                String scene = getSceneFromUri(session1.getUri().getQuery());
 
-            // IDs y posiciones
-            player1.playerId = 1;
-            player2.playerId = 2;
-            player1.x = 250; player1.y = 400;
-            player2.x = 470; player2.y = 400;
+                // IDs, posiciones y selección de PJ
+                player1.seal = getSealFromUri(session1.getUri().getQuery());
+                if(player1.seal == 0) player2.seal = 1;
+                else player2.seal = 0;
+                player1.playerId = 1;
+                player2.playerId = 2;
+                player1.x = 250; player1.y = 400;
+                player2.x = 470; player2.y = 400;
 
-            Game game = new Game(player1, player2);
-            games.put(session1.getId(), game);
-            games.put(session2.getId(), game);
+                Game game = new Game(player1, player2, scene);
+                games.put(session1.getId(), game);
+                games.put(session2.getId(), game);
 
-            startGame(game);
+                startGame(game);
+            }
         }
     }
-}
 
+    private String getSceneFromUri(String query) {
+        if (query == null) return "GameScene"; // default
+        for (String param : query.split("&")) {
+            String[] pair = param.split("=");
+            if (pair.length == 2 && pair[0].equals("scene")) {
+                return pair[1];
+            }
+        }
+        return "GameScene";
+    }
+    private int getSealFromUri(String query) {
+        if (query == null) return 0; // default
+        for (String param : query.split("&")) {
+            String[] pair = param.split("=");
+            if (pair.length == 2 && pair[0].equals("seal")) {
+                return Integer.parseInt(pair[1]);
+            }
+        }
+        return 0;
+    }
 
     /**
      * Initializes a new game by sending initial states to players and starting the
@@ -116,15 +141,15 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
      * Message format 'i': Initial game state with player positions and colors
      */
     private void startGame(Game game) {
-        // Create initial player data: [x, y, playerId, color]
-        List<List<Object>> playersData = Arrays.asList(
-                Arrays.asList(game.player1.x, game.player1.y, 1, 0xff0000), // Player 1: Red
-                Arrays.asList(game.player2.x, game.player2.y, 2, 0x0000ff) // Player 2: Blue
-        );
+
+        
+        // Enviar escenario a ambos jugadores
+        sendToPlayer(game.player1, "s", new Object[]{game.scene, 1, game.player1.seal});
+        sendToPlayer(game.player2, "s", new Object[]{game.scene, 2, game.player2.seal});
 
         // Send initial state to both players
-        sendToPlayer(game.player1, "i", Map.of("id", 1, "p", playersData));
-        sendToPlayer(game.player2, "i", Map.of("id", 2, "p", playersData));
+        // sendToPlayer(game.player1, "i", 1);
+        // sendToPlayer(game.player2, "i", 2);
 
         // Start game timer that runs every second
         game.timerTask = scheduler.scheduleAtFixedRate(() -> {
@@ -160,29 +185,37 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
             String payload = message.getPayload();
             char type = payload.charAt(0);
             String data = payload.length() > 1 ? payload.substring(1) : "";
-
             switch (type) {
                 case 'p': // Position update
-                    List<Integer> pos = mapper.readValue(data, List.class);
+                    List<Object> pos = mapper.readValue(data, List.class);
 
                     // We could synchronize currentPlayer, but we will not have concurrent updates
-                    currentPlayer.x = pos.get(0);
-                    currentPlayer.y = pos.get(1);
+                    if (pos.get(1) instanceof Integer) {
+                        currentPlayer.x = (double) ((Integer) pos.get(1)).intValue();
+                    } else {
+                        currentPlayer.x = (double) pos.get(1);
+                    }
+
+                    if (pos.get(2) instanceof Integer) {
+                        currentPlayer.y = (double) ((Integer) pos.get(2)).intValue();
+                    } else {
+                        currentPlayer.y = (double) pos.get(2);
+                    }
+                    
+                    boolean flag = false;
+
+                    if (pos.size() > 2) {
+                        flag = (Boolean) pos.get(3);
+                    }
 
                     // Broadcast position to other player
                     sendToPlayer(otherPlayer, "p",
-                            Arrays.asList(currentPlayer.playerId, currentPlayer.x, currentPlayer.y));
+                            Arrays.asList(currentPlayer.playerId, currentPlayer.x, currentPlayer.y, flag));
                     break;
-                case 's': // Escenario elegido
-                    if (currentPlayer.playerId == 1) {
-                        Game g = games.get(session.getId());
-                        if (g != null) {
-                            g.scene = data;
-                            // Enviar escenario a ambos jugadores
-                            sendToPlayer(g.player1, "s", data);
-                            sendToPlayer(g.player2, "s", data);
-                        }
-                    }
+                case 'h':
+                    Map<String, Object> ballData = mapper.readValue(data, Map.class);
+                    // Reenviar al otro jugador
+                    sendToPlayer(otherPlayer, "h", ballData);
                     break;
                 }
         } catch (IOException e) {
