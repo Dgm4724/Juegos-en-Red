@@ -1,5 +1,3 @@
-import SettingsScene from "./SettingsScene";
-
 class MainMenuScene extends Phaser.Scene {
     constructor() {
         super({ key: "MainMenuScene" });
@@ -81,7 +79,7 @@ class MainMenuScene extends Phaser.Scene {
         });
         this.botonA.on("pointerdown", () => {
             this.buttonOnSound.play({volume: 0.5});
-            this.Scene.start(SettingsScene);
+            this.scene.start("SettingsScene");
         });
 
         // Botón Créditos

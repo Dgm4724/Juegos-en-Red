@@ -35,6 +35,7 @@ class Bootstrap extends Phaser.Scene {
         this.load.audio("buttonOn", "./assets/sounds/buttonOn.mp3");
         this.load.audio("bgMenuMusic", "./assets/sounds/Slime Time.mp3");
         this.load.audio("bgLevel1", "./assets/sounds/To Binge (Instrumental).mp3");
+        this.load.audio("bgLevel2", "./assets/sounds/Inazuma Eleven 2 Firestorm_Blizzard - OST 05_Winter Wonderland - Hokkaido.mp3");
 
         // FUENTES
         this.load.font("Barrio", "./assets/fonts/Barrio-Regular.ttf");

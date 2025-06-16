@@ -112,6 +112,15 @@ class GameScene2 extends Phaser.Scene {
 
     // Iniciar cuenta atrás
     this.startCountdown();
+
+    // Detener cualquier música previa
+    if (this.sound.getAllPlaying().length > 0) {
+      this.sound.getAllPlaying().forEach(sound => sound.stop());
+    }
+
+    // Reproducir la música de fondo del nivel
+    this.bgMusic = this.sound.add('bgLevel2', { loop: true, volume: 0.5 });
+    this.bgMusic.play();
   }
 
   startCountdown() {
@@ -202,6 +211,9 @@ class GameScene2 extends Phaser.Scene {
       this.quitButton.clearTint(); // Eliminar el tinte
     });
     this.quitButton.on('pointerdown', () => {
+      if (this.bgMusic && this.bgMusic.isPlaying) {
+        this.bgMusic.stop();
+      }
       this.scene.start("MainMenuScene");
     });
 
@@ -343,7 +355,9 @@ class GameScene2 extends Phaser.Scene {
 
   handlePelotaToqueSuelo() {
     this.fadeToBlack(() => {
-      // Cambiar a la escena GameOverScene y pasar la puntuación
+      if (this.bgMusic && this.bgMusic.isPlaying) {
+        this.bgMusic.stop();
+      }
       this.scene.start('GameOverScene', { puntuacion: this.puntuacion, previousScene:1});
     });
   }

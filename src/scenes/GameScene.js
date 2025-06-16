@@ -140,6 +140,9 @@ class GameScene extends Phaser.Scene {
       this.quitButton.clearTint(); // Eliminar el tinte
     });
     this.quitButton.on('pointerdown', () => {
+      if (this.bgMusic && this.bgMusic.isPlaying) {
+        this.bgMusic.stop();
+      }
       this.scene.start("MainMenuScene");
     });
 
