@@ -14,8 +14,6 @@ class SettingsScene extends Phaser.Scene {
             existingMusic.play();
         }
 
-        document.getElementById("chat").style.display = "none";
-
         this.add.image(360, 240, "fondoGenericoAzul");
         this.interfaz = this.add.image(360, 240, "interfazMainMenu").setScale(1.25);
 

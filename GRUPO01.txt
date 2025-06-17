@@ -1,0 +1,6 @@
+Integrantes del grupo:
+
+Álvaro Codorníu Alonso - a.codorniu@alumnos.urjc.es
+Diego Gómez Martín - d.gomezm.2022@alumnos.urjc.es
+
+Repositorio de GitHub: https://github.com/Dgm4724/Juegos-en-Red

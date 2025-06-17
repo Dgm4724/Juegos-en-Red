@@ -8,9 +8,6 @@ class GameScene extends Phaser.Scene {
   }
 
   create() {
-    // Ocultar chat
-    document.getElementById("chat").style.display = "none";
-
     // el juego no está pausado al inicio
     this.isPaused = false;
 
