@@ -1,7 +1,5 @@
 # GDD - F.O.C.A.: Felicidad y Ocio Con Amigos
 
-Tarso da Costa da Silva
-Juan Carlos Mauricio Orejón
 Álvaro Codorníu Alonso
 Diego Gómez Martín
 
@@ -79,29 +77,66 @@ La pelota rebotará en las paredes y techo del nivel en cuestión, así como con
  El estilo visual será en 2 dimensiones, con un tipo de pixel art lo suficientemente sencillo para facilitar el trabajo y la creación de sprite sheets, pero con suficiente resolución como para poder ver con claridad los personajes y demás elementos. Además hemos elegido este estilo visual también por afinidad con el mismo y porque se adapta a las sensaciones que queremos que nuestro juego transmita. Tiene que ser un juego desenfadado, divertido y dinámico, por lo que los personajes tenderán a ser graciosos, las animaciones vistosas y la paleta de color con tonos vivos y enérgicos.
 
 ## Música y sonido:
- La música y efectos de sonido van a ser animadas y frenéticas para adecuarse a la temática del juego. A continuación se detalla una lista de los efectos de sonido que se necesitarán. Se numerarán a efectos prácticos:
+Se ha añadido una canción animada que recuerda a las bandas sonoras tipo arcade para las pantallas de menús. Se han añadido 2 canciones más calmadas para los niveles del juego.
 
-| NÚMERO | DESCRIPCIÓN | BUCLE | ASOCIADO A |
-|--------------|--------------|--------------|--------------|
-|1|Sonido de fondo para el menú principal. Música tipo arcade, repetitiva pero pegadiga y frenética|SI|Pantalla de inicio|
-|2|Efecto de sonido de botón para los menús.|NO|Botones de menú|
-|3|Música de fondo para los menús de selección.|SI|Menú de selección de personaje y menú de selección de nivel|
-|4|Efecto de sonido sencillo para flechas de selección.|NO|Flechas de selección|
-|5|Gritos de fondo para el efecto de cuenta atrás previo al comienzo del juego.|NO|Cuenta atrás comienzo partida|
-|6|Efecto de bocina estridente posterior a la cuenta atrás.|NO|Comienzo inminente de partida|
-|7|Música de fondo para el nivel 1, relajada.|SI|Escenario “playa atardecer”|
-|8|Música de fondo para el nivel 2, alegre.|SI|Escenario "glaciar"|
-|9|Música de fondo para el nivel 3, frenética|SI|Escenario “barco crucero”|
-|10|Sonido de gaviotas de fondo.|SI|Escenario “playa atardecer”|
-|11|Sonido de oleaje de fondo.|SI|Escenario “playa atardecer” y escenario “glaciar”|
-|12|Bullicio de gente de fondo.|SI|Escenario “barco crucero”|
-|13|Grito histérico de persona.|NO|NPC de crucero huyendo de jugador|
-|14|Bote de pelota. Sonido tipo dibujo animado.|NO|Rebote de pelota contra jugadores o contra elemento del escenario|
-|15|Gritos de reacción similares a los de unas gradas cuando se mete un gol, pero más corto.|NO|Un jugador golpea la pelota|
-|16|Gritos colectivos de euforia.|NO|Los jugadores llegan a un número de toques redondo (10, 20, 30…)|
-|17|Gritos de desilusión colectivos.|NO|La pelota toca el suelo y los jugadores pierden|
-|18|Sonido tipo dibujo animado de andar o moverse.|SI|Movimiento de los jugadores|
-|19|Música de fondo para la pantalla de ranking.|SI|Pantalla de tabla de puntuaciones|
+## Funcionalidad de chat
+Se ha implementado un chat sencillo que permite enviar comentarios a los usuarios que hayan logueado a una sala de chat global. La finalidad es poder poner de acuerdo a los usuarios a la hora de organizar las partidas. Por ello el chat está disponible en la pantalla principal y en la de selección de nivel, ya que además no tiene mucho sentido ni es posible chatear en la pantalla de juego mientras se juega.
+
+## Funcionalidad de login
+Se ha implementado una pantalla de login que ofrece la posibilidad de registrar un nuevo usuario o loguear con unas credenciales. También se puede borrar una cuenta o cambiar la contraseña de una cuenta. Solo los usuarios logueados pueden chatear. Cuando se inicia sesión aparece el nombre del usuario logueado en la esquina superior izquierda de la pantalla (fuera de la pantalla de juego). También aparece la puntuación máxima del jugador en la esquina superior izquierda (dentro de la pantalla de juego).
+
+## Pérdida de conexión
+En todo momento, cuando el cliente pierda la conexión con el servidor aparecerá un mensaje rojo en grande en la parte inferior de la pantalla diciendo "SE HA PERDIDO LA CONEXIÓN". Este mensaje desaparecerá si la conexión se recupera.
+
+## Diagrama de clases
+
+1. Relación de clases:
+- *UserController* → usa UserService
+- *UserService* → usa User
+- *ChatController* → usa ChatMessage
+- *DemoApplication* es la clase principal (@SpringBootApplication) que levanta el contexto
+
+2. Diagrama visual:
+                         ┌────────────────────┐
+                         │  DemoApplication   │
+                         │    (Application)   │
+                         └────────────────────┘
+                                  │
+                                  │
+                                  ▼
+                           (Spring Boot App)
+
+        ┌──────────────────────┐
+        │  UserController      │◄──────────────┐
+        │   (@RestController)  │               │
+        └──────────────────────┘               │
+                  │                            │
+        uses      ▼                            │
+        ┌──────────────────────┐               │
+        │  UserService         │◄────────────┐ │
+        │   (@Service)         │             │ │
+        └──────────────────────┘             │ │
+                  │                          │ │
+        uses      ▼                          │ │
+        ┌──────────────────────┐             │ │
+        │     User             │             │ │
+        │   (Entidad / DTO)    │             │ │
+        └──────────────────────┘             │ │
+                                            uses
+                                             ▼ │
+                              ┌────────────────────────┐
+                              │    ChatController      │
+                              │   (@RestController)    │
+                              └────────────────────────┘
+                                             │
+                                             ▼
+                              ┌────────────────────────┐
+                              │     ChatMessage        │
+                              │        (DTO)           │
+                              └────────────────────────┘
+
+## Cómo ejecutar el programa
+Se debe instalar Visual Studio Code en la máquina con las extensiones de SpringBoot y Java instaladas. Acto seguido se abre en el editor la carpeta raíz del proyecto (la que contenga todos los archivos, en este caso se llama F_$_GRUPO_01). Se hace clic derecho sobre el archivo DemoApplication, que se encuentra en la ruta src/main/java/com/example/demo. A continuación se levantará el servidor, y cuando termine este proceso se deberá abrir el navegador e introducir la siguiente URL: http://localhost:8080. Ya está disponible la aplicación para jugar.
 
 ## Bibliografía
  Serie de vídeotutoriales de Phaser: https://www.youtube.com/watch?list=PLL_H5w4KA8dP9pPayzYxHCD4IQ80nkfY9&v=4RaN4g9KzDo
