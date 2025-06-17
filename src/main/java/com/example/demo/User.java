@@ -1,7 +1,5 @@
 package com.example.demo;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 public class User {
     private String username;
 

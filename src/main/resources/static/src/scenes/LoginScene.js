@@ -47,7 +47,7 @@ class LoginScene extends Phaser.Scene {
         this.buttonOverSound = this.sound.add("buttonOver");
         this.buttonOnSound = this.sound.add("buttonOn");
 
-        this.add.text(100, 50, 'LOGIN', { fontSize: '32px', fill: '#fff', fontFamily: 'Barrio' });
+        this.add.text(100, 50, 'Login', { fontSize: '32px', fill: '#fff', fontFamily: 'Barrio' });
 
         this.loginContainer = this.add.image(355, 200, "cartelLogin").setScale(3);
 
@@ -76,40 +76,6 @@ class LoginScene extends Phaser.Scene {
             this.loginButton.setScale(0.7, 0.6).clearTint();
             this.logintxt.setFontSize(18);
         });
-
-        this.deleteButton = this.add.image(360, 400, "boton").setInteractive().setScale(0.9, 0.6);
-        this.deleteTxt = this.add.text(360, 400, 'ELIMINAR CUENTA', {
-            fontFamily: "Barrio", fontSize: "18px", fontStyle: "Bold", color: "#000000"
-        }).setOrigin(0.5);
-
-        this.deleteButton.on('pointerover', () => {
-            this.deleteButton.setScale(1, 0.7).setTint(0xff5555);
-            this.buttonOverSound.play({ volume: 0.5 });
-            this.deleteTxt.setFontSize(20);
-        }).on('pointerout', () => {
-            this.deleteButton.setScale(0.9, 0.6).clearTint();
-            this.deleteTxt.setFontSize(18);
-        });
-
-        // Botón cambiar contraseña
-        this.changePwdButton = this.add.image(360, 450, "boton").setInteractive().setScale(0.8, 0.6);
-        this.changePwdTxt = this.add.text(360, 450, 'CAMBIAR CONTRASEÑA', {
-            fontFamily: "Barrio", fontSize: "15px", fontStyle: "Bold", color: "#000000"
-        }).setOrigin(0.5);
-
-        this.changePwdButton.on('pointerover', () => {
-            this.changePwdButton.setScale(0.9, 0.7).setTint(0xa1ffd2);
-            this.buttonOverSound.play({ volume: 0.5 });
-            this.changePwdTxt.setFontSize(17);
-        }).on('pointerout', () => {
-            this.changePwdButton.setScale(0.8, 0.6).clearTint();
-            this.changePwdTxt.setFontSize(15);
-        });
-
-        this.changePwdButton.on('pointerdown', () => {
-            this.showPasswordPopup();
-        });
-
 
         this.createLoginForm();
     
@@ -145,8 +111,6 @@ class LoginScene extends Phaser.Scene {
                 .then(res => res.ok ? res.text() : res.text().then(err => { throw new Error(err); }))
                 .then(msg => {
                     console.log("Registro exitoso:", msg);
-                    localStorage.setItem("token", msg);
-                    localStorage.setItem("username", username);
                     this.usernameInput.style.display = 'none';
                     this.passwordInput.style.display = 'none';
                     this.scene.start('MainMenuScene', { userlogText: username });
@@ -178,8 +142,6 @@ class LoginScene extends Phaser.Scene {
                 .then(res => res.ok ? res.text() : res.text().then(err => { throw new Error(err); }))
                 .then(msg => {
                     console.log("Inicio de sesión exitoso:", msg);
-                    localStorage.setItem("token", msg);
-                    localStorage.setItem("username", username);
                     this.usernameInput.style.display = 'none';
                     this.passwordInput.style.display = 'none';
                     this.scene.start('MainMenuScene', { userlogText: username });
@@ -192,55 +154,6 @@ class LoginScene extends Phaser.Scene {
                     if (this.errorRegisterText) this.errorRegisterText.destroy();
                 });
             }
-        });
-
-        this.deleteButton.on('pointerdown', () => {
-            const username = this.usernameInput.value.trim();
-            const password = this.passwordInput.value.trim();
-
-            if (username === "" || password === "") {
-                alert("Por favor, introduce usuario y contraseña para eliminar.");
-                return;
-            }
-
-            // Intentamos login para obtener token antes de borrar
-            fetch(this.loginUrl, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username, password, score: 0 })
-            })
-            .then(res => {
-                if (!res.ok) throw new Error("Credenciales incorrectas");
-                return res.text();
-            })
-            .then(token => {
-                // Confirmación antes de borrar
-                if (!confirm(`¿Seguro que quieres eliminar la cuenta "${username}"? Esta acción es irreversible.`)) {
-                    return;
-                }
-
-                // Llamada DELETE con token para borrar usuario
-                fetch(`${window.location.origin}/users/delete/${encodeURIComponent(username)}`, {
-                    method: "DELETE",
-                    headers: {
-                        "Authorization": token
-                    }
-                })
-                .then(res => res.ok ? res.text() : res.text().then(err => { throw new Error(err); }))
-                .then(msg => {
-                    alert(msg);
-                    // Ocultar inputs y volver a menú
-                    this.usernameInput.style.display = 'none';
-                    this.passwordInput.style.display = 'none';
-                    this.scene.start("MainMenuScene");
-                })
-                .catch(err => {
-                    alert("Error al eliminar cuenta: " + err.message);
-                });
-            })
-            .catch(err => {
-                alert("Error en autenticación para eliminar: " + err.message);
-            });
         });
     }
 
@@ -258,62 +171,6 @@ class LoginScene extends Phaser.Scene {
         // MOSTRAR ESTADO DE LA CONEXIÓN
         this.connectionText.setVisible(this.registry.get('connection') === false);
     }
-
-    showPasswordPopup() {
-        const username = this.usernameInput.value.trim();
-        const oldPassword = this.passwordInput.value.trim();
-
-        if (!username || !oldPassword) {
-            alert("Debes iniciar sesión con usuario y contraseña para cambiar la contraseña.");
-            return;
-        }
-
-        const newPassword = prompt("Introduce la NUEVA contraseña:");
-
-        if (!newPassword || newPassword.trim() === "") {
-            alert("Contraseña no válida.");
-            return;
-        }
-
-        // Autenticar primero para obtener el token
-        fetch(`${window.location.origin}/users/login`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, password: oldPassword })
-        })
-        .then(res => {
-            if (!res.ok) throw new Error("Credenciales incorrectas");
-            return res.text();
-        })
-        .then(token => {
-            return fetch(`${window.location.origin}/users/changePassword`, {
-                method: "PUT", // Método PUT como requieres
-                headers: {
-                    "Authorization": token,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ 
-                    username: username,
-                    oldPassword: oldPassword, // Enviamos la contraseña antigua para validación
-                    newPassword: newPassword 
-                })
-            });
-        })
-        .then(res => {
-            if (!res.ok) {
-                return res.text().then(msg => { throw new Error(msg); });
-            }
-            return res.text();
-        })
-        .then(msg => {
-            alert(msg);
-            this.passwordInput.value = ""; // Limpiar campo de contraseña
-        })
-        .catch(err => {
-            alert("Error al cambiar contraseña: " + err.message);
-        });
-    }
-
 }
 
 export default LoginScene;

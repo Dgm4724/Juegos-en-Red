@@ -3,9 +3,8 @@ package com.example.demo;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.util.*;
-import java.nio.file.*;
-
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -38,7 +37,6 @@ public class UserService {
 
     // Actualizar puntuación de un usuario
     public void updateUserScore(User user) {
-        System.out.println("Actualizando puntuación de usuario: " + user.getUsername() + " a " + user.getScore());
         List<User> users = readAllUsers();
         boolean found = false;
         for (User u : users) {
@@ -51,7 +49,6 @@ public class UserService {
         if (!found) {
             throw new RuntimeException("Usuario no encontrado");
         }
-        System.out.println("Escribiendo usuarios actualizados...");
         writeAllUsers(users);
     }
 
@@ -146,36 +143,5 @@ public class UserService {
         } catch (NumberFormatException e) {
             return null;
         }
-    }
-
-    public void deleteUser(String username) {
-        List<User> users = readAllUsers();
-        boolean removed = users.removeIf(u -> u.getUsername().equals(username));
-        if (!removed) {
-            throw new RuntimeException("Usuario no encontrado");
-        }
-        writeAllUsers(users);
-    }
-
-    public void changeUserPassword(String username, String oldPassword, String newPassword) {
-        List<User> users = readAllUsers();
-        boolean updated = false;
-
-        for (User user : users) {
-            if (user.getUsername().equals(username)) {
-                if (!user.getPassword().equals(oldPassword)) {
-                    throw new RuntimeException("La contraseña actual no es correcta");
-                }
-                user.setPassword(newPassword);
-                updated = true;
-                break;
-            }
-        }
-
-        if (!updated) {
-            throw new RuntimeException("Usuario no encontrado");
-        }
-
-        writeAllUsers(users);
     }
 }

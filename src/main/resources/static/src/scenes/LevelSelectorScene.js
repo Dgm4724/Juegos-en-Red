@@ -8,6 +8,7 @@ class LevelSelectorScene extends Phaser.Scene {
     }
 
     create() {
+        // CHAT
         this.chatBox = document.getElementById('chat-messages');
         this.messageInput = document.getElementById('chat-input');
 
@@ -128,57 +129,57 @@ class LevelSelectorScene extends Phaser.Scene {
             color: "#dba43d",
         }).setOrigin(0.5);
 
-        this.foca2 = this.add.image(130, 390, "foca2").setInteractive();
-        this.foca2.setTint(0x7b7b7b);
-        this.foca2.on('pointerover', () => {
+        this.focaRosa = this.add.image(130, 390, "focaRosa").setInteractive();
+        this.focaRosa.setTint(0x7b7b7b);
+        this.focaRosa.on('pointerover', () => {
             if(this.selectedChar != 0 || this.selectedChar == undefined){
-                this.foca2.setScale(1.05);
-                this.foca2.setTint(0xa8a8a8);
+                this.focaRosa.setScale(1.05);
+                this.focaRosa.setTint(0xa8a8a8);
             }
         });
-        this.foca2.on('pointerout', () => {
+        this.focaRosa.on('pointerout', () => {
             if(this.selectedChar != 0 || this.selectedChar == undefined){
-                this.foca2.setScale(1); // Restaurar el tamaño original
-                this.foca2.setTint(0x7b7b7b);
+                this.focaRosa.setScale(1); // Restaurar el tamaño original
+                this.focaRosa.setTint(0x7b7b7b);
             }
         });
-        this.foca2.on("pointerdown", () => {
-            this.foca2.clearTint();
-            this.foca2.setScale(1.1);
+        this.focaRosa.on("pointerdown", () => {
+            this.focaRosa.clearTint();
+            this.focaRosa.setScale(1.1);
             this.selectedChar = 0;
             
-            this.foca1.emit('pointerout');
+            this.focaAzul.emit('pointerout');
             if(this.nextLvl != undefined){
                 this.botonCP.emit('pointerout');
             }
         });
 
-        this.foca1 = this.add.image(230, 390, "foca1").setInteractive();
-        this.foca1.setTint(0x7b7b7b);
-        this.foca1.on('pointerover', () => {
+        this.focaAzul = this.add.image(230, 390, "focaAzul").setInteractive();
+        this.focaAzul.setTint(0x7b7b7b);
+        this.focaAzul.on('pointerover', () => {
             if(this.selectedChar != 1 || this.selectedChar == undefined){
-                this.foca1.setScale(1.05);
-                this.foca1.setTint(0xa8a8a8);
+                this.focaAzul.setScale(1.05);
+                this.focaAzul.setTint(0xa8a8a8);
             }
         });
-        this.foca1.on('pointerout', () => {
+        this.focaAzul.on('pointerout', () => {
             if(this.selectedChar != 1 || this.selectedChar == undefined){
-                this.foca1.setScale(1); // Restaurar el tamaño original
-                this.foca1.setTint(0x7b7b7b);
+                this.focaAzul.setScale(1); // Restaurar el tamaño original
+                this.focaAzul.setTint(0x7b7b7b);
             }
         });
-        this.foca1.on("pointerdown", () => {
-            this.foca1.clearTint();
-            this.foca1.setScale(1.1);
+        this.focaAzul.on("pointerdown", () => {
+            this.focaAzul.clearTint();
+            this.focaAzul.setScale(1.1);
             this.selectedChar = 1;
             
-            this.foca2.emit('pointerout');
+            this.focaRosa.emit('pointerout');
             if(this.nextLvl != undefined){
                 this.botonCP.emit('pointerout');
             }
         });
 
-        // Botón Crear partida
+        // Botón CREAR partida
         this.botonCP = this.add.image(500, 390, "boton").setInteractive();
         this.botonCP.setScale(1, 0.8);
         this.botonCP.setTint(0x7b7b7b);
@@ -207,16 +208,64 @@ class LevelSelectorScene extends Phaser.Scene {
             if(this.nextLvl != undefined && this.selectedChar != undefined){
                 switch (this.nextLvl){
                     case 0 :
-                        this.scene.start("GameScene");
+                        if(this.waitingTxt === undefined || !this.waitingTxt.visible){
+                            this.waitingTxt = this.add.text(490, 350, "Buscando contrincante...", {
+                            fontFamily: "Freckle Face",
+                            fontSize: "19px",
+                            fontStyle: "Bold",
+                            color: "#000000",
+                        }).setOrigin(0.5);
+                        }
+                        this.waitingGame("create","GameScene");
                         break;
                     case 1 :
-                        this.scene.start("GameScene2");
+                        if(this.waitingTxt === undefined || !this.waitingTxt.visible){
+                            this.waitingTxt = this.add.text(490, 350, "Buscando contrincante...", {
+                            fontFamily: "Freckle Face",
+                            fontSize: "19px",
+                            fontStyle: "Bold",
+                            color: "#000000",
+                        }).setOrigin(0.5);
+                        }
+                        this.waitingGame("create","GameScene2");
                         break;
                     case 2 :
                         break;
 
                 }
             }
+        });
+
+        // Botón UNIRSE a partida
+        this.botonUP = this.add.image(500, 440, "boton").setInteractive();
+        this.botonUP.setScale(1, 0.8);
+        this.UPtxt = this.add.text(500, 440, "Unirse a partida", {
+            fontFamily: "Barrio",
+            fontSize: "22px",
+            fontStyle: "Bold",
+            color: "#000000",
+        }).setOrigin(0.5);
+        
+        this.botonUP.on('pointerover', () => {
+            this.botonUP.setScale(1.05, 1.05*0.8);
+            this.botonUP.setTint(0xffdca1);
+            this.UPtxt.setFontSize(25);
+        });
+        this.botonUP.on('pointerout', () => {
+            this.botonUP.setScale(1, 0.8); // Restaurar el tamaño original
+            this.botonUP.clearTint(); // Eliminar el tinte
+            this.UPtxt.setFontSize(22);
+        });
+        this.botonUP.on("pointerdown", () => {
+            if(this.waitingTxt === undefined || !this.waitingTxt.visible){
+                this.waitingTxt = this.add.text(490, 350, "Buscando contrincante...", {
+                    fontFamily: "Freckle Face",
+                    fontSize: "19px",
+                    fontStyle: "Bold",
+                    color: "#000000",
+                }).setOrigin(0.5);
+            }
+            this.waitingGame("join", "");
         });
 
         // Botón para volver al menu principal
@@ -250,6 +299,32 @@ class LevelSelectorScene extends Phaser.Scene {
         // Fetch messages initially and poll every 2 seconds
         this.fetchMessages();
         setInterval(() => this.fetchMessages(), 2000);
+    }
+
+    waitingGame(mode, scene){ // "create" o "join"
+        // WEBSOCKETS
+        if(this.socket !== undefined) this.socket.close();
+        let URI = "ws://" + location.host + `/ws?mode=${mode}`;
+        if(mode === "create") URI += `&scene=${scene}&seal=${this.selectedChar}`;
+        this.socket = new WebSocket(URI);
+
+        this.socket.onopen = () => {
+            console.log("Conectado al servidor");
+        };
+
+        this.socket.onmessage = (msg) => {
+            const type = msg.data[0];
+            const data = msg.data.substring(1);
+            console.log(msg);
+            switch (type) {
+                case "s": // escenario
+                const sceneName = JSON.parse(data)[0];
+                const playerId = JSON.parse(data)[1];
+                const seal = JSON.parse(data)[2];
+                this.scene.start(sceneName, {socket: this.socket, playerId: playerId, seal:seal});
+                break;
+            }
+        };
     }
 
     // Fetch messages from the server

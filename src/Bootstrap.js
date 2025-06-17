@@ -28,13 +28,14 @@ class Bootstrap extends Phaser.Scene {
         this.load.image("miniatura1", "./assets/images/miniatura-nivel1.png");
         this.load.image("miniatura2", "./assets/images/miniatura-nivel2.png");
         this.load.image("miniatura3", "./assets/images/miniatura-nivel3.png");
+        this.load.image("focaRosa", "./assets/images/seal1.png");
+        this.load.image("focaAzul", "./assets/images/seal2.png");
 
         //AUDIO
         this.load.audio("buttonOver", "./assets/sounds/buttonOver.mp3");
         this.load.audio("buttonOn", "./assets/sounds/buttonOn.mp3");
         this.load.audio("bgMenuMusic", "./assets/sounds/Slime Time.mp3");
         this.load.audio("bgLevel1", "./assets/sounds/To Binge (Instrumental).mp3");
-        this.load.audio("bgLevel2", "./assets/sounds/Inazuma Eleven 2 Firestorm_Blizzard - OST 05_Winter Wonderland - Hokkaido.mp3");
 
         // FUENTES
         this.load.font("Barrio", "./assets/fonts/Barrio-Regular.ttf");

@@ -1,3 +1,4 @@
+
 class MainMenuScene extends Phaser.Scene {
     constructor() {
         super({ key: "MainMenuScene" });
@@ -141,7 +142,6 @@ class MainMenuScene extends Phaser.Scene {
         });
         this.botonA.on("pointerdown", () => {
             this.buttonOnSound.play({volume: 0.5});
-            this.scene.start("SettingsScene");
         });
 
         // Botón Créditos
@@ -172,17 +172,6 @@ class MainMenuScene extends Phaser.Scene {
             });
         });
 
-        this.maxScoreText = this.add.text(80, 40, "", {
-            fontSize: "20px",
-            fontFamily: "Barrio",
-            fontStyle: "Bold",
-            color: "black",
-            align: 'center',
-            wordWrap: { width: 150 }
-        }).setOrigin(0.5);
-
-        this.fetchScore();
-
         // Texto animado
         this.jugarTexto = this.add.text(360, 175, "¡Haz clic en el botón verde para empezar a jugar!", {
             fontFamily: "Freckle Face",
@@ -209,25 +198,6 @@ class MainMenuScene extends Phaser.Scene {
         // Fetch messages initially and poll every 2 seconds
         this.fetchMessages();
         setInterval(() => this.fetchMessages(), 2000);
-
-    }
-
-    fetchScore(){
-        if(this.userlogText) {
-            let scoreUrl = `${window.location.origin}/users/score/${this.userlogText}`
-            // Intentamos obtener la puntuación máxima del usuario
-            fetch(scoreUrl)
-                .then(res => res.ok ? res.json() : Promise.reject())
-                .then(data => {
-                    console.log("maxScore: " + data);
-                    this.maxScoreText.setText(`Puntuación máxima: ${data}`);
-                })
-                .catch(() => {
-                this.registry.set('connection', false);
-                });
-        } else {
-            this.maxScoreText.setText("Inicia sesión para conocer tu puntuación máxima");
-        }
     }
 
     // Animación del texto (rotación y escalado por separado)
@@ -388,8 +358,6 @@ class MainMenuScene extends Phaser.Scene {
             this.buttonOnSound.play({volume: 0.5});
             this.cleanupPopup();
         });
-        this.btnNoText = undefined;
-        this.btnYesText = undefined;
     }
 
     // Método para limpiar el popup de la escena
@@ -400,7 +368,6 @@ class MainMenuScene extends Phaser.Scene {
         this.btnYes.destroy();
         this.btnNo.destroy();
     }
-
 }
 
 export default MainMenuScene;

@@ -1,3 +1,14 @@
+/**
+ * Message types used for WebSocket communication.
+ * @enum {string}
+ */
+const MSG_TYPES = {
+    INIT: 'i',        // Initialize game state
+    HIT: 'h',         // A player hits the ball
+    POS: 'p',         // Update player position
+    OVER: 'o'         // End game event
+};
+
 class GameScene2 extends Phaser.Scene {
   constructor() {
     super({ key: "GameScene2" });
@@ -7,7 +18,39 @@ class GameScene2 extends Phaser.Scene {
     this.isPaused = false;
   }
 
+  init(data) {
+    if(data && data.socket) {
+        this.socket = data.socket;
+        this.playerId = data.playerId;
+        this.foca = data.seal;
+    }
+  }
+
   create() {
+      //SOCKET
+    this.socket.onopen = () => {
+      console.log("Iniciando partida...");
+    };
+
+    this.socket.onmessage = (msg) => {
+      const type = msg.data[0];
+      const data = msg.data.substring(1);
+      console.log(msg);
+      switch(type) {
+        case MSG_TYPES.INIT:
+            this.handleInit(data);
+            break;
+        case MSG_TYPES.POS:
+            this.handlePosition(data);
+            break;
+        case MSG_TYPES.HIT:
+            this.handleOtherHit(data);
+            break;
+        case MSG_TYPES.OVER:
+            this.pauseGame();
+            break;
+      }
+    };
     // Ocultar chat
     document.getElementById("chat").style.display = "none";
 
@@ -30,15 +73,27 @@ class GameScene2 extends Phaser.Scene {
     this.hielo2 = this.physics.add.staticSprite(720/4*3, 330, "bloqueHielo");
 
     // Crear focas
-    this.foca1 = this.createFoca(250, 380, "foca1");
-    this.foca1.setScale(0.75);
-    this.foca1.setFlipX(false);
-    this.foca1.setSize(2);
+    if (this.foca === 0){
+      this.foca1 = this.createFoca(250, 400, "foca1");
+      this.foca1.setScale(0.75);
+      this.foca1.setFlipX(false);
+      this.foca1.flipped = false;
 
-    this.foca2 = this.createFoca(470, 380, "foca2");
-    this.foca2.setScale(0.75);
-    this.foca2.setFlipX(true);
-    this.foca2.setSize(2);
+      this.foca2 = this.createFoca(470, 400, "foca2");
+      this.foca2.setScale(0.75);
+      this.foca2.setFlipX(true);
+      this.foca2.flipped = true;
+    }else{
+      this.foca1 = this.createFoca(470, 400, "foca2");
+      this.foca1.setScale(0.75);
+      this.foca1.setFlipX(true);
+      this.foca1.flipped = true;
+
+      this.foca2 = this.createFoca(250, 400, "foca1");
+      this.foca2.setScale(0.75);
+      this.foca2.setFlipX(false);
+      this.foca2.flipped = false;
+    }
 
     // Pelota (inicialmente estática)
     this.pelota = this.physics.add.image(360, 150, "pelota");
@@ -48,10 +103,8 @@ class GameScene2 extends Phaser.Scene {
 
     // Colisiones
     this.physics.add.collider(this.foca1, suelo);
-    this.physics.add.collider(this.foca2, suelo);
     this.physics.add.collider(this.pelota, suelo, this.handlePelotaToqueSuelo, null, this);
     this.physics.add.overlap(this.foca1, this.pelota, this.handleHit, null, this);
-    this.physics.add.overlap(this.foca2, this.pelota, this.handleHit, null, this);
 
     this.physics.add.collider(this.foca1, this.hielo1, null, (foca1, hielo1) => {
       // Verificar si el jugador está cayendo
@@ -59,14 +112,6 @@ class GameScene2 extends Phaser.Scene {
     }, this);
     this.physics.add.collider(this.foca1, this.hielo2, null, (foca1, hielo2) => {
       return this.foca1.body.velocity.y > 0;
-    }, this);
-
-    this.physics.add.collider(this.foca2, this.hielo1, null, (foca2, hielo1) => {
-      // Verificar si el jugador está cayendo
-      return this.foca2.body.velocity.y > 0;
-    }, this);
-    this.physics.add.collider(this.foca2, this.hielo2, null, (foca2, hielo2) => {
-      return this.foca2.body.velocity.y > 0;
     }, this);
 
     // Controles
@@ -112,23 +157,6 @@ class GameScene2 extends Phaser.Scene {
 
     // Iniciar cuenta atrás
     this.startCountdown();
-
-    if (this.sound.getAllPlaying().length > 0) {
-      this.sound.getAllPlaying().forEach(sound => sound.stop());
-    }
-
-    // Reproducir la música de fondo del nivel
-    this.bgMusic = this.sound.add('bgLevel2', { loop: true, volume: 0.5 });
-    this.bgMusic.play();
-
-    // Detener cualquier música previa
-    if (this.sound.getAllPlaying().length > 0) {
-      this.sound.getAllPlaying().forEach(sound => sound.stop());
-    }
-
-    // Reproducir la música de fondo del nivel
-    this.bgMusic = this.sound.add('bgLevel2', { loop: true, volume: 0.5 });
-    this.bgMusic.play();
   }
 
   startCountdown() {
@@ -219,9 +247,6 @@ class GameScene2 extends Phaser.Scene {
       this.quitButton.clearTint(); // Eliminar el tinte
     });
     this.quitButton.on('pointerdown', () => {
-      if (this.bgMusic && this.bgMusic.isPlaying) {
-        this.bgMusic.stop();
-      }
       this.scene.start("MainMenuScene");
     });
 
@@ -356,23 +381,64 @@ class GameScene2 extends Phaser.Scene {
     } else if (tipoGolpe === "fuerte") {
       this.puntuacion += 2;
     }
+    // NOTIFICAR DEL GOLPE AL SERVIDOR
+    this.socket.send("h" + JSON.stringify({
+        x: this.pelota.x,
+        y: this.pelota.y,
+        vx: this.pelota.body.velocity.x,
+        vy: this.pelota.body.velocity.y,
+        tipoGolpe: tipoGolpe
+    }));
 
     // Actualizar el texto de puntuación en pantalla
     this.puntajeTexto.setText(`Puntuación: \n${this.puntuacion}`);
   }
 
   handlePelotaToqueSuelo() {
+    this.gameStarted = false;
+    //if (this.socket) this.socket.close();
     this.fadeToBlack(() => {
-      if (this.bgMusic && this.bgMusic.isPlaying) {
-        this.bgMusic.stop();
-      }
-      this.scene.start('GameOverScene', { puntuacion: this.puntuacion, previousScene:1});
+      // Cambiar a la escena GameOverScene y pasar la puntuación
+      this.scene.start('GameOverScene', { puntuacion: this.puntuacion, previousScene:0 });
     });
+  }
+
+    handleInit(data){
+    this.playerId = parseInt(data);
+    console.log("Jugador con ID:", this.playerId);
+    this.gameStarted = true;
+  }
+
+  handlePosition(_data){
+    const data = JSON.parse(_data)
+    if (data[0] !== this.playerId && this.foca2) {
+      this.foca2.x = data[1];
+      this.foca2.y = data[2];
+      console.log(data[1], data[2], data[3]);
+      this.foca2.setFlipX(data[3]);
+    }
+  }
+  handleOtherHit(_data){
+    const ball = JSON.parse(_data);
+
+    // Actualizar la pelota
+    this.pelota.setPosition(ball.x, ball.y);
+    this.pelota.body.setVelocity(ball.vx, ball.vy);
+
+    // Actualizar puntuación
+    if (ball.tipoGolpe === "normal") {
+      this.puntuacion += 1;
+    } else if (ball.tipoGolpe === "fuerte") {
+      this.puntuacion += 2;
+    }
   }
 
   update() {
     // MOSTRAR ESTADO DE LA CONEXIÓN
       this.connectionText.setVisible(this.registry.get('connection') === false);
+
+    //RETRANSMITIR POSICIÓN AL OTRO JUGADOR
+    if (this.socket.readyState !== WebSocket.CLOSED) this.socket.send("p" + JSON.stringify([this.playerId, this.foca1.x, this.foca1.y, this.foca1.flipped]));
 
     // Pausar o reanudar el juego si se presiona la tecla ESC
     if (Phaser.Input.Keyboard.JustDown(this.escapeKey)) {
@@ -385,23 +451,21 @@ class GameScene2 extends Phaser.Scene {
 
     if (this.isPaused) return; // Si el juego está pausado, no procesamos más.
 
+    // Movimiento y colisión foca 1
     const speed = 200;
     const jumpForce = 330;
-
-    // Movimiento y colisión foca 1
-    this.moveFoca(this.foca1, this.aKey, this.dKey, this.wKey, this.eKey, this.rKey, speed, jumpForce);
-
-    // Movimiento y colisión foca 2
-    this.moveFoca(this.foca2, this.cursors.left, this.cursors.right, this.cursors.up, this.oKey, this.pKey, speed, jumpForce);
+    this.moveFoca(this.foca1, this.aKey, this.dKey, this.wKey, this.oKey, this.pKey, speed, jumpForce);
   }
 
   moveFoca(foca, leftKey, rightKey, jumpKey, normalHitKey, strongHitKey, speed, jumpForce) { // Movimiento horizontal
     if (leftKey.isDown) {
       foca.setVelocityX(-speed);
       foca.setFlipX(true); // Voltea la foca a la izquierda
+      this.foca1.flipped = true;
     } else if (rightKey.isDown) {
       foca.setVelocityX(speed);
       foca.setFlipX(false); // Voltea la foca a la derecha
+      this.foca1.flipped = false;
     } else {
       foca.setVelocityX(0); // Detenerse
     }
